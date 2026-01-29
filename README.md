@@ -54,18 +54,35 @@ Professional Claude Code skills for team collaboration.
 
 ## 🚀 Quick Start
 
-### Installation
+### Automated Installation (Recommended)
 
-\`\`\`bash
-# Clone repository
-git clone https://github.com/hyunseung1119/My_ClaudeCode_Skill.git
-
-# Navigate to skill directory
-cd My_ClaudeCode_Skill/skills/<skill-name>
-
-# Install dependencies (if any)
-pip install -r requirements.txt
+**Windows (PowerShell):**
+\`\`\`powershell
+# One-line install
+iwr -useb https://raw.githubusercontent.com/hyunseung1119/My_ClaudeCode_Skill/main/setup.ps1 | iex
 \`\`\`
+
+**Linux / macOS:**
+\`\`\`bash
+# One-line install
+curl -fsSL https://raw.githubusercontent.com/hyunseung1119/My_ClaudeCode_Skill/main/setup.sh | bash
+\`\`\`
+
+**Manual Installation:**
+\`\`\`bash
+# 1. Clone repository
+git clone https://github.com/hyunseung1119/My_ClaudeCode_Skill.git
+cd My_ClaudeCode_Skill
+
+# 2. Run setup script
+./setup.sh  # Linux/macOS
+.\setup.ps1 # Windows
+
+# 3. Verify installation
+ls ~/.claude/skills/
+\`\`\`
+
+See [INSTALLATION.md](INSTALLATION.md) for detailed installation options.
 
 ### Usage
 
@@ -101,6 +118,30 @@ All skills have been reviewed and tested:
 - Enhanced input validation
 - Improved error messages
 - Added bilingual documentation
+
+## 🔄 Auto-Updates
+
+Skills are installed as **symbolic links**, so updates are automatic!
+
+```bash
+# Navigate to repository
+cd ~/My_ClaudeCode_Skill
+
+# Pull latest changes
+git pull origin main
+
+# Skills auto-update instantly! 🎉
+```
+
+See [UPDATE.md](UPDATE.md) for update procedures and rollback strategies.
+
+## 📚 Documentation
+
+- [INSTALLATION.md](INSTALLATION.md) - Installation guide (manual & automated)
+- [UPDATE.md](UPDATE.md) - Update procedures and auto-update setup
+- [USAGE_GUIDE.md](USAGE_GUIDE.md) - Detailed usage examples
+- [CHANGELOG.md](CHANGELOG.md) - Version history and release notes
+- [GLOSSARY.md](GLOSSARY.md) - Technical terminology reference
 
 ## 🤝 Contributing
 
