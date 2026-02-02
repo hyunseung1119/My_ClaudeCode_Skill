@@ -1,3 +1,8 @@
+---
+name: ai-research-integration
+description: Research and integrate AI techniques from papers and case studies.
+---
+
 # AI Research & Integration Skill
 
 Systematically research, evaluate, and integrate cutting-edge AI techniques from papers and case studies into your project.
@@ -70,7 +75,7 @@ Paper: "Instructed Retriever with Metadata" (Databricks, 2026)
 - Applicability: 4/5 (requires fine-tuning pipeline, doable)
 - Maturity: 3/5 (new technique, limited production case studies)
 
-Total: (5*0.25 + 5*0.15 + 4*0.20 + 4*0.25 + 3*0.15) = 4.15/5 ✅ HIGH PRIORITY
+Total: (5*0.25 + 5*0.15 + 4*0.20 + 4*0.25 + 3*0.15) = 4.15/5 ??HIGH PRIORITY
 ```
 
 ### 4. Integration Risk Assessment

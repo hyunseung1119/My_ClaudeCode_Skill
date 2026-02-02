@@ -1,3 +1,8 @@
+---
+name: mcp-integration
+description: Set up and integrate MCP servers.
+---
+
 # MCP Integration Skill
 
 Model Context Protocol server setup and integration guide.
@@ -299,7 +304,7 @@ echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | npx my-mcp-server
 
 ```markdown
 # Add MCP server to config
-~/.claude/settings.json → mcpServers
+~/.claude/settings.json ??mcpServers
 
 # Server capabilities
 - tools: Execute actions

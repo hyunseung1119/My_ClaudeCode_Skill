@@ -1,3 +1,8 @@
+---
+name: rag-2.0
+description: Advanced retrieval-augmented generation patterns.
+---
+
 # RAG 2.0 Skill
 
 Advanced retrieval-augmented generation patterns for 2026.
@@ -271,14 +276,14 @@ TARGETS = {
 
 ```markdown
 Retrieval Patterns:
-- Hybrid Search: BM25 + Vector (α=0.5)
-- HyDE: Generate hypothetical → search
-- Multi-Query: Query variants → merge
-- Parent-Child: Small search → large return
+- Hybrid Search: BM25 + Vector (慣=0.5)
+- HyDE: Generate hypothetical ??search
+- Multi-Query: Query variants ??merge
+- Parent-Child: Small search ??large return
 
 Self-Correcting:
 - Self-RAG: Retrieve if needed, critique
-- CRAG: Evaluate → correct → fallback
+- CRAG: Evaluate ??correct ??fallback
 
 Metrics (RAGAS):
 - Faithfulness > 0.9

@@ -1,3 +1,8 @@
+---
+name: agentic-workflows
+description: Design and implement multi-agent workflows.
+---
+
 # Agentic Workflows Skill
 
 Design and implement multi-agent systems and autonomous workflows.
@@ -59,7 +64,7 @@ class ReActAgent:
 
 ### 2. CRITIC (Self-Critique)
 
-Generate → Critique → Refine:
+Generate ??Critique ??Refine:
 
 ```markdown
 [GENERATION]
@@ -72,7 +77,7 @@ def quicksort(arr):
     return quicksort(left) + [pivot] + quicksort(right)
 
 [CRITIQUE]
-- Issue 1: Always picks first element as pivot (worst case O(n²) for sorted)
+- Issue 1: Always picks first element as pivot (worst case O(n짼) for sorted)
 - Issue 2: Creates new lists (O(n) extra space per recursion)
 - Issue 3: No handling for equal elements distribution
 
@@ -114,22 +119,22 @@ Explore multiple solution paths:
 Optimize database query taking 5 seconds
 
 [BRANCH 1: Index Optimization]
-├── Add composite index on (user_id, created_at)
-├── Estimated improvement: 80%
-├── Risk: Index maintenance overhead
-└── Score: 8/10
+?쒋?? Add composite index on (user_id, created_at)
+?쒋?? Estimated improvement: 80%
+?쒋?? Risk: Index maintenance overhead
+?붴?? Score: 8/10
 
 [BRANCH 2: Query Rewrite]
-├── Replace subquery with JOIN
-├── Estimated improvement: 60%
-├── Risk: Logic change might affect results
-└── Score: 6/10
+?쒋?? Replace subquery with JOIN
+?쒋?? Estimated improvement: 60%
+?쒋?? Risk: Logic change might affect results
+?붴?? Score: 6/10
 
 [BRANCH 3: Caching]
-├── Add Redis cache with 5min TTL
-├── Estimated improvement: 95% for repeated queries
-├── Risk: Cache invalidation complexity
-└── Score: 7/10
+?쒋?? Add Redis cache with 5min TTL
+?쒋?? Estimated improvement: 95% for repeated queries
+?쒋?? Risk: Cache invalidation complexity
+?붴?? Score: 7/10
 
 [EVALUATION]
 Branch 1 selected: Best balance of improvement and simplicity
@@ -314,32 +319,32 @@ class FallbackAgent:
 
 ### Sequential Pipeline
 ```
-Agent A → Agent B → Agent C
+Agent A ??Agent B ??Agent C
 ```
 
 ### Parallel Fan-Out
 ```
-       ┌→ Agent A ─┐
-Input ─┼→ Agent B ─┼→ Aggregate
-       └→ Agent C ─┘
+       ?뚢넂 Agent A ???
+Input ??쇄넂 Agent B ??쇄넂 Aggregate
+       ?붴넂 Agent C ???
 ```
 
 ### Supervisor
 ```
-Supervisor ─┬─ Worker 1
-            ├─ Worker 2
-            └─ Worker 3
+Supervisor ??р? Worker 1
+            ?쒋? Worker 2
+            ?붴? Worker 3
 ```
 
 ## Quick Reference
 
 ```markdown
 Patterns:
-- ReAct: Think → Act → Observe loop
-- CRITIC: Generate → Critique → Refine
-- ToT: Branch → Evaluate → Prune → Select
-- Debate: Pro vs Con → Synthesis
-- Ensemble: Multiple agents → Aggregate
+- ReAct: Think ??Act ??Observe loop
+- CRITIC: Generate ??Critique ??Refine
+- ToT: Branch ??Evaluate ??Prune ??Select
+- Debate: Pro vs Con ??Synthesis
+- Ensemble: Multiple agents ??Aggregate
 
 State:
 - Checkpoint frequently

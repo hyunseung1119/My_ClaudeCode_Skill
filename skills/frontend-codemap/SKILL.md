@@ -1,214 +1,219 @@
+---
+name: frontend-codemap
+description: Analyze frontend code and map UI structure.
+---
+
 # Frontend Codemap Skill
 
-프론트엔드 코드를 분석하여 **UI 구조와 코드를 매핑한 문서**를 자동 생성합니다. 개발자가 스크린샷 없이 "이 컴포넌트의 저 부분 고쳐줘"라고 직관적으로 요청할 수 있게 합니다.
+?꾨줎?몄뿏??肄붾뱶瑜?遺꾩꽍?섏뿬 **UI 援ъ“? 肄붾뱶瑜?留ㅽ븨??臾몄꽌**瑜??먮룞 ?앹꽦?⑸땲?? 媛쒕컻?먭? ?ㅽ겕由곗꺑 ?놁씠 "??而댄룷?뚰듃??? 遺遺?怨좎퀜以??쇨퀬 吏곴??곸쑝濡??붿껌?????덇쾶 ?⑸땲??
 
 ## Purpose
 
-**기존 방식의 문제:**
+**湲곗〈 諛⑹떇??臾몄젣:**
 ```
-개발자: "여기 스크린샷 찍어서... 이 버튼 위치 바꿔줘"
-Claude: "어떤 파일의 어느 코드인가요?"
-개발자: "아... 잠깐 코드 찾아볼게..."
+媛쒕컻?? "?ш린 ?ㅽ겕由곗꺑 李띿뼱??.. ??踰꾪듉 ?꾩튂 諛붽퓭以?
+Claude: "?대뼡 ?뚯씪???대뒓 肄붾뱶?멸???"
+媛쒕컻?? "??.. ?좉퉸 肄붾뱶 李얠븘蹂쇨쾶..."
 ```
 
-**새로운 방식:**
+**?덈줈??諛⑹떇:**
 ```
-개발자: "UserProfile의 이메일 표시 부분 색상 변경해줘"
-Claude: "ProfileHeader.tsx:30 수정합니다" (즉시 이해)
+媛쒕컻?? "UserProfile???대찓???쒖떆 遺遺??됱긽 蹂寃쏀빐以?
+Claude: "ProfileHeader.tsx:30 ?섏젙?⑸땲?? (利됱떆 ?댄빐)
 ```
 
 ---
 
 ## When to Use
 
-다음 상황에서 사용하세요:
-- 프로젝트 온보딩 시 프론트엔드 구조 파악
-- UI 수정 요청 시 정확한 코드 위치 식별
-- 컴포넌트 리팩토링 계획 수립
-- 디자이너/기획자와 협업 시 UI-코드 연결
-- 신규 팀원 온보딩 자료
+?ㅼ쓬 ?곹솴?먯꽌 ?ъ슜?섏꽭??
+- ?꾨줈?앺듃 ?⑤낫?????꾨줎?몄뿏??援ъ“ ?뚯븙
+- UI ?섏젙 ?붿껌 ???뺥솗??肄붾뱶 ?꾩튂 ?앸퀎
+- 而댄룷?뚰듃 由ы뙥?좊쭅 怨꾪쉷 ?섎┰
+- ?붿옄?대꼫/湲고쉷?먯? ?묒뾽 ??UI-肄붾뱶 ?곌껐
+- ?좉퇋 ????⑤낫???먮즺
 
 ---
 
 ## Output Format
 
-### 1. 페이지별 Component Map
+### 1. ?섏씠吏蹂?Component Map
 
 ```markdown
 # Frontend Component Map - User Profile
 
-## 📄 `/profile` 페이지
+## ?뱞 `/profile` ?섏씠吏
 
-### 화면 구조
+### ?붾㈃ 援ъ“
 ```
-┌─────────────────────────────────────────┐
-│ UserProfilePage                         │
-│ 📂 src/pages/UserProfile.tsx            │
-│                                         │
-│  ┌────────────────────────────────────┐│
-│  │ 🎨 ProfileHeader                   ││
-│  │ 📂 components/ProfileHeader.tsx     ││
-│  │                                     ││
-│  │  📷 Avatar        (line 20)        ││
-│  │  👤 User Name     (line 25)        ││
-│  │  📧 Email         (line 30)        ││
-│  │  ⚙️  Settings Btn (line 35)        ││
-│  └────────────────────────────────────┘│
-│                                         │
-│  ┌────────────────────────────────────┐│
-│  │ 📝 ProfileForm                     ││
-│  │ 📂 components/ProfileForm.tsx       ││
-│  │                                     ││
-│  │  ✏️  Name Input    (line 45)       ││
-│  │  ✉️  Email Input   (line 55)       ││
-│  │  📱 Phone Input   (line 65)       ││
-│  │  💾 Save Button   (line 80)       ││
-│  └────────────────────────────────────┘│
-│                                         │
-│  ┌────────────────────────────────────┐│
-│  │ 📊 ActivityLog                     ││
-│  │ 📂 components/ActivityLog.tsx       ││
-│  │                                     ││
-│  │  📅 Activity List (line 30-60)    ││
-│  │  🔽 Load More Btn (line 70)       ││
-│  └────────────────────────────────────┘│
-└─────────────────────────────────────────┘
+?뚢???????????????????????????????????????????
+??UserProfilePage                         ??
+???뱛 src/pages/UserProfile.tsx            ??
+??                                        ??
+?? ?뚢?????????????????????????????????????먥봻
+?? ???렓 ProfileHeader                   ?귘봻
+?? ???뱛 components/ProfileHeader.tsx     ?귘봻
+?? ??                                    ?귘봻
+?? ?? ?벜 Avatar        (line 20)        ?귘봻
+?? ?? ?뫀 User Name     (line 25)        ?귘봻
+?? ?? ?벁 Email         (line 30)        ?귘봻
+?? ?? ?숋툘  Settings Btn (line 35)        ?귘봻
+?? ?붴?????????????????????????????????????섃봻
+??                                        ??
+?? ?뚢?????????????????????????????????????먥봻
+?? ???뱷 ProfileForm                     ?귘봻
+?? ???뱛 components/ProfileForm.tsx       ?귘봻
+?? ??                                    ?귘봻
+?? ?? ?륅툘  Name Input    (line 45)       ?귘봻
+?? ?? ?됵툘  Email Input   (line 55)       ?귘봻
+?? ?? ?벑 Phone Input   (line 65)       ?귘봻
+?? ?? ?뮶 Save Button   (line 80)       ?귘봻
+?? ?붴?????????????????????????????????????섃봻
+??                                        ??
+?? ?뚢?????????????????????????????????????먥봻
+?? ???뱤 ActivityLog                     ?귘봻
+?? ???뱛 components/ActivityLog.tsx       ?귘봻
+?? ??                                    ?귘봻
+?? ?? ?뱟 Activity List (line 30-60)    ?귘봻
+?? ?? ?뵿 Load More Btn (line 70)       ?귘봻
+?? ?붴?????????????????????????????????????섃봻
+?붴???????????????????????????????????????????
 ```
 
 ---
 
-## 📦 컴포넌트 상세
+## ?벀 而댄룷?뚰듃 ?곸꽭
 
 ### ProfileHeader
-**파일**: `src/components/ProfileHeader.tsx`
-**라인**: 15-45
+**?뚯씪**: `src/components/ProfileHeader.tsx`
+**?쇱씤**: 15-45
 
-**UI 요소:**
-1. **아바타 이미지**
-   - 코드: `<Avatar src={user.avatar} size="large" />` (line 20)
+**UI ?붿냼:**
+1. **?꾨컮? ?대?吏**
+   - 肄붾뱶: `<Avatar src={user.avatar} size="large" />` (line 20)
    - Props: `avatar: string, size: 'small' | 'medium' | 'large'`
-   - 스타일: `className="avatar-container"`
+   - ?ㅽ??? `className="avatar-container"`
 
-2. **사용자 이름**
-   - 코드: `<h1 className="user-name">{user.name}</h1>` (line 25)
-   - 조건: `{user.verified && <VerifiedBadge />}` (line 26)
-   - 스타일: `text-2xl font-bold text-gray-900`
+2. **?ъ슜???대쫫**
+   - 肄붾뱶: `<h1 className="user-name">{user.name}</h1>` (line 25)
+   - 議곌굔: `{user.verified && <VerifiedBadge />}` (line 26)
+   - ?ㅽ??? `text-2xl font-bold text-gray-900`
 
-3. **이메일 주소**
-   - 코드: `<p className="user-email">{user.email}</p>` (line 30)
-   - 스타일: `text-sm text-gray-500`
-   - 변경 추천: 색상을 더 연하게 (gray-400)
+3. **?대찓??二쇱냼**
+   - 肄붾뱶: `<p className="user-email">{user.email}</p>` (line 30)
+   - ?ㅽ??? `text-sm text-gray-500`
+   - 蹂寃?異붿쿇: ?됱긽?????고븯寃?(gray-400)
 
-4. **설정 버튼**
-   - 코드: `<Button onClick={handleSettings}>Settings</Button>` (line 35)
-   - 핸들러: `handleSettings()` (line 50)
-   - 이동: `/settings` 페이지로 라우팅
+4. **?ㅼ젙 踰꾪듉**
+   - 肄붾뱶: `<Button onClick={handleSettings}>Settings</Button>` (line 35)
+   - ?몃뱾?? `handleSettings()` (line 50)
+   - ?대룞: `/settings` ?섏씠吏濡??쇱슦??
 
-**수정 예시:**
-- "ProfileHeader의 이메일 색상 변경해줘" → line 30 수정
-- "아바타 크기 키워줘" → line 20 `size="large"` → `size="xl"`
-- "설정 버튼 위치 오른쪽으로" → line 35 스타일 추가
+**?섏젙 ?덉떆:**
+- "ProfileHeader???대찓???됱긽 蹂寃쏀빐以? ??line 30 ?섏젙
+- "?꾨컮? ?ш린 ?ㅼ썙以? ??line 20 `size="large"` ??`size="xl"`
+- "?ㅼ젙 踰꾪듉 ?꾩튂 ?ㅻⅨ履쎌쑝濡? ??line 35 ?ㅽ???異붽?
 
 ---
 
 ### ProfileForm
-**파일**: `src/components/ProfileForm.tsx`
-**라인**: 20-90
+**?뚯씪**: `src/components/ProfileForm.tsx`
+**?쇱씤**: 20-90
 
-**UI 요소:**
-1. **이름 입력 필드**
-   - 코드: `<Input name="name" value={formData.name} onChange={handleChange} />` (line 45)
-   - 검증: `required, minLength: 2` (line 100)
-   - 에러 메시지: `{errors.name && <Error>{errors.name}</Error>}` (line 47)
+**UI ?붿냼:**
+1. **?대쫫 ?낅젰 ?꾨뱶**
+   - 肄붾뱶: `<Input name="name" value={formData.name} onChange={handleChange} />` (line 45)
+   - 寃利? `required, minLength: 2` (line 100)
+   - ?먮윭 硫붿떆吏: `{errors.name && <Error>{errors.name}</Error>}` (line 47)
 
-2. **이메일 입력 필드**
-   - 코드: `<Input type="email" name="email" value={formData.email} />` (line 55)
-   - 검증: `email validation, unique` (line 105)
-   - 읽기 전용: `disabled={user.emailVerified}` (line 56)
+2. **?대찓???낅젰 ?꾨뱶**
+   - 肄붾뱶: `<Input type="email" name="email" value={formData.email} />` (line 55)
+   - 寃利? `email validation, unique` (line 105)
+   - ?쎄린 ?꾩슜: `disabled={user.emailVerified}` (line 56)
 
-3. **전화번호 입력**
-   - 코드: `<PhoneInput name="phone" value={formData.phone} />` (line 65)
-   - 포맷: `(010) 1234-5678` (PhoneInput 컴포넌트가 자동 처리)
-   - 선택 사항: `required={false}`
+3. **?꾪솕踰덊샇 ?낅젰**
+   - 肄붾뱶: `<PhoneInput name="phone" value={formData.phone} />` (line 65)
+   - ?щ㎎: `(010) 1234-5678` (PhoneInput 而댄룷?뚰듃媛 ?먮룞 泥섎━)
+   - ?좏깮 ?ы빆: `required={false}`
 
-4. **저장 버튼**
-   - 코드: `<Button type="submit" loading={isSubmitting}>Save</Button>` (line 80)
-   - 핸들러: `handleSubmit()` (line 110)
-   - 로딩 상태: `isSubmitting` (line 15)
+4. **???踰꾪듉**
+   - 肄붾뱶: `<Button type="submit" loading={isSubmitting}>Save</Button>` (line 80)
+   - ?몃뱾?? `handleSubmit()` (line 110)
+   - 濡쒕뵫 ?곹깭: `isSubmitting` (line 15)
 
-**API 호출:**
-- 엔드포인트: `PUT /api/users/{userId}` (line 115)
-- 성공 시: Toast 알림 + 프로필 새로고침
-- 실패 시: 에러 메시지 표시
+**API ?몄텧:**
+- ?붾뱶?ъ씤?? `PUT /api/users/{userId}` (line 115)
+- ?깃났 ?? Toast ?뚮┝ + ?꾨줈???덈줈怨좎묠
+- ?ㅽ뙣 ?? ?먮윭 硫붿떆吏 ?쒖떆
 
-**수정 예시:**
-- "이메일 필드 항상 수정 가능하게" → line 56 `disabled` 제거
-- "저장 버튼 색상 파란색으로" → line 80 `variant="primary"` 추가
-- "전화번호 필수로 변경" → line 65 `required={true}`
+**?섏젙 ?덉떆:**
+- "?대찓???꾨뱶 ??긽 ?섏젙 媛?ν븯寃? ??line 56 `disabled` ?쒓굅
+- "???踰꾪듉 ?됱긽 ?뚮??됱쑝濡? ??line 80 `variant="primary"` 異붽?
+- "?꾪솕踰덊샇 ?꾩닔濡?蹂寃? ??line 65 `required={true}`
 
 ---
 
 ### ActivityLog
-**파일**: `src/components/ActivityLog.tsx`
-**라인**: 15-80
+**?뚯씪**: `src/components/ActivityLog.tsx`
+**?쇱씤**: 15-80
 
-**UI 요소:**
-1. **활동 목록**
-   - 코드:
+**UI ?붿냼:**
+1. **?쒕룞 紐⑸줉**
+   - 肄붾뱶:
      ```tsx
      {activities.map(activity => (
        <ActivityItem key={activity.id} activity={activity} />
      ))}
      ``` (line 30-35)
-   - 표시 항목: 액션, 시간, 상세 정보
-   - 최대 표시: 20개 (페이지네이션)
+   - ?쒖떆 ??ぉ: ?≪뀡, ?쒓컙, ?곸꽭 ?뺣낫
+   - 理쒕? ?쒖떆: 20媛?(?섏씠吏?ㅼ씠??
 
-2. **더 보기 버튼**
-   - 코드: `<Button onClick={loadMore}>Load More</Button>` (line 70)
-   - 핸들러: `loadMore()` (line 45)
-   - 조건: `{hasMore && ...}` (line 69)
+2. **??蹂닿린 踰꾪듉**
+   - 肄붾뱶: `<Button onClick={loadMore}>Load More</Button>` (line 70)
+   - ?몃뱾?? `loadMore()` (line 45)
+   - 議곌굔: `{hasMore && ...}` (line 69)
 
-**데이터 흐름:**
+**?곗씠???먮쫫:**
 - API: `GET /api/users/{userId}/activities?page={page}&limit=20`
-- 상태: `useState<Activity[]>([])` (line 18)
-- 무한 스크롤 가능: `useInfiniteScroll` hook 추가 검토
+- ?곹깭: `useState<Activity[]>([])` (line 18)
+- 臾댄븳 ?ㅽ겕濡?媛?? `useInfiniteScroll` hook 異붽? 寃??
 
-**수정 예시:**
-- "활동 목록 30개로 늘려줘" → line 20 `limit: 30`
-- "더 보기 버튼 없애고 무한 스크롤로" → `useInfiniteScroll` hook 적용
-- "최근 활동 먼저 표시" → API에 `sort=desc` 추가
-
----
-
-## 🗺️ 라우팅 구조
-
-```
-/                    → HomePage          (pages/Home.tsx)
-/profile             → UserProfilePage   (pages/UserProfile.tsx)
-/profile/edit        → EditProfilePage   (pages/EditProfile.tsx)
-/settings            → SettingsPage      (pages/Settings.tsx)
-/login               → LoginPage         (pages/Login.tsx)
-```
+**?섏젙 ?덉떆:**
+- "?쒕룞 紐⑸줉 30媛쒕줈 ?섎젮以? ??line 20 `limit: 30`
+- "??蹂닿린 踰꾪듉 ?놁븷怨?臾댄븳 ?ㅽ겕濡ㅻ줈" ??`useInfiniteScroll` hook ?곸슜
+- "理쒓렐 ?쒕룞 癒쇱? ?쒖떆" ??API??`sort=desc` 異붽?
 
 ---
 
-## 🎨 공통 컴포넌트
+## ?뿺截??쇱슦??援ъ“
+
+```
+/                    ??HomePage          (pages/Home.tsx)
+/profile             ??UserProfilePage   (pages/UserProfile.tsx)
+/profile/edit        ??EditProfilePage   (pages/EditProfile.tsx)
+/settings            ??SettingsPage      (pages/Settings.tsx)
+/login               ??LoginPage         (pages/Login.tsx)
+```
+
+---
+
+## ?렓 怨듯넻 而댄룷?뚰듃
 
 ### Button
-**파일**: `src/components/common/Button.tsx`
+**?뚯씪**: `src/components/common/Button.tsx`
 **Props**:
 - `variant`: 'primary' | 'secondary' | 'danger'
 - `size`: 'small' | 'medium' | 'large'
 - `loading`: boolean
 - `disabled`: boolean
 
-**사용 위치**:
-- ProfileHeader: Settings 버튼 (line 35)
-- ProfileForm: Save 버튼 (line 80)
-- ActivityLog: Load More 버튼 (line 70)
+**?ъ슜 ?꾩튂**:
+- ProfileHeader: Settings 踰꾪듉 (line 35)
+- ProfileForm: Save 踰꾪듉 (line 80)
+- ActivityLog: Load More 踰꾪듉 (line 70)
 
 ### Input
-**파일**: `src/components/common/Input.tsx`
+**?뚯씪**: `src/components/common/Input.tsx`
 **Props**:
 - `type`: 'text' | 'email' | 'password' | 'number'
 - `name`: string
@@ -216,16 +221,16 @@ Claude: "ProfileHeader.tsx:30 수정합니다" (즉시 이해)
 - `onChange`: (e: ChangeEvent) => void
 - `error`: string | undefined
 
-**사용 위치**:
-- ProfileForm: Name 입력 (line 45)
-- ProfileForm: Email 입력 (line 55)
+**?ъ슜 ?꾩튂**:
+- ProfileForm: Name ?낅젰 (line 45)
+- ProfileForm: Email ?낅젰 (line 55)
 - LoginPage: Email/Password (login form)
 
 ---
 
-## 📱 상태 관리
+## ?벑 ?곹깭 愿由?
 
-### UserProfile 페이지 상태
+### UserProfile ?섏씠吏 ?곹깭
 ```typescript
 // UserProfile.tsx
 const [user, setUser] = useState<User | null>(null);
@@ -249,167 +254,167 @@ const [hasMore, setHasMore] = useState(true);
 
 ---
 
-## 🔄 데이터 흐름
+## ?봽 ?곗씠???먮쫫
 
 ```
-UserProfilePage (부모)
-    ↓ (user data)
-ProfileHeader (자식)    ProfileForm (자식)    ActivityLog (자식)
-    ↓ display              ↓ edit                ↓ display
+UserProfilePage (遺紐?
+    ??(user data)
+ProfileHeader (?먯떇)    ProfileForm (?먯떇)    ActivityLog (?먯떇)
+    ??display              ??edit                ??display
    User                   API Call              API Call
-                         ↓ (PUT)               ↓ (GET)
+                         ??(PUT)               ??(GET)
                     /api/users/{id}      /api/users/{id}/activities
 ```
 
 ---
 
-## 🎯 수정 요청 예시
+## ?렞 ?섏젙 ?붿껌 ?덉떆
 
-### ✅ 좋은 요청 (codemap 활용)
+### ??醫뗭? ?붿껌 (codemap ?쒖슜)
 ```
-❌ "여기 버튼 색깔 바꿔줘" (어떤 버튼?)
-✅ "ProfileForm의 Save 버튼 색상 파란색으로 변경해줘"
-   → src/components/ProfileForm.tsx:80 수정
+??"?ш린 踰꾪듉 ?됯퉼 諛붽퓭以? (?대뼡 踰꾪듉?)
+??"ProfileForm??Save 踰꾪듉 ?됱긽 ?뚮??됱쑝濡?蹂寃쏀빐以?
+   ??src/components/ProfileForm.tsx:80 ?섏젙
 
-❌ "이메일 부분 좀 크게 해줘"
-✅ "ProfileHeader의 이메일 표시(line 30) 폰트 크기 키워줘"
-   → text-sm → text-base 변경
+??"?대찓??遺遺?醫 ?ш쾶 ?댁쨾"
+??"ProfileHeader???대찓???쒖떆(line 30) ?고듃 ?ш린 ?ㅼ썙以?
+   ??text-sm ??text-base 蹂寃?
 
-❌ "더 보기 버튼 없애줘"
-✅ "ActivityLog의 Load More 버튼(line 70) 제거하고 무한 스크롤로 변경"
-   → useInfiniteScroll hook 적용
+??"??蹂닿린 踰꾪듉 ?놁븷以?
+??"ActivityLog??Load More 踰꾪듉(line 70) ?쒓굅?섍퀬 臾댄븳 ?ㅽ겕濡ㅻ줈 蹂寃?
+   ??useInfiniteScroll hook ?곸슜
 ```
 
 ---
 
-## 🛠️ 사용 방법
+## ?썱截??ъ슜 諛⑸쾿
 
-### 1. 전체 프론트엔드 분석
+### 1. ?꾩껜 ?꾨줎?몄뿏??遺꾩꽍
 ```bash
 /frontend-codemap
 
-# 출력:
-# - docs/frontend/COMPONENT_MAP.md (전체 구조)
-# - docs/frontend/pages/profile.md (페이지별 상세)
-# - docs/frontend/components/common.md (공통 컴포넌트)
+# 異쒕젰:
+# - docs/frontend/COMPONENT_MAP.md (?꾩껜 援ъ“)
+# - docs/frontend/pages/profile.md (?섏씠吏蹂??곸꽭)
+# - docs/frontend/components/common.md (怨듯넻 而댄룷?뚰듃)
 ```
 
-### 2. 특정 페이지만 분석
+### 2. ?뱀젙 ?섏씠吏留?遺꾩꽍
 ```bash
 /frontend-codemap src/pages/UserProfile.tsx
 
-# 출력:
+# 異쒕젰:
 # - docs/frontend/pages/user-profile.md
 ```
 
-### 3. 컴포넌트 트리 시각화
+### 3. 而댄룷?뚰듃 ?몃━ ?쒓컖??
 ```bash
 /frontend-codemap --tree
 
-# 출력:
+# 異쒕젰:
 # UserProfilePage
-# ├── ProfileHeader
-# │   ├── Avatar
-# │   ├── UserName
-# │   └── SettingsButton
-# ├── ProfileForm
-# │   ├── NameInput
-# │   ├── EmailInput
-# │   └── SaveButton
-# └── ActivityLog
-#     └── ActivityList
+# ?쒋?? ProfileHeader
+# ??  ?쒋?? Avatar
+# ??  ?쒋?? UserName
+# ??  ?붴?? SettingsButton
+# ?쒋?? ProfileForm
+# ??  ?쒋?? NameInput
+# ??  ?쒋?? EmailInput
+# ??  ?붴?? SaveButton
+# ?붴?? ActivityLog
+#     ?붴?? ActivityList
 ```
 
 ---
 
-## 🔍 분석 기능
+## ?뵇 遺꾩꽍 湲곕뒫
 
-### 자동으로 추출하는 정보
+### ?먮룞?쇰줈 異붿텧?섎뒗 ?뺣낫
 
-1. **컴포넌트 계층 구조**
-   - 부모-자식 관계
-   - Props 전달 흐름
-   - 렌더링 조건
+1. **而댄룷?뚰듃 怨꾩링 援ъ“**
+   - 遺紐??먯떇 愿怨?
+   - Props ?꾨떖 ?먮쫫
+   - ?뚮뜑留?議곌굔
 
-2. **UI 요소 매핑**
-   - JSX 요소 → 화면 표시 위치
-   - CSS 클래스 → 스타일
-   - 조건부 렌더링
+2. **UI ?붿냼 留ㅽ븨**
+   - JSX ?붿냼 ???붾㈃ ?쒖떆 ?꾩튂
+   - CSS ?대옒?????ㅽ???
+   - 議곌굔遺 ?뚮뜑留?
 
-3. **상태 관리**
+3. **?곹깭 愿由?*
    - useState, useReducer
    - Context API
-   - Redux/Zustand (있는 경우)
+   - Redux/Zustand (?덈뒗 寃쎌슦)
 
-4. **이벤트 핸들러**
-   - onClick, onChange 등
-   - 함수 위치 (line number)
-   - API 호출 흐름
+4. **?대깽???몃뱾??*
+   - onClick, onChange ??
+   - ?⑥닔 ?꾩튂 (line number)
+   - API ?몄텧 ?먮쫫
 
-5. **API 연동**
-   - 엔드포인트 URL
-   - Request/Response 타입
-   - 에러 처리
+5. **API ?곕룞**
+   - ?붾뱶?ъ씤??URL
+   - Request/Response ???
+   - ?먮윭 泥섎━
 
 ---
 
-## 📊 지원 프레임워크
+## ?뱤 吏???꾨젅?꾩썙??
 
-| 프레임워크 | 지원 | 특징 |
+| ?꾨젅?꾩썙??| 吏??| ?뱀쭠 |
 |-----------|------|------|
-| **React** | ✅ Full | JSX 파싱, Hooks 추출 |
-| **Next.js** | ✅ Full | 페이지 라우팅, getServerSideProps |
-| **Vue** | ✅ Full | SFC 파싱, Composition API |
-| **Angular** | ✅ Partial | Component + Template 분석 |
-| **Svelte** | ✅ Full | Reactive statements 추출 |
+| **React** | ??Full | JSX ?뚯떛, Hooks 異붿텧 |
+| **Next.js** | ??Full | ?섏씠吏 ?쇱슦?? getServerSideProps |
+| **Vue** | ??Full | SFC ?뚯떛, Composition API |
+| **Angular** | ??Partial | Component + Template 遺꾩꽍 |
+| **Svelte** | ??Full | Reactive statements 異붿텧 |
 
 ---
 
-## 💡 고급 기능
+## ?뮕 怨좉툒 湲곕뒫
 
-### Storybook 연동
+### Storybook ?곕룞
 ```bash
 /frontend-codemap --with-storybook
 
-# Storybook stories와 연결:
-# - Button 컴포넌트 → stories/Button.stories.tsx
-# - 시각적 테스트 링크 포함
+# Storybook stories? ?곌껐:
+# - Button 而댄룷?뚰듃 ??stories/Button.stories.tsx
+# - ?쒓컖???뚯뒪??留곹겕 ?ы븿
 ```
 
-### 디자인 시스템 매핑
+### ?붿옄???쒖뒪??留ㅽ븨
 ```bash
 /frontend-codemap --design-system
 
-# 디자인 토큰 추출:
-# - Color palette 사용 현황
-# - Typography 사용
+# ?붿옄???좏겙 異붿텧:
+# - Color palette ?ъ슜 ?꾪솴
+# - Typography ?ъ슜
 # - Spacing system
 ```
 
-### 접근성(A11y) 체크
+### ?묎렐??A11y) 泥댄겕
 ```bash
 /frontend-codemap --a11y
 
-# 접근성 이슈 식별:
-# - 누락된 alt 텍스트
-# - ARIA labels 부족
-# - 키보드 네비게이션 문제
+# ?묎렐???댁뒋 ?앸퀎:
+# - ?꾨씫??alt ?띿뒪??
+# - ARIA labels 遺議?
+# - ?ㅻ낫???ㅻ퉬寃뚯씠??臾몄젣
 ```
 
 ---
 
-## 🔄 자동 업데이트
+## ?봽 ?먮룞 ?낅뜲?댄듃
 
-### Git Hook 설정
+### Git Hook ?ㅼ젙
 ```bash
 # .git/hooks/post-merge
 #!/bin/bash
 claude-code /frontend-codemap --auto-update
 
-# 매 pull 후 자동으로 codemap 업데이트
+# 留?pull ???먮룞?쇰줈 codemap ?낅뜲?댄듃
 ```
 
-### CI/CD 통합
+### CI/CD ?듯빀
 ```yaml
 # .github/workflows/update-codemap.yml
 name: Update Frontend Codemap
@@ -436,38 +441,38 @@ jobs:
 
 ---
 
-## 📝 실제 사용 예시
+## ?뱷 ?ㅼ젣 ?ъ슜 ?덉떆
 
-### Before (비효율적)
+### Before (鍮꾪슚?⑥쟻)
 ```
-개발자: [스크린샷 첨부] "여기 버튼 오른쪽으로 옮겨줘"
-Claude: "어떤 파일인가요?"
-개발자: "잠깐... 찾아볼게요..."
-개발자: "src/components/ProfileForm.tsx 같은데..."
-Claude: "몇 번째 줄인가요?"
-개발자: "아... 다시 볼게요..."
+媛쒕컻?? [?ㅽ겕由곗꺑 泥⑤?] "?ш린 踰꾪듉 ?ㅻⅨ履쎌쑝濡???꺼以?
+Claude: "?대뼡 ?뚯씪?멸???"
+媛쒕컻?? "?좉퉸... 李얠븘蹂쇨쾶??.."
+媛쒕컻?? "src/components/ProfileForm.tsx 媛숈???.."
+Claude: "紐?踰덉㎏ 以꾩씤媛??"
+媛쒕컻?? "??.. ?ㅼ떆 蹂쇨쾶??.."
 ```
 
-### After (효율적)
+### After (?⑥쑉??
 ```
-개발자: "ProfileForm의 Save 버튼(line 80) 오른쪽 정렬로 변경"
-Claude: "ProfileForm.tsx:80 수정합니다"
-         [즉시 코드 수정]
+媛쒕컻?? "ProfileForm??Save 踰꾪듉(line 80) ?ㅻⅨ履??뺣젹濡?蹂寃?
+Claude: "ProfileForm.tsx:80 ?섏젙?⑸땲??
+         [利됱떆 肄붾뱶 ?섏젙]
 
-개발자: "ProfileHeader 이메일 색상을 gray-400으로"
-Claude: "ProfileHeader.tsx:30 text-gray-500 → text-gray-400"
-         [즉시 수정]
+媛쒕컻?? "ProfileHeader ?대찓???됱긽??gray-400?쇰줈"
+Claude: "ProfileHeader.tsx:30 text-gray-500 ??text-gray-400"
+         [利됱떆 ?섏젙]
 ```
 
 ---
 
-## 🎨 시각화 옵션
+## ?렓 ?쒓컖???듭뀡
 
-### Mermaid 다이어그램
+### Mermaid ?ㅼ씠?닿렇??
 ```bash
 /frontend-codemap --mermaid
 
-# 출력: Mermaid 형식 컴포넌트 트리
+# 異쒕젰: Mermaid ?뺤떇 而댄룷?뚰듃 ?몃━
 graph TD
     A[UserProfilePage] --> B[ProfileHeader]
     A --> C[ProfileForm]
@@ -482,30 +487,30 @@ graph TD
 ```bash
 /frontend-codemap --ascii
 
-# 출력: 터미널에서 바로 보기 좋은 형식
+# 異쒕젰: ?곕??먯뿉??諛붾줈 蹂닿린 醫뗭? ?뺤떇
 UserProfilePage
-├─ ProfileHeader
-│  ├─ Avatar
-│  └─ UserName
-├─ ProfileForm
-│  ├─ NameInput
-│  └─ EmailInput
-└─ ActivityLog
+?쒋? ProfileHeader
+?? ?쒋? Avatar
+?? ?붴? UserName
+?쒋? ProfileForm
+?? ?쒋? NameInput
+?? ?붴? EmailInput
+?붴? ActivityLog
 ```
 
 ---
 
-## 🚀 실행 로직
+## ?? ?ㅽ뻾 濡쒖쭅
 
-### 1. 프론트엔드 코드 수집
+### 1. ?꾨줎?몄뿏??肄붾뱶 ?섏쭛
 ```typescript
-// 모든 컴포넌트 파일 탐색
+// 紐⑤뱺 而댄룷?뚰듃 ?뚯씪 ?먯깋
 const components = glob.sync('src/**/*.{tsx,jsx,vue}');
 ```
 
-### 2. AST 파싱
+### 2. AST ?뚯떛
 ```typescript
-// TypeScript/JavaScript AST 파싱
+// TypeScript/JavaScript AST ?뚯떛
 import { parse } from '@typescript-eslint/parser';
 
 const ast = parse(code, {
@@ -513,7 +518,7 @@ const ast = parse(code, {
 });
 ```
 
-### 3. 컴포넌트 정보 추출
+### 3. 而댄룷?뚰듃 ?뺣낫 異붿텧
 ```typescript
 interface ComponentInfo {
   name: string;
@@ -529,39 +534,39 @@ interface ComponentInfo {
 }
 ```
 
-### 4. UI 매핑 생성
+### 4. UI 留ㅽ븨 ?앹꽦
 ```typescript
-// JSX 요소 → UI 설명
+// JSX ?붿냼 ??UI ?ㅻ챸
 <Button onClick={handleSave}>Save</Button>
-→
-"저장 버튼 (line 80)"
-- 클릭 시: handleSave() 실행 (line 110)
+??
+"???踰꾪듉 (line 80)"
+- ?대┃ ?? handleSave() ?ㅽ뻾 (line 110)
 - API: PUT /api/users/{id}
 ```
 
-### 5. Markdown 문서 생성
+### 5. Markdown 臾몄꽌 ?앹꽦
 ```markdown
-생성 위치: docs/frontend/COMPONENT_MAP.md
-자동 업데이트: Git hook 또는 CI/CD
+?앹꽦 ?꾩튂: docs/frontend/COMPONENT_MAP.md
+?먮룞 ?낅뜲?댄듃: Git hook ?먮뒗 CI/CD
 ```
 
 ---
 
-## ✅ 체크리스트
+## ??泥댄겕由ъ뒪??
 
-프론트엔드 codemap 생성 후:
+?꾨줎?몄뿏??codemap ?앹꽦 ??
 
-- [ ] 모든 페이지 컴포넌트 매핑됨
-- [ ] 공통 컴포넌트 문서화됨
-- [ ] UI 요소 → 코드 라인 매핑 정확
-- [ ] 이벤트 핸들러 위치 표시됨
-- [ ] API 호출 엔드포인트 명시됨
-- [ ] Props/State 타입 정의됨
-- [ ] 조건부 렌더링 설명됨
+- [ ] 紐⑤뱺 ?섏씠吏 而댄룷?뚰듃 留ㅽ븨??
+- [ ] 怨듯넻 而댄룷?뚰듃 臾몄꽌?붾맖
+- [ ] UI ?붿냼 ??肄붾뱶 ?쇱씤 留ㅽ븨 ?뺥솗
+- [ ] ?대깽???몃뱾???꾩튂 ?쒖떆??
+- [ ] API ?몄텧 ?붾뱶?ъ씤??紐낆떆??
+- [ ] Props/State ????뺤쓽??
+- [ ] 議곌굔遺 ?뚮뜑留??ㅻ챸??
 
 ---
 
-## 📚 참고 자료
+## ?뱴 李멸퀬 ?먮즺
 
 - [React Component Tree](https://reactjs.org/docs/thinking-in-react.html)
 - [Storybook Documentation](https://storybook.js.org/)
@@ -571,7 +576,7 @@ interface ComponentInfo {
 
 ---
 
-## 🔧 실제 구현 (Implementation)
+## ?뵩 ?ㅼ젣 援ы쁽 (Implementation)
 
 ### AST Parser (TypeScript/JavaScript)
 
@@ -959,7 +964,7 @@ export function generateComponentMap(components: ComponentInfo[]): string {
     if (comp.props.length > 0) {
       markdown += '**Props**:\n';
       comp.props.forEach(prop => {
-        const required = prop.required ? '✅ Required' : '⚪ Optional';
+        const required = prop.required ? '??Required' : '??Optional';
         markdown += `- \`${prop.name}\`: ${prop.type} (${required}) - line ${prop.line}\n`;
       });
       markdown += '\n';
@@ -996,7 +1001,7 @@ export function generateComponentMap(components: ComponentInfo[]): string {
     if (comp.eventHandlers.length > 0) {
       markdown += '**Event Handlers**:\n';
       comp.eventHandlers.forEach(handler => {
-        markdown += `- \`${handler.event}\` → \`${handler.name}()\` (line ${handler.targetLine})\n`;
+        markdown += `- \`${handler.event}\` ??\`${handler.name}()\` (line ${handler.targetLine})\n`;
       });
       markdown += '\n';
     }
@@ -1020,7 +1025,7 @@ export function generateComponentMap(components: ComponentInfo[]): string {
  * CLI Command
  */
 export async function analyzeFrontend(pattern: string = 'src/**/*.{tsx,jsx}'): Promise<void> {
-  console.log('🔍 Analyzing frontend components...\n');
+  console.log('?뵇 Analyzing frontend components...\n');
 
   const files = await glob(pattern);
   console.log(`Found ${files.length} component files\n`);
@@ -1032,10 +1037,10 @@ export async function analyzeFrontend(pattern: string = 'src/**/*.{tsx,jsx}'): P
       const component = parseComponent(file);
       if (component.name) {
         components.push(component);
-        console.log(`✅ ${component.name} (${file})`);
+        console.log(`??${component.name} (${file})`);
       }
     } catch (error) {
-      console.error(`❌ Failed to parse ${file}:`, error.message);
+      console.error(`??Failed to parse ${file}:`, error.message);
     }
   }
 
@@ -1048,8 +1053,8 @@ export async function analyzeFrontend(pattern: string = 'src/**/*.{tsx,jsx}'): P
   fs.mkdirSync('docs/frontend', { recursive: true });
   fs.writeFileSync(outputPath, markdown);
 
-  console.log(`\n📄 Component map generated: ${outputPath}`);
-  console.log(`📊 Total components: ${components.length}`);
+  console.log(`\n?뱞 Component map generated: ${outputPath}`);
+  console.log(`?뱤 Total components: ${components.length}`);
 }
 
 // Usage
@@ -1150,6 +1155,6 @@ function parseVueScript(script: string, componentInfo: ComponentInfo): void {
 
 ---
 
-**버전**: 2.0 (구현 추가)
-**작성일**: 2026-01-29
-**최종 수정**: 2026-01-29 (AST 파서 구현 완료)
+**踰꾩쟾**: 2.0 (援ы쁽 異붽?)
+**?묒꽦??*: 2026-01-29
+**理쒖쥌 ?섏젙**: 2026-01-29 (AST ?뚯꽌 援ы쁽 ?꾨즺)
