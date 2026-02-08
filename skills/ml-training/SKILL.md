@@ -1,6 +1,6 @@
 ---
 name: ml-training
-description: ML/AI 모델 학습, 평가, RAG 시스템 구축. LLM 통합, 임베딩, 검색 시스템 개발 시 사용
+description: ML/AI 모델 학습, 평가, RAG 시스템을 구축합니다. "모델 학습", "파인튜닝", "임베딩", "벡터 검색", "모델 평가", "데이터셋", "ML training", "fine-tuning", "embeddings", "model evaluation", "dataset" 등의 요청 시 사용합니다. LLM 통합, 임베딩 생성, 검색 시스템 개발을 포함합니다.
 allowed-tools: Read, Write, Edit, Bash
 ---
 

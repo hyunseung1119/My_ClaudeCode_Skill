@@ -1,90 +1,90 @@
 ---
 name: api-spec-generator
-description: Generate API specs, workflows, and feature documentation.
+description: PM/개발자용 API 명세서, 워크플로우, 기능명세서를 자동 생성합니다. "API 명세", "명세서 작성", "워크플로우 문서", "기능명세", "기획 문서", "API spec", "workflow document", "feature specification", "sequence diagram" 등의 요청 시 사용합니다. RESTful API 명세, 시퀀스 다이어그램, 에러 코드 정의를 포함합니다. (설계 원칙은 api-design, 구현은 backend-api 스킬 참조)
 ---
 
-# API 紐낆꽭??& ?뚰겕?뚮줈??臾몄꽌 ?앹꽦湲?(PM/媛쒕컻?먯슜)
+# API 명세서 & 워크플로우 문서 생성기 (PM/개발자용)
 
-## 媛쒖슂
-?꾩뾽 PM怨??ㅻТ 媛쒕컻?먭? ?ъ슜?섎뒗 ?뺤떇?쇰줈 API 紐낆꽭?? ?뚰겕?뚮줈?? 湲곕뒫紐낆꽭?쒕? ?먮룞 ?앹꽦?⑸땲??
+## 개요
+현업 PM과 실무 개발자가 사용하는 형식으로 API 명세서, 워크플로우, 기능명세서를 자동 생성합니다.
 
-## ?앹꽦 臾몄꽌 ?좏삎
+## 생성 문서 유형
 
-### 1截뤴깵 API 紐낆꽭??(RESTful API Spec)
-- **?붾뱶?ъ씤??紐⑸줉**: 硫붿꽌?? URL, ?ㅻ챸
-- **Request ?ㅽ럺**: ?ㅻ뜑, ?뚮씪誘명꽣, Body ?ㅽ궎留?
-- **Response ?ㅽ럺**: ?곹깭 肄붾뱶, ?묐떟 援ъ“, ?먮윭 肄붾뱶
-- **?몄쬆/沅뚰븳**: ?꾩슂???몄쬆 諛⑹떇
-- **?덉젣**: curl, JavaScript, Python ?섑뵆 肄붾뱶
+### 1️⃣ API 명세서 (RESTful API Spec)
+- **엔드포인트 목록**: 메서드, URL, 설명
+- **Request 스펙**: 헤더, 파라미터, Body 스키마
+- **Response 스펙**: 상태 코드, 응답 구조, 에러 코드
+- **인증/권한**: 필요한 인증 방식
+- **예제**: curl, JavaScript, Python 샘플 코드
 
-### 2截뤴깵 ?뚰겕?뚮줈??臾몄꽌 (Workflow & Data Flow)
-- **?쒗???ㅼ씠?닿렇??*: ?붿껌 ??泥섎━ ???묐떟 ?먮쫫
-- **?곗씠???먮쫫??*: ?낅젰 ??蹂????異쒕젰
-- **?곹깭 ?꾩씠??*: ?곹깭蹂?泥섎━ 濡쒖쭅
-- **?먮윭 ?몃뱾留?*: ?덉쇅 ?곹솴蹂?泥섎━ 諛⑸쾿
+### 2️⃣ 워크플로우 문서 (Workflow & Data Flow)
+- **시퀀스 다이어그램**: 요청 → 처리 → 응답 흐름
+- **데이터 흐름도**: 입력 → 변환 → 출력
+- **상태 전이도**: 상태별 처리 로직
+- **에러 핸들링**: 예외 상황별 처리 방법
 
-### 3截뤴깵 湲곕뒫紐낆꽭??(Feature Specification)
-- **湲곕뒫 媛쒖슂**: 紐⑹쟻, ?ъ슜???쒕굹由ъ삤
-- **?낆텧???뺤쓽**: ?꾩닔/?좏깮 ?꾨뱶, ?쒖빟議곌굔
-- **鍮꾩쫰?덉뒪 濡쒖쭅**: 怨꾩궛?? ?좏슚??寃利?洹쒖튃
-- **?뚯뒪???쒕굹由ъ삤**: Given-When-Then ?뺤떇
+### 3️⃣ 기능명세서 (Feature Specification)
+- **기능 개요**: 목적, 사용자 시나리오
+- **입출력 정의**: 필수/선택 필드, 제약조건
+- **비즈니스 로직**: 계산식, 유효성 검증 규칙
+- **테스트 시나리오**: Given-When-Then 형식
 
 ---
 
-## ?ъ슜 諛⑸쾿
+## 사용 방법
 
-### Case 1: ?뱀젙 API ?붾뱶?ъ씤??臾몄꽌??
+### Case 1: 특정 API 엔드포인트 문서화
 ```bash
 /api-spec backend/routes/multi_excel.py
 ```
 
-**?앹꽦 寃곌낵:**
+**생성 결과:**
 - `docs/api/multi_excel_api_spec.md`
-- ?붾뱶?ъ씤?몃퀎 Request/Response 紐낆꽭
-- curl ?덉젣 肄붾뱶
+- 엔드포인트별 Request/Response 명세
+- curl 예제 코드
 
-### Case 2: ?뚰겕?뚮줈??遺꾩꽍
+### Case 2: 워크플로우 분석
 ```bash
 /workflow src/multi_excel/graph.py
 ```
 
-**?앹꽦 寃곌낵:**
+**생성 결과:**
 - `docs/workflow/multi_excel_workflow.md`
-- Mermaid ?ㅼ씠?닿렇??(?쒗?? ?뚮줈?곗감??
-- ?곗씠??蹂??怨쇱젙 ?곸꽭 ?ㅻ챸
+- Mermaid 다이어그램 (시퀀스, 플로우차트)
+- 데이터 변환 과정 상세 설명
 
-### Case 3: ?꾩껜 湲곕뒫紐낆꽭???앹꽦
+### Case 3: 전체 기능명세서 생성
 ```bash
-/feature-spec "?ㅼ쨷 ?묒? ?낅줈??諛?遺꾩꽍"
+/feature-spec "다중 엑셀 업로드 및 분석"
 ```
 
-**?앹꽦 寃곌낵:**
+**생성 결과:**
 - `docs/features/multi_excel_feature_spec.md`
-- PM???묒꽦?섎뒗 ?뺤떇??湲곕뒫紐낆꽭??
-- 媛쒕컻?먯슜 湲곗닠 ?ㅽ럺 ?ы븿
+- PM이 작성하는 형식의 기능명세서
+- 개발자용 기술 스펙 포함
 
 ---
 
-## 異쒕젰 ?뺤떇 ?덉떆
+## 출력 형식 예시
 
-### API 紐낆꽭???쒗뵆由?
+### API 명세서 템플릿
 
 ```markdown
-# Multi-Excel Upload API 紐낆꽭??
+# Multi-Excel Upload API 명세서
 
-## 1. 媛쒖슂
-?ㅼ쨷 Excel ?뚯씪???낅줈?쒗븯怨?蹂묐젹 遺꾩꽍?섎뒗 API
+## 1. 개요
+다중 Excel 파일을 업로드하고 병렬 분석하는 API
 
 **Base URL**: `http://localhost:8000`
 
 ---
 
-## 2. ?붾뱶?ъ씤??紐⑸줉
+## 2. 엔드포인트 목록
 
-### 2.1 ?뚯씪 ?낅줈??
+### 2.1 파일 업로드
 **Endpoint**: `POST /api/v7/excel/upload`
 
-**?ㅻ챸**: ?щ윭 Excel ?뚯씪???숈떆???낅줈?쒗븯怨?遺꾩꽍 ?쒖옉
+**설명**: 여러 Excel 파일을 동시에 업로드하고 분석 시작
 
 **Request Headers**:
 ```
@@ -92,10 +92,10 @@ Content-Type: multipart/form-data
 ```
 
 **Request Body**:
-| ?꾨뱶 | ???| ?꾩닔 | ?ㅻ챸 |
+| 필드 | 타입 | 필수 | 설명 |
 |------|------|------|------|
-| files | File[] | ??| Excel ?뚯씪 紐⑸줉 (.xlsx, .xls) |
-| user_id | string | ??| ?ъ슜??ID |
+| files | File[] | ✅ | Excel 파일 목록 (.xlsx, .xls) |
+| user_id | string | ❌ | 사용자 ID |
 
 **Response (200 OK)**:
 ```json
@@ -103,17 +103,17 @@ Content-Type: multipart/form-data
   "session_id": "uuid-string",
   "files_received": 3,
   "status": "processing",
-  "message": "泥섎━媛 ?쒖옉?섏뿀?듬땲??"
+  "message": "처리가 시작되었습니다."
 }
 ```
 
 **Error Responses**:
-| 肄붾뱶 | ?ㅻ챸 | ?닿껐諛⑸쾿 |
+| 코드 | 설명 | 해결방법 |
 |------|------|----------|
-| 400 | 吏?먰븯吏 ?딅뒗 ?뚯씪 ?뺤떇 | .xlsx ?먮뒗 .xls ?뚯씪留??낅줈??|
-| 413 | ?뚯씪 ?ш린 珥덇낵 | ?뚯씪??10MB ?댄븯濡??낅줈??|
+| 400 | 지원하지 않는 파일 형식 | .xlsx 또는 .xls 파일만 업로드 |
+| 413 | 파일 크기 초과 | 파일당 10MB 이하로 업로드 |
 
-**curl ?덉젣**:
+**curl 예제**:
 ```bash
 curl -X POST http://localhost:8000/api/v7/excel/upload \
   -F "files=@file1.xlsx" \
@@ -121,7 +121,7 @@ curl -X POST http://localhost:8000/api/v7/excel/upload \
   -F "user_id=user_001"
 ```
 
-**JavaScript ?덉젣**:
+**JavaScript 예제**:
 ```javascript
 const formData = new FormData();
 formData.append('files', file1);
@@ -138,27 +138,27 @@ console.log(data.session_id);
 
 ---
 
-### 2.2 泥섎━ ?곹깭 議고쉶
+### 2.2 처리 상태 조회
 **Endpoint**: `GET /api/v7/excel/status/{session_id}`
 
-**?ㅻ챸**: ?낅줈?쒗븳 ?뚯씪??泥섎━ 吏꾪뻾 ?곹솴 議고쉶
+**설명**: 업로드한 파일의 처리 진행 상황 조회
 
 **Path Parameters**:
-| ?꾨뱶 | ???| ?ㅻ챸 |
+| 필드 | 타입 | 설명 |
 |------|------|------|
-| session_id | string | ?낅줈????諛쏆? ?몄뀡 ID |
+| session_id | string | 업로드 시 받은 세션 ID |
 
 **Response (200 OK)**:
 ```json
 {
   "session_id": "uuid-string",
   "status": "analyzing",
-  "current_step": "?쒗듃 遺꾩꽍 以?,
+  "current_step": "시트 분석 중",
   "progress_percent": 60.0,
   "files": [
     {
       "file_id": "abc123",
-      "filename": "?щТ?쒗몴.xlsx",
+      "filename": "재무제표.xlsx",
       "status": "analyzed",
       "sheets_count": 3
     }
@@ -170,9 +170,9 @@ console.log(data.session_id);
 
 ---
 
-## 3. ?뚰겕?뚮줈??
+## 3. 워크플로우
 
-### 3.1 ?꾩껜 ?꾨줈?몄뒪
+### 3.1 전체 프로세스
 ```mermaid
 sequenceDiagram
     participant C as Client
@@ -202,169 +202,169 @@ sequenceDiagram
     API-->>C: unified_context
 ```
 
-### 3.2 ?곗씠???먮쫫
+### 3.2 데이터 흐름
 ```
 [Upload Files]
-    ??
-[FileData] ??{file_id, filename, file_path}
-    ??
-[LangGraph State] ??MultiExcelState
-    ??
-[Parse Node] ??sheets: [SheetData]
-    ??
-[Analyze Node] ??sheet_type, data
-    ??
-[Validate Node] ??validation_status
-    ??
-[Synthesize Node] ??unified_context
-    ??
-[API Response] ??{company_info, key_metrics}
+    ↓
+[FileData] → {file_id, filename, file_path}
+    ↓
+[LangGraph State] → MultiExcelState
+    ↓
+[Parse Node] → sheets: [SheetData]
+    ↓
+[Analyze Node] → sheet_type, data
+    ↓
+[Validate Node] → validation_status
+    ↓
+[Synthesize Node] → unified_context
+    ↓
+[API Response] → {company_info, key_metrics}
 ```
 
 ---
 
-## 4. ?곹깭 ?꾩씠
+## 4. 상태 전이
 
-### 4.1 泥섎━ ?곹깭
+### 4.1 처리 상태
 ```
-idle ??uploading ??parsing ??analyzing ??validating ??synthesizing ??completed
-                                                                    ??
+idle → uploading → parsing → analyzing → validating → synthesizing → completed
+                                                                    ↓
                                                                   error
 ```
 
-### 4.2 ?뚯씪 ?곹깭
+### 4.2 파일 상태
 ```
-pending ??parsing ??parsed ??analyzing ??analyzed ??validated ??completed
-                                                              ??
+pending → parsing → parsed → analyzing → analyzed → validated → completed
+                                                              ↓
                                                             error
 ```
 
 ---
 
-## 5. ?먮윭 泥섎━
+## 5. 에러 처리
 
-### 5.1 怨듯넻 ?먮윭 肄붾뱶
-| 肄붾뱶 | 硫붿떆吏 | ?먯씤 | ?닿껐諛⑸쾿 |
+### 5.1 공통 에러 코드
+| 코드 | 메시지 | 원인 | 해결방법 |
 |------|--------|------|----------|
-| E001 | ?몄뀡??李얠쓣 ???놁쓬 | ?섎せ??session_id | ?덈줈 ?낅줈??|
-| E002 | ?뚯씪 ?뚯떛 ?ㅽ뙣 | ?먯긽??Excel ?뚯씪 | ?뚯씪 ?뺤씤 ???ъ뾽濡쒕뱶 |
-| E003 | ?쒗듃 ???遺꾨쪟 ?ㅽ뙣 | 鍮꾩젙???곗씠??| ?쒖? ?묒떇 ?ъ슜 沅뚯옣 |
+| E001 | 세션을 찾을 수 없음 | 잘못된 session_id | 새로 업로드 |
+| E002 | 파일 파싱 실패 | 손상된 Excel 파일 | 파일 확인 후 재업로드 |
+| E003 | 시트 타입 분류 실패 | 비정형 데이터 | 표준 양식 사용 권장 |
 
 ---
 
-## 6. ?뚯뒪???쒕굹由ъ삤
+## 6. 테스트 시나리오
 
-### Scenario 1: ?⑥씪 ?뚯씪 ?낅줈??(Happy Path)
-**Given**: ?좏슚??Excel ?뚯씪 1媛?
-**When**: POST /upload ?몄텧
+### Scenario 1: 단일 파일 업로드 (Happy Path)
+**Given**: 유효한 Excel 파일 1개
+**When**: POST /upload 호출
 **Then**:
-- 200 OK ?묐떟
-- session_id 諛섑솚
-- 5珥???processing ?곹깭
+- 200 OK 응답
+- session_id 반환
+- 5초 내 processing 상태
 
-### Scenario 2: ?ㅼ쨷 ?뚯씪 ?낅줈??
-**Given**: ?좏슚??Excel ?뚯씪 3媛?
-**When**: POST /upload ?몄텧
+### Scenario 2: 다중 파일 업로드
+**Given**: 유효한 Excel 파일 3개
+**When**: POST /upload 호출
 **Then**:
 - files_received = 3
-- 紐⑤뱺 ?뚯씪??蹂묐젹 泥섎━??
+- 모든 파일이 병렬 처리됨
 
-### Scenario 3: ?뚯씪 ?ш린 珥덇낵
-**Given**: 20MB ?뚯씪
-**When**: POST /upload ?몄텧
+### Scenario 3: 파일 크기 초과
+**Given**: 20MB 파일
+**When**: POST /upload 호출
 **Then**:
-- 413 ?먮윭 ?묐떟
-- detail???뚯씪紐??ы븿
+- 413 에러 응답
+- detail에 파일명 포함
 
 ---
 
-## 7. ?깅뒫 吏??
+## 7. 성능 지표
 
-| 吏??| 紐⑺몴 | ?꾩옱 |
+| 지표 | 목표 | 현재 |
 |------|------|------|
-| ?낅줈???묐떟 ?쒓컙 | < 500ms | 300ms |
-| ?뚯씪??泥섎━ ?쒓컙 | < 10珥?| 7珥?|
-| ?숈떆 ?몄뀡 泥섎━ | 50媛?| 100媛?|
+| 업로드 응답 시간 | < 500ms | 300ms |
+| 파일당 처리 시간 | < 10초 | 7초 |
+| 동시 세션 처리 | 50개 | 100개 |
 
 ---
 
-## 8. 蹂댁븞 怨좊젮?ы빆
+## 8. 보안 고려사항
 
-- ?뚯씪 ?뺤옣??寃利?(?붿씠?몃━?ㅽ듃)
-- ?뚯씪 ?ш린 ?쒗븳 (10MB/?뚯씪)
-- ?몄뀡 ID ?좎텛 遺덇? (UUID v4)
-- ?낅줈??寃쎈줈 ?뚮뱶諛뺤뒪
+- 파일 확장자 검증 (화이트리스트)
+- 파일 크기 제한 (10MB/파일)
+- 세션 ID 유추 불가 (UUID v4)
+- 업로드 경로 샌드박스
 
 ---
 
-## 9. 蹂寃??대젰
+## 9. 변경 이력
 
-| 踰꾩쟾 | ?좎쭨 | 蹂寃??댁슜 |
+| 버전 | 날짜 | 변경 내용 |
 |------|------|----------|
-| v7.0 | 2026-01-11 | ?ㅼ쨷 ?뚯씪 吏??異붽? |
-| v6.0 | 2025-12-01 | ?⑥씪 ?뚯씪 ?낅줈??|
+| v7.0 | 2026-01-11 | 다중 파일 지원 추가 |
+| v6.0 | 2025-12-01 | 단일 파일 업로드 |
 ```
 
 ---
 
-### ?뚰겕?뚮줈??臾몄꽌 ?쒗뵆由?
+### 워크플로우 문서 템플릿
 
 ```markdown
-# Multi-Excel 泥섎━ ?뚰겕?뚮줈??
+# Multi-Excel 처리 워크플로우
 
-## 1. ?꾪궎?띿쿂 媛쒖슂
+## 1. 아키텍처 개요
 
 ```
-?뚢???????????????????????????????????????????????????????????
-??                    FastAPI Server                       ??
-?? ?뚢?????????????? ?뚢?????????????? ?뚢??????????????       ??
-?? ??  Routes   ?귘넂??Background ?귘넂??LangGraph  ??       ??
-?? ?? (Upload)  ?? ??   Task    ?? ??  Graph    ??       ??
-?? ?붴?????????????? ?붴?????????????? ?붴??????????????       ??
-??                                         ??               ??
-?? ?뚢??????????????????????????????????????????????        ??
-?? ??        MultiExcel Agents (蹂묐젹)           ??        ??
-?? ?? ?뚢???????? ?뚢???????? ?뚢???????? ?뚢???????? ??        ??
-?? ?? ?괦arser?귘넂?괔nalyze?귘넂?괯alid.?귘넂?괪ynth.?? ??        ??
-?? ?? ?붴???????? ?붴???????? ?붴???????? ?붴???????? ??        ??
-?? ?붴??????????????????????????????????????????????        ??
-?붴???????????????????????????????????????????????????????????
+┌─────────────────────────────────────────────────────────┐
+│                     FastAPI Server                       │
+│  ┌────────────┐  ┌────────────┐  ┌────────────┐        │
+│  │   Routes   │→│ Background │→│ LangGraph  │        │
+│  │  (Upload)  │  │    Task    │  │   Graph    │        │
+│  └────────────┘  └────────────┘  └────────────┘        │
+│                                          ↓                │
+│  ┌────────────────────────────────────────────┐         │
+│  │         MultiExcel Agents (병렬)           │         │
+│  │  ┌──────┐  ┌──────┐  ┌──────┐  ┌──────┐  │         │
+│  │  │Parser│→│Analyze│→│Valid.│→│Synth.│  │         │
+│  │  └──────┘  └──────┘  └──────┘  └──────┘  │         │
+│  └────────────────────────────────────────────┘         │
+└─────────────────────────────────────────────────────────┘
 ```
 
-## 2. 泥섎━ ?④퀎蹂??곸꽭
+## 2. 처리 단계별 상세
 
-### ?④퀎 1: ?뚯씪 ?낅줈??(Upload)
-**?낅젰**:
-- `files: List[UploadFile]` - FastAPI ?뚯씪 媛앹껜
-- `user_id: Optional[str]` - ?ъ슜??ID
+### 단계 1: 파일 업로드 (Upload)
+**입력**:
+- `files: List[UploadFile]` - FastAPI 파일 객체
+- `user_id: Optional[str]` - 사용자 ID
 
-**泥섎━**:
-1. ?뚯씪 寃利?(?뺤옣?? ?ш린)
-2. ?쒕쾭 ???(`uploads/multi_excel/`)
-3. FileData 媛앹껜 ?앹꽦
-4. 珥덇린 ?곹깭 ?앹꽦 (MultiExcelState)
+**처리**:
+1. 파일 검증 (확장자, 크기)
+2. 서버 저장 (`uploads/multi_excel/`)
+3. FileData 객체 생성
+4. 초기 상태 생성 (MultiExcelState)
 
-**異쒕젰**:
+**출력**:
 - `session_id: str` - UUID v4
-- `files: List[FileData]` - ?뚯씪 硫뷀??곗씠??
+- `files: List[FileData]` - 파일 메타데이터
 
-**?덉쇅**:
-- HTTPException 400: 吏?먰븯吏 ?딅뒗 ?뚯씪
-- HTTPException 413: ?ш린 珥덇낵
+**예외**:
+- HTTPException 400: 지원하지 않는 파일
+- HTTPException 413: 크기 초과
 
 ---
 
-### ?④퀎 2: 諛깃렇?쇱슫??泥섎━ ?쒖옉
-**?낅젰**:
+### 단계 2: 백그라운드 처리 시작
+**입력**:
 - `session_id: str`
 - `state: MultiExcelState`
 
-**泥섎━**:
-1. LangGraph 洹몃옒??濡쒕뱶
-2. Config ?앹꽦 (`thread_id=session_id`)
-3. `graph.invoke(state, config)` ?ㅽ뻾
+**처리**:
+1. LangGraph 그래프 로드
+2. Config 생성 (`thread_id=session_id`)
+3. `graph.invoke(state, config)` 실행
 
-**鍮꾨룞湲?泥섎━**:
+**비동기 처리**:
 ```python
 asyncio.get_event_loop().run_in_executor(
     None,
@@ -374,25 +374,25 @@ asyncio.get_event_loop().run_in_executor(
 
 ---
 
-### ?④퀎 3: ?뚯씪 ?뚯떛 (Parse Node)
-**?낅젰**: `MultiExcelState`
-**?몃뱶 ?⑥닔**: `parse_files_node(state)`
+### 단계 3: 파일 파싱 (Parse Node)
+**입력**: `MultiExcelState`
+**노드 함수**: `parse_files_node(state)`
 
-**泥섎━**:
-1. 媛?FileData?????蹂묐젹 ?뚯떛
-2. Excel ?뚯씪 ?쎄린 (openpyxl/pandas)
-3. ?쒗듃 紐⑸줉 異붿텧
-4. SheetData 媛앹껜 ?앹꽦
+**처리**:
+1. 각 FileData에 대해 병렬 파싱
+2. Excel 파일 읽기 (openpyxl/pandas)
+3. 시트 목록 추출
+4. SheetData 객체 생성
 
-**異쒕젰**:
+**출력**:
 ```python
 {
     "files": [
         FileData(
             file_id="abc",
             sheets=[
-                SheetData(name="?먯씡怨꾩궛??, ...),
-                SheetData(name="?щТ?곹깭??, ...)
+                SheetData(name="손익계산서", ...),
+                SheetData(name="재무상태표", ...)
             ],
             status="parsed"
         )
@@ -404,37 +404,37 @@ asyncio.get_event_loop().run_in_executor(
 
 ---
 
-### ?④퀎 4: ?쒗듃 遺꾩꽍 (Analyze Node)
-**?낅젰**: ?뚯떛??`files`
-**?몃뱶 ?⑥닔**: `analyze_sheets_node(state)`
+### 단계 4: 시트 분석 (Analyze Node)
+**입력**: 파싱된 `files`
+**노드 함수**: `analyze_sheets_node(state)`
 
-**泥섎━**:
-1. 媛??쒗듃?????遺꾨쪟
-   - income_statement (?먯씡怨꾩궛??
-   - balance_sheet (?щТ?곹깭??
-   - cash_flow (?꾧툑?먮쫫??
-   - tax_adjustment (?몃Т議곗젙)
-2. ?곗씠??異붿텧 諛??뺢퇋??
-3. metadata ?앹꽦
+**처리**:
+1. 각 시트의 타입 분류
+   - income_statement (손익계산서)
+   - balance_sheet (재무상태표)
+   - cash_flow (현금흐름표)
+   - tax_adjustment (세무조정)
+2. 데이터 추출 및 정규화
+3. metadata 생성
 
-**濡쒖쭅**:
+**로직**:
 ```python
-if "留ㅼ텧?? in sheet_data:
+if "매출액" in sheet_data:
     sheet.sheet_type = "income_statement"
-elif "?먯궛珥앷퀎" in sheet_data:
+elif "자산총계" in sheet_data:
     sheet.sheet_type = "balance_sheet"
 ```
 
-**異쒕젰**:
+**출력**:
 ```python
 {
     "files": [
         FileData(
             sheets=[
                 SheetData(
-                    name="?먯씡怨꾩궛??,
+                    name="손익계산서",
                     sheet_type="income_statement",
-                    data={"留ㅼ텧??: 15000000, ...},
+                    data={"매출액": 15000000, ...},
                     status="analyzed"
                 )
             ]
@@ -447,21 +447,21 @@ elif "?먯궛珥앷퀎" in sheet_data:
 
 ---
 
-### ?④퀎 5: 援먯감 寃利?(Validate Node)
-**?낅젰**: 遺꾩꽍???쒗듃??
-**?몃뱶 ?⑥닔**: `validate_node(state)`
+### 단계 5: 교차 검증 (Validate Node)
+**입력**: 분석된 시트들
+**노드 함수**: `validate_node(state)`
 
-**寃利???ぉ**:
-1. **?쇨???寃利?*: ?먯궛 = 遺梨?+ ?먮낯
-2. **踰붿쐞 寃利?*: 湲덉븸???뚯닔媛 ?꾨땶吏
-3. **?꾩닔 ?꾨뱶**: ?듭떖 ??ぉ 議댁옱 ?щ?
+**검증 항목**:
+1. **일관성 검증**: 자산 = 부채 + 자본
+2. **범위 검증**: 금액이 음수가 아닌지
+3. **필수 필드**: 핵심 항목 존재 여부
 
-**異쒕젰**:
+**출력**:
 ```python
 {
-    "files": [...],  # validation_status ?낅뜲?댄듃
-    "errors": [],    # 移섎챸???ㅻ쪟
-    "warnings": ["?쇰? ?쒗듃?먯꽌 ?먯궛珥앷퀎 遺덉씪移?],
+    "files": [...],  # validation_status 업데이트
+    "errors": [],    # 치명적 오류
+    "warnings": ["일부 시트에서 자산총계 불일치"],
     "processing_status": "validating",
     "progress_percent": 80.0
 }
@@ -469,36 +469,36 @@ elif "?먯궛珥앷퀎" in sheet_data:
 
 ---
 
-### ?④퀎 6: 寃곌낵 ?듯빀 (Synthesize Node)
-**?낅젰**: 寃利앸맂 紐⑤뱺 ?쒗듃
-**?몃뱶 ?⑥닔**: `synthesize_node(state)`
+### 단계 6: 결과 통합 (Synthesize Node)
+**입력**: 검증된 모든 시트
+**노드 함수**: `synthesize_node(state)`
 
-**泥섎━**:
-1. ?쒗듃 ??낅퀎 ?곗씠??蹂묓빀
-2. ?듭떖 吏??怨꾩궛
-   - ?곸뾽?댁씡瑜?= (?곸뾽?댁씡 / 留ㅼ텧?? 횞 100
-   - ROA = (?밴린?쒖씠??/ ?먯궛珥앷퀎) 횞 100
-3. ?뚯궗 ?뺣낫 留덉뒪??
-4. 耳?댁뒪 ???媛먯? (case1~4)
+**처리**:
+1. 시트 타입별 데이터 병합
+2. 핵심 지표 계산
+   - 영업이익률 = (영업이익 / 매출액) × 100
+   - ROA = (당기순이익 / 자산총계) × 100
+3. 회사 정보 마스킹
+4. 케이스 타입 감지 (case1~4)
 
-**異쒕젰**:
+**출력**:
 ```python
 {
     "unified_context": {
         "income_statement": {...},
         "balance_sheet": {...},
         "key_metrics": {
-            "?곸뾽?댁씡瑜?: 20.0,
+            "영업이익률": 20.0,
             "ROA": 15.0
         },
         "summary": {...}
     },
     "company_info": {
-        "company": "A****B",  # 留덉뒪??
+        "company": "A****B",  # 마스킹
         ...
     },
     "case_type": "case2",
-    "case_label": "?⑥씪 ?뚯씪쨌?ㅼ쨷 ?쒗듃",
+    "case_label": "단일 파일·다중 시트",
     "processing_status": "completed",
     "progress_percent": 100.0
 }
@@ -506,75 +506,75 @@ elif "?먯궛珥앷퀎" in sheet_data:
 
 ---
 
-## 3. ?곗씠??蹂???먮쫫
+## 3. 데이터 변환 흐름
 
-### Input ??Processing ??Output
+### Input → Processing → Output
 
 ```
 [User Upload]
-    ??
-?뚢???????????????????????????
-??file1.xlsx (3 sheets)   ??
-??file2.xlsx (1 sheet)    ??
-?붴???????????????????????????
-    ??
+    ↓
+┌─────────────────────────┐
+│ file1.xlsx (3 sheets)   │
+│ file2.xlsx (1 sheet)    │
+└─────────────────────────┘
+    ↓
 [Parse]
-    ??
-?뚢???????????????????????????????????????
-??FileData[0]:                        ??
-??  - file_id: "abc"                  ??
-??  - sheets: [Sheet1, Sheet2, Sheet3]??
-??FileData[1]:                        ??
-??  - file_id: "def"                  ??
-??  - sheets: [Sheet1]                ??
-?붴???????????????????????????????????????
-    ??
+    ↓
+┌─────────────────────────────────────┐
+│ FileData[0]:                        │
+│   - file_id: "abc"                  │
+│   - sheets: [Sheet1, Sheet2, Sheet3]│
+│ FileData[1]:                        │
+│   - file_id: "def"                  │
+│   - sheets: [Sheet1]                │
+└─────────────────────────────────────┘
+    ↓
 [Analyze]
-    ??
-?뚢???????????????????????????????????????
-??Sheet1: income_statement            ??
-??  data: {留ㅼ텧?? 15M, ...}          ??
-??Sheet2: balance_sheet               ??
-??  data: {?먯궛珥앷퀎: 50M, ...}        ??
-??...                                 ??
-?붴???????????????????????????????????????
-    ??
+    ↓
+┌─────────────────────────────────────┐
+│ Sheet1: income_statement            │
+│   data: {매출액: 15M, ...}          │
+│ Sheet2: balance_sheet               │
+│   data: {자산총계: 50M, ...}        │
+│ ...                                 │
+└─────────────────────────────────────┘
+    ↓
 [Validate]
-    ??
-?뚢???????????????????????????????????????
-??validation_status: "valid"          ??
-??warnings: [...]                     ??
-?붴???????????????????????????????????????
-    ??
+    ↓
+┌─────────────────────────────────────┐
+│ validation_status: "valid"          │
+│ warnings: [...]                     │
+└─────────────────────────────────────┘
+    ↓
 [Synthesize]
-    ??
-?뚢???????????????????????????????????????
-??unified_context:                    ??
-??  income_statement: {...}           ??
-??  balance_sheet: {...}              ??
-??  key_metrics: {?곸뾽?댁씡瑜? 20%}    ??
-??  summary: {留ㅼ텧?? 15M, ...}       ??
-?붴???????????????????????????????????????
-    ??
+    ↓
+┌─────────────────────────────────────┐
+│ unified_context:                    │
+│   income_statement: {...}           │
+│   balance_sheet: {...}              │
+│   key_metrics: {영업이익률: 20%}    │
+│   summary: {매출액: 15M, ...}       │
+└─────────────────────────────────────┘
+    ↓
 [API Response]
 ```
 
 ---
 
-## 4. 蹂묐젹 泥섎━ ?꾨왂
+## 4. 병렬 처리 전략
 
-### ?뚯씪 ?덈꺼 蹂묐젹 (LangGraph Send API)
+### 파일 레벨 병렬 (LangGraph Send API)
 ```python
-# 3媛??뚯씪???숈떆??泥섎━
+# 3개 파일을 동시에 처리
 for file in state["files"]:
     send_to("parse_file_node", {
         "file": file
     })
 ```
 
-### ?쒗듃 ?덈꺼 蹂묐젹 (asyncio.gather)
+### 시트 레벨 병렬 (asyncio.gather)
 ```python
-# ?섎굹???뚯씪 ???щ윭 ?쒗듃瑜??숈떆??遺꾩꽍
+# 하나의 파일 내 여러 시트를 동시에 분석
 tasks = [
     analyze_sheet(sheet)
     for sheet in file.sheets
@@ -584,9 +584,9 @@ results = await asyncio.gather(*tasks)
 
 ---
 
-## 5. ?곹깭 愿由?(Checkpointing)
+## 5. 상태 관리 (Checkpointing)
 
-LangGraph??媛??몃뱶 ?ㅽ뻾 ???곹깭瑜???ν빀?덈떎:
+LangGraph는 각 노드 실행 후 상태를 저장합니다:
 
 ```
 Checkpoint 1: After Parse
@@ -606,149 +606,149 @@ Checkpoint 4: After Synthesize
   - status = "completed"
 ```
 
-?먮윭 諛쒖깮 ??留덉?留?Checkpoint?먯꽌 ?ъ떆??媛??
+에러 발생 시 마지막 Checkpoint에서 재시도 가능.
 
 ---
 
-## 6. ?덉쇅 泥섎━ ?먮쫫
+## 6. 예외 처리 흐름
 
 ```
-[Upload] ???뚯씪 寃利??ㅽ뙣
-    ??
+[Upload] → 파일 검증 실패
+    ↓
 HTTPException 400
-    ??
-{"detail": "吏?먰븯吏 ?딅뒗 ?뚯씪"}
+    ↓
+{"detail": "지원하지 않는 파일"}
 
-[Parse] ??Excel ?뚯떛 ?ㅽ뙣
-    ??
+[Parse] → Excel 파싱 실패
+    ↓
 file.status = "error"
 file.error_message = "..."
-    ??
-Continue (?ㅻⅨ ?뚯씪? 怨꾩냽 泥섎━)
+    ↓
+Continue (다른 파일은 계속 처리)
 
-[Validate] ??移섎챸???ㅻ쪟
-    ??
+[Validate] → 치명적 오류
+    ↓
 state["processing_status"] = "error"
 state["errors"].append("...")
-    ??
-Early Stop (Synthesize ?앸왂)
+    ↓
+Early Stop (Synthesize 생략)
 ```
 
 ---
 
-## 7. ?깅뒫 理쒖쟻??
+## 7. 성능 최적화
 
-| 理쒖쟻??湲곕쾿 | ?곸슜 ?꾩튂 | ?④낵 |
+| 최적화 기법 | 적용 위치 | 효과 |
 |------------|----------|------|
-| 蹂묐젹 泥섎━ | Parse, Analyze | 3諛?鍮좊쫫 |
-| ?ㅽ듃由щ컢 | ?놁쓬 (諛곗튂) | N/A |
-| 罹먯떛 | ?놁쓬 | ?ν썑 異붽? |
-| 吏??濡쒕뵫 | Dependencies | ?쒕쾭 ?쒖옉 3珥??⑥텞 |
+| 병렬 처리 | Parse, Analyze | 3배 빠름 |
+| 스트리밍 | 없음 (배치) | N/A |
+| 캐싱 | 없음 | 향후 추가 |
+| 지연 로딩 | Dependencies | 서버 시작 3초 단축 |
 
 ---
 
-## 8. 紐⑤땲?곕쭅 ?ъ씤??
+## 8. 모니터링 포인트
 
-### 異붿쟻?댁빞 ??硫뷀듃由?
-1. **API ?묐떟 ?쒓컙**: /upload, /status, /result
-2. **?뚯씪??泥섎━ ?쒓컙**: Parse, Analyze, Validate, Synthesize
-3. **?먮윭??*: ?뚯씪 ??낅퀎, ?ш린蹂?
-4. **?숈떆 ?몄뀡 ??*: ?쇳겕 ???遺??
+### 추적해야 할 메트릭
+1. **API 응답 시간**: /upload, /status, /result
+2. **파일당 처리 시간**: Parse, Analyze, Validate, Synthesize
+3. **에러율**: 파일 타입별, 크기별
+4. **동시 세션 수**: 피크 타임 부하
 
-### 濡쒓렇 ?ъ씤??
+### 로그 포인트
 ```python
-logger.info(f"[MultiExcel] ?낅줈???쒖옉 | session={session_id}")
-logger.debug(f"[Parser] ?뚯씪 ?뚯떛 | file={filename}")
-logger.warning(f"[Validator] 寃利?寃쎄퀬 | sheet={sheet_name}")
-logger.error(f"[Synthesizer] ?듯빀 ?ㅽ뙣 | error={e}")
+logger.info(f"[MultiExcel] 업로드 시작 | session={session_id}")
+logger.debug(f"[Parser] 파일 파싱 | file={filename}")
+logger.warning(f"[Validator] 검증 경고 | sheet={sheet_name}")
+logger.error(f"[Synthesizer] 통합 실패 | error={e}")
 ```
 
 ---
 
-## 9. ?ν썑 媛쒖꽑 ?ы빆
+## 9. 향후 개선 사항
 
-1. **Redis 罹먯떛**: ?숈씪 ?뚯씪 ?ъ뾽濡쒕뱶 ???뚯떛 ?앸왂
-2. **?ㅽ듃由щ컢 ?묐떟**: Server-Sent Events濡??ㅼ떆媛?吏꾪뻾瑜??꾩넚
-3. **蹂묐젹??議곗젙**: CPU 肄붿뼱 ?섏뿉 ?곕씪 ?숈쟻 議곗젙
-4. **DB ???*: ?몃찓紐⑤━ ?몄뀡??PostgreSQL濡??대룞
+1. **Redis 캐싱**: 동일 파일 재업로드 시 파싱 생략
+2. **스트리밍 응답**: Server-Sent Events로 실시간 진행률 전송
+3. **병렬도 조정**: CPU 코어 수에 따라 동적 조정
+4. **DB 저장**: 인메모리 세션을 PostgreSQL로 이동
 ```
 
 ---
 
-## ?ㅽ뻾 濡쒖쭅
+## 실행 로직
 
-### 1. API ?뚯씪 遺꾩꽍
-1. FastAPI ?쇱슦???뚯씪???쎌쓬
-2. `@router.post`, `@router.get` ?곗퐫?덉씠???뚯떛
-3. Pydantic 紐⑤뜽 異붿텧
-4. Docstring 遺꾩꽍
+### 1. API 파일 분석
+1. FastAPI 라우터 파일을 읽음
+2. `@router.post`, `@router.get` 데코레이터 파싱
+3. Pydantic 모델 추출
+4. Docstring 분석
 
-### 2. ?뚰겕?뚮줈???앹꽦
-1. LangGraph ?뚯씪 ?쎌쓬
-2. ?몃뱶 媛??섏〈??異붿쟻
-3. Mermaid ?ㅼ씠?닿렇???먮룞 ?앹꽦
-4. ?곗씠??蹂???먮쫫 異붿텧
+### 2. 워크플로우 생성
+1. LangGraph 파일 읽음
+2. 노드 간 의존성 추적
+3. Mermaid 다이어그램 자동 생성
+4. 데이터 변환 흐름 추출
 
-### 3. 湲곕뒫紐낆꽭???앹꽦
-1. 愿???뚯씪???섏쭛 (routes, services, models)
-2. 鍮꾩쫰?덉뒪 濡쒖쭅 異붿텧
-3. ?뚯뒪???쒕굹由ъ삤 ?앹꽦 (Given-When-Then)
+### 3. 기능명세서 생성
+1. 관련 파일들 수집 (routes, services, models)
+2. 비즈니스 로직 추출
+3. 테스트 시나리오 생성 (Given-When-Then)
 
 ---
 
-## 異쒕젰 ?꾩튂
+## 출력 위치
 
 ```
 docs/
-?쒋?? api/
-??  ?쒋?? multi_excel_api_spec.md
-??  ?쒋?? og_rag_api_spec.md
-??  ?붴?? chat_api_spec.md
-?쒋?? workflow/
-??  ?쒋?? multi_excel_workflow.md
-??  ?쒋?? chatbot_workflow.md
-??  ?붴?? data_flow_diagrams/
-??      ?붴?? multi_excel.mmd
-?붴?? features/
-    ?쒋?? multi_excel_feature_spec.md
-    ?붴?? og_rag_feature_spec.md
+├── api/
+│   ├── multi_excel_api_spec.md
+│   ├── og_rag_api_spec.md
+│   └── chat_api_spec.md
+├── workflow/
+│   ├── multi_excel_workflow.md
+│   ├── chatbot_workflow.md
+│   └── data_flow_diagrams/
+│       └── multi_excel.mmd
+└── features/
+    ├── multi_excel_feature_spec.md
+    └── og_rag_feature_spec.md
 ```
 
 ---
 
-## 異붽? 湲곕뒫
+## 추가 기능
 
-### PM???붿빟 ?앹꽦
+### PM용 요약 생성
 ```bash
 /pm-summary
 ```
 
-**異쒕젰**:
-- 二쇱슂 湲곕뒫 紐⑸줉
-- ?꾨즺/吏꾪뻾以??덉젙 ?꾪솴
-- 由ъ뒪??諛??댁뒋
-- ?ㅼ쓬 ?ㅽ봽由고듃 異붿쿇 ?묒뾽
+**출력**:
+- 주요 기능 목록
+- 완료/진행중/예정 현황
+- 리스크 및 이슈
+- 다음 스프린트 추천 작업
 
-### 媛쒕컻?먯슜 Onboarding 媛?대뱶
+### 개발자용 Onboarding 가이드
 ```bash
 /dev-onboarding
 ```
 
-**異쒕젰**:
-- ?꾨줈?앺듃 援ъ“ ?ㅻ챸
-- 二쇱슂 紐⑤뱢 ??븷
-- 濡쒖뺄 媛쒕컻 ?섍꼍 ?ㅼ젙
-- 泥?PR源뚯? ?④퀎蹂?媛?대뱶
+**출력**:
+- 프로젝트 구조 설명
+- 주요 모듈 역할
+- 로컬 개발 환경 설정
+- 첫 PR까지 단계별 가이드
 
 ---
 
-## 2026 ?쒖? 湲곕뒫
+## 2026 표준 기능
 
-### OpenAPI 3.1 吏??
+### OpenAPI 3.1 지원
 
-**肄붾뱶?먯꽌 ?먮룞 ?앹꽦:**
+**코드에서 자동 생성:**
 ```python
-# FastAPI ?먮룞 OpenAPI ?앹꽦
+# FastAPI 자동 OpenAPI 생성
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 
@@ -758,19 +758,19 @@ def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
     openapi_schema = get_openapi(
-        title="API 紐낆꽭??,
+        title="API 명세서",
         version="1.0.0",
-        description="?먮룞 ?앹꽦??API 臾몄꽌",
+        description="자동 생성된 API 문서",
         routes=app.routes,
     )
-    # OpenAPI 3.1 ?뺤옣
+    # OpenAPI 3.1 확장
     openapi_schema["openapi"] = "3.1.0"
     app.openapi_schema = openapi_schema
     return app.openapi_schema
 
 app.openapi = custom_openapi
 
-# ?대낫?닿린
+# 내보내기
 import json
 with open("openapi.json", "w") as f:
     json.dump(app.openapi(), f, indent=2)
@@ -821,7 +821,7 @@ const specs = swaggerJsdoc(options);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 ```
 
-### ?몄쬆 ?ㅽ궎留?吏??
+### 인증 스키마 지원
 
 **OAuth 2.0:**
 ```yaml
@@ -848,20 +848,20 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: "JWT ?좏겙??Authorization ?ㅻ뜑???ы븿: Bearer {token}"
+      description: "JWT 토큰을 Authorization 헤더에 포함: Bearer {token}"
 ```
 
-### ?먮룞 SDK ?앹꽦
+### 자동 SDK 생성
 
 **TypeScript SDK:**
 ```bash
-# OpenAPI Generator濡?TypeScript SDK ?앹꽦
+# OpenAPI Generator로 TypeScript SDK 생성
 npx @openapitools/openapi-generator-cli generate \
   -i openapi.json \
   -g typescript-axios \
   -o ./sdk/typescript
 
-# ?앹꽦??SDK ?ъ슜
+# 생성된 SDK 사용
 import { DefaultApi, Configuration } from './sdk/typescript';
 
 const api = new DefaultApi(new Configuration({
@@ -875,14 +875,14 @@ console.log(response.data);
 
 **Python SDK:**
 ```bash
-# Python SDK ?앹꽦
+# Python SDK 생성
 openapi-generator-cli generate \
   -i openapi.json \
   -g python \
   -o ./sdk/python \
   --additional-properties packageName=my_api_client
 
-# ?앹꽦??SDK ?ъ슜
+# 생성된 SDK 사용
 from my_api_client import ApiClient, Configuration, DefaultApi
 
 config = Configuration(
@@ -896,16 +896,16 @@ with ApiClient(config) as api_client:
     print(user)
 ```
 
-### Postman Collection ?대낫?닿린
+### Postman Collection 내보내기
 
 ```bash
-# OpenAPI ??Postman Collection 蹂??
+# OpenAPI → Postman Collection 변환
 npx openapi-to-postmanv2 \
   -s openapi.json \
   -o postman_collection.json \
   --pretty
 
-# Postman Collection 援ъ“
+# Postman Collection 구조
 {
   "info": {
     "name": "API Collection",
@@ -954,21 +954,21 @@ npx openapi-to-postmanv2 \
 }
 ```
 
-### API 踰꾩쟾 愿由?
+### API 버전 관리
 
-**URL 踰꾩???**
+**URL 버저닝:**
 ```
 /api/v1/users  # v1
 /api/v2/users  # v2 (breaking changes)
 ```
 
-**?ㅻ뜑 踰꾩???**
+**헤더 버저닝:**
 ```http
 GET /api/users
 Accept: application/vnd.myapi.v2+json
 ```
 
-**OpenAPI?먯꽌 踰꾩쟾 ?쒗쁽:**
+**OpenAPI에서 버전 표현:**
 ```yaml
 openapi: 3.1.0
 info:
@@ -987,28 +987,28 @@ servers:
     description: Production v2 (current)
 ```
 
-### Mock Server ?앹꽦
+### Mock Server 생성
 
-**Prism?쇰줈 Mock API ?ㅽ뻾:**
+**Prism으로 Mock API 실행:**
 ```bash
-# OpenAPI 紐낆꽭?쒖뿉??Mock Server ?앹꽦
+# OpenAPI 명세서에서 Mock Server 생성
 npm install -g @stoplight/prism-cli
 
-# Mock server ?ㅽ뻾
+# Mock server 실행
 prism mock openapi.json
 
-# 異쒕젰:
-# [5:00:00 PM] ??[CLI] ?? info      Prism is listening on http://127.0.0.1:4010
-# [5:00:00 PM] ??[HTTP SERVER] ?? info      GET http://127.0.0.1:4010/users/123
+# 출력:
+# [5:00:00 PM] › [CLI] …  info      Prism is listening on http://127.0.0.1:4010
+# [5:00:00 PM] › [HTTP SERVER] ℹ  info      GET http://127.0.0.1:4010/users/123
 
-# ?ㅼ젣 ?붿껌
+# 실제 요청
 curl http://127.0.0.1:4010/users/123
-# ??OpenAPI examples???뺤쓽???묐떟 諛섑솚
+# → OpenAPI examples에 정의된 응답 반환
 ```
 
-### API 臾몄꽌 ?몄뒪??
+### API 문서 호스팅
 
-**Redoc (異붿쿇):**
+**Redoc (추천):**
 ```html
 <!DOCTYPE html>
 <html>
@@ -1052,9 +1052,9 @@ curl http://127.0.0.1:4010/users/123
 </html>
 ```
 
-### CI/CD ?듯빀
+### CI/CD 통합
 
-**GitHub Actions濡?API 臾몄꽌 ?먮룞 ?앹꽦:**
+**GitHub Actions로 API 문서 자동 생성:**
 ```yaml
 # .github/workflows/api-docs.yml
 name: Generate API Docs
@@ -1075,7 +1075,7 @@ jobs:
       - name: Generate OpenAPI spec
         run: |
           npm install
-          npm run generate:openapi  # OpenAPI JSON ?앹꽦
+          npm run generate:openapi  # OpenAPI JSON 생성
 
       - name: Generate TypeScript SDK
         run: |
@@ -1098,14 +1098,14 @@ jobs:
           publish_dir: ./docs
 ```
 
-### API 蹂寃?媛먯?
+### API 변경 감지
 
-**OpenAPI Diff濡?Breaking Change ?먯?:**
+**OpenAPI Diff로 Breaking Change 탐지:**
 ```bash
-# ??踰꾩쟾 鍮꾧탳
+# 두 버전 비교
 npx oasdiff diff openapi-v1.json openapi-v2.json
 
-# 異쒕젰:
+# 출력:
 # Breaking changes:
 # - DELETE /users/:id endpoint removed
 # - POST /users request body field 'age' is now required (was optional)
@@ -1117,12 +1117,12 @@ npx oasdiff diff openapi-v1.json openapi-v2.json
 
 ---
 
-## ?ъ슜 ?덉떆 (2026 ?쒖?)
+## 사용 예시 (2026 표준)
 
-### 1. FastAPI ?꾨줈?앺듃?먯꽌 ?꾩쟾 ?먮룞??
+### 1. FastAPI 프로젝트에서 완전 자동화
 
 ```bash
-# 1?④퀎: 肄붾뱶 ?묒꽦 (FastAPI)
+# 1단계: 코드 작성 (FastAPI)
 # app/routes/users.py
 
 from fastapi import APIRouter, Depends
@@ -1137,10 +1137,10 @@ class User(BaseModel):
 
 @router.get("/users/{user_id}", response_model=User)
 async def get_user(user_id: str):
-    """?ъ슜???뺣낫瑜?ID濡?議고쉶?⑸땲??"""
-    return User(id=user_id, name="?띻만??, email="hong@example.com")
+    """사용자 정보를 ID로 조회합니다."""
+    return User(id=user_id, name="홍길동", email="hong@example.com")
 
-# 2?④퀎: OpenAPI ?먮룞 ?앹꽦
+# 2단계: OpenAPI 자동 생성
 python -c "
 from app.main import app
 import json
@@ -1148,30 +1148,30 @@ with open('openapi.json', 'w') as f:
     json.dump(app.openapi(), f, indent=2)
 "
 
-# 3?④퀎: TypeScript SDK ?앹꽦
+# 3단계: TypeScript SDK 생성
 npx @openapitools/openapi-generator-cli generate \
   -i openapi.json \
   -g typescript-axios \
   -o ./sdk/typescript
 
-# 4?④퀎: Postman Collection ?앹꽦
+# 4단계: Postman Collection 생성
 npx openapi-to-postmanv2 -s openapi.json -o postman.json
 
-# 5?④퀎: Mock Server ?ㅽ뻾 (媛쒕컻 以?
+# 5단계: Mock Server 실행 (개발 중)
 prism mock openapi.json
 ```
 
-### 2. 紐낅졊???듯빀
+### 2. 명령어 통합
 
-???ㅽ궗??紐낅졊?대줈 ?ъ슜:
+이 스킬을 명령어로 사용:
 ```bash
-# OpenAPI ?앹꽦 + SDK + Postman + Docs
+# OpenAPI 생성 + SDK + Postman + Docs
 /api-spec --auto-all backend/routes/
 
-# 異쒕젰:
-# ??OpenAPI 3.1 ?앹꽦: openapi.json
-# ??TypeScript SDK: sdk/typescript/
-# ??Python SDK: sdk/python/
-# ??Postman Collection: postman.json
-# ??API Docs ?몄뒪?? http://localhost:8080/docs
+# 출력:
+# ✅ OpenAPI 3.1 생성: openapi.json
+# ✅ TypeScript SDK: sdk/typescript/
+# ✅ Python SDK: sdk/python/
+# ✅ Postman Collection: postman.json
+# ✅ API Docs 호스팅: http://localhost:8080/docs
 ```

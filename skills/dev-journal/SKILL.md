@@ -1,49 +1,49 @@
 ---
 name: dev-journal
-description: Generate and manage development journal logs.
+description: 개발 일지를 자동으로 생성하고 관리합니다. "개발 일지", "작업 기록", "개발 로그", "변경 이력", "dev journal", "development log", "work log" 등의 요청 시 사용합니다. 프로젝트 히스토리, 의사결정 과정, 문제 해결 기록을 체계적으로 문서화합니다. (README·API 문서·코드 문서화는 documentation-gen 스킬 참조)
 ---
 
 # Development Journal Skill
 
-?먮룞?쇰줈 媛쒕컻 ?쇱?瑜??앹꽦?섍퀬 愿由ы븯???꾨줈?앺듃 ?덉뒪?좊━, ?섏궗寃곗젙, 臾몄젣 ?닿껐 怨쇱젙??泥닿퀎?곸쑝濡?臾몄꽌?뷀빀?덈떎.
+자동으로 개발 일지를 생성하고 관리하여 프로젝트 히스토리, 의사결정, 문제 해결 과정을 체계적으로 문서화합니다.
 
 ## Purpose
 
-媛쒕컻 怨쇱젙?먯꽌 諛쒖깮?섎뒗 紐⑤뱺 以묒슂???뺣낫瑜??먮룞?쇰줈 異붿쟻?섍퀬 臾몄꽌?뷀븯??
-- ?좉퇋 ????⑤낫??媛?랁솕
-- ?섏궗寃곗젙 洹쇨굅 異붿쟻
-- 諛섎났?곸씤 臾몄젣 ?닿껐 ?쒓컙 ?⑥텞
-- ?꾨줈?앺듃 ?뚭퀬 ?먮즺 ?뺣낫
-- 吏???먯떎 諛⑹?
+개발 과정에서 발생하는 모든 중요한 정보를 자동으로 추적하고 문서화하여:
+- 신규 팀원 온보딩 가속화
+- 의사결정 근거 추적
+- 반복적인 문제 해결 시간 단축
+- 프로젝트 회고 자료 확보
+- 지식 손실 방지
 
 ## When to Use
 
-?ㅼ쓬 ?곹솴?먯꽌 ???ㅽ궗???ъ슜?섏꽭??
-- ?ㅽ봽由고듃 醫낅즺 ??二쇨컙 ?붿빟 ?꾩슂
-- 以묒슂???꾪궎?띿쿂 寃곗젙 湲곕줉
-- 踰꾧렇 ?섏젙 怨쇱젙 臾몄꽌??
-- ?붽컙 媛쒕컻 由ы룷???앹꽦
-- ?꾨줈?앺듃 ?몄닔?멸퀎 以鍮?
+다음 상황에서 이 스킬을 사용하세요:
+- 스프린트 종료 후 주간 요약 필요
+- 중요한 아키텍처 결정 기록
+- 버그 수정 과정 문서화
+- 월간 개발 리포트 생성
+- 프로젝트 인수인계 준비
 
-## ?쇱? ?좏삎
+## 일지 유형
 
-### 1. Daily Log (?쇱씪 濡쒓렇)
+### 1. Daily Log (일일 로그)
 
-Git commit 湲곕컲 ?먮룞 ?앹꽦:
+Git commit 기반 자동 생성:
 
 ```markdown
-# 2026-01-29 媛쒕컻 ?쇱?
+# 2026-01-29 개발 일지
 
-## 而ㅻ컠 ?붿빟 (3 commits)
+## 커밋 요약 (3 commits)
 
 ### [feat] Add user authentication (#42)
 **Time:** 10:23 AM
-**Author:** ?띻만??
+**Author:** 홍길동
 **Files:** `src/auth/`, `tests/auth/`
 
-- JWT 湲곕컲 ?몄쬆 援ы쁽
-- Access token + Refresh token ?⑦꽩
-- 80% ?뚯뒪??而ㅻ쾭由ъ? ?ъ꽦
+- JWT 기반 인증 구현
+- Access token + Refresh token 패턴
+- 80% 테스트 커버리지 달성
 
 **Related Issue:** #38
 **Review:** https://github.com/org/repo/pull/42
@@ -52,82 +52,82 @@ Git commit 湲곕컲 ?먮룞 ?앹꽦:
 
 ### [fix] Resolve race condition in cache (#43)
 **Time:** 2:15 PM
-**Author:** 源泥좎닔
+**Author:** 김철수
 **Files:** `src/cache/redis.ts`
 
-**Problem:** ?숈떆 ?붿껌 ??罹먯떆 miss濡?DB ??쬆
-**Solution:** Redis distributed lock ?곸슜
-**Impact:** DB 荑쇰━ 95% 媛먯냼
+**Problem:** 동시 요청 시 캐시 miss로 DB 폭증
+**Solution:** Redis distributed lock 적용
+**Impact:** DB 쿼리 95% 감소
 
 **Related Issue:** #40
 **Before/After:**
-- Before: 1000 req/s ??800 DB queries/s
-- After: 1000 req/s ??50 DB queries/s
+- Before: 1000 req/s → 800 DB queries/s
+- After: 1000 req/s → 50 DB queries/s
 
 ---
 
 ### [refactor] Simplify error handling (#44)
 **Time:** 4:45 PM
-**Author:** ?댁쁺??
+**Author:** 이영희
 **Files:** `src/utils/errors.ts`
 
-- Result<T, E> ????꾩엯
-- try-catch ?쒓굅 (30媛???5媛?
-- ?먮윭 ?몃뱾留??쇨????뺣낫
+- Result<T, E> 타입 도입
+- try-catch 제거 (30개 → 5개)
+- 에러 핸들링 일관성 확보
 
 ---
 
-## ?섏궗寃곗젙 (Decisions Made)
+## 의사결정 (Decisions Made)
 
-### ?몄쬆 諛⑹떇: JWT vs Session
+### 인증 방식: JWT vs Session
 **Decision:** JWT (stateless)
 **Rationale:**
-- 留덉씠?щ줈?쒕퉬???꾪궎?띿쿂???곹빀
-- ?섑룊 ?뺤옣 ?⑹씠
-- 紐⑤컮????吏???꾩슂
+- 마이크로서비스 아키텍처에 적합
+- 수평 확장 용이
+- 모바일 앱 지원 필요
 
 **Trade-offs:**
-- ??Stateless, ?뺤옣 ?⑹씠
-- ??Token revocation ?대젮? ??Refresh token?쇰줈 ?꾪솕
+- ✅ Stateless, 확장 용이
+- ❌ Token revocation 어려움 → Refresh token으로 완화
 
 **Alternatives Considered:**
-- Session (rejected: Redis ?섏〈?? ?뺤옣 蹂듭옟)
-- OAuth 2.0 (deferred: ?꾩옱 遺덊븘??
+- Session (rejected: Redis 의존성, 확장 복잡)
+- OAuth 2.0 (deferred: 현재 불필요)
 
 **ADR:** docs/adr/0042-jwt-authentication.md
 
 ---
 
-## 臾몄젣 ?닿껐 (Problems Solved)
+## 문제 해결 (Problems Solved)
 
 ### 1. Race Condition in Cache
 **Impact:** HIGH
-**Root Cause:** ?숈떆 ?붿껌 ??罹먯떆 miss 諛쒖깮 ??紐⑤몢 DB 議고쉶
-**Solution:** Redis SETNX濡?distributed lock
+**Root Cause:** 동시 요청 시 캐시 miss 발생 → 모두 DB 조회
+**Solution:** Redis SETNX로 distributed lock
 **Time to Resolve:** 3 hours
-**Learnings:** 遺꾩궛 ?섍꼍?먯꽌 罹먯떆 warming ?꾨왂 ?꾩슂
+**Learnings:** 분산 환경에서 캐시 warming 전략 필요
 
 ---
 
-## 踰꾧렇 (Bugs Fixed)
+## 버그 (Bugs Fixed)
 
-| ID | ?쒕ぉ | ?ш컖??| ?뚯슂 ?쒓컙 | 而ㅻ컠 |
+| ID | 제목 | 심각도 | 소요 시간 | 커밋 |
 |----|------|--------|----------|------|
 | #40 | Cache race condition | HIGH | 3h | abc1234 |
 | #41 | User creation 500 error | MEDIUM | 1h | def5678 |
 
 ---
 
-## ?뚯뒪??(Tests Written)
+## 테스트 (Tests Written)
 
 - **Unit Tests:** 12 added (auth module)
 - **Integration Tests:** 3 added (API endpoints)
 - **E2E Tests:** 1 added (login flow)
-- **Coverage:** 78% ??82% (+4%)
+- **Coverage:** 78% → 82% (+4%)
 
 ---
 
-## 硫뷀듃由?(Metrics)
+## 메트릭 (Metrics)
 
 - **Commits:** 3
 - **Lines Added:** +450
@@ -138,39 +138,39 @@ Git commit 湲곕컲 ?먮룞 ?앹꽦:
 
 ---
 
-## ?댁씪 ????(Tomorrow)
+## 내일 할 일 (Tomorrow)
 
-- [ ] Refresh token rotation 援ы쁽
-- [ ] ?몄쬆 E2E ?뚯뒪??異붽?
-- [ ] ?깅뒫 ?뚯뒪??(1000 req/s)
-- [ ] 臾몄꽌 ?낅뜲?댄듃 (API 紐낆꽭??
+- [ ] Refresh token rotation 구현
+- [ ] 인증 E2E 테스트 추가
+- [ ] 성능 테스트 (1000 req/s)
+- [ ] 문서 업데이트 (API 명세서)
 ```
 
-### 2. Weekly Summary (二쇨컙 ?붿빟)
+### 2. Weekly Summary (주간 요약)
 
 ```markdown
-# 二쇨컙 ?붿빟 (2026-01-23 ~ 2026-01-29)
+# 주간 요약 (2026-01-23 ~ 2026-01-29)
 
 ## Highlights
 
-### ?? 二쇱슂 ?깃낵
-1. **?ъ슜???몄쬆 ?쒖뒪???꾨즺** (Issue #38)
-   - JWT 湲곕컲 ?몄쬆 援ы쁽
-   - 80%+ ?뚯뒪??而ㅻ쾭由ъ?
-   - 蹂댁븞 由щ럭 ?듦낵
+### 🚀 주요 성과
+1. **사용자 인증 시스템 완료** (Issue #38)
+   - JWT 기반 인증 구현
+   - 80%+ 테스트 커버리지
+   - 보안 리뷰 통과
 
-2. **?깅뒫 媛쒖꽑** (Issue #40)
-   - 罹먯떆 race condition ?닿껐
-   - DB 荑쇰━ 95% 媛먯냼
-   - ?묐떟 ?쒓컙 200ms ??50ms
+2. **성능 개선** (Issue #40)
+   - 캐시 race condition 해결
+   - DB 쿼리 95% 감소
+   - 응답 시간 200ms → 50ms
 
-3. **肄붾뱶 ?덉쭏 ?μ긽**
-   - Result ????꾩엯?쇰줈 ?먮윭 泥섎━ 媛쒖꽑
-   - ESLint ?꾨컲 30媛???0媛?
+3. **코드 품질 향상**
+   - Result 타입 도입으로 에러 처리 개선
+   - ESLint 위반 30개 → 0개
 
-### ?뱤 ?듦퀎
+### 📊 통계
 
-| 吏??| ?대쾲 二?| 吏??二?| 蹂??|
+| 지표 | 이번 주 | 지난 주 | 변화 |
 |------|---------|---------|------|
 | Commits | 18 | 12 | +50% |
 | PRs Merged | 6 | 4 | +50% |
@@ -178,148 +178,148 @@ Git commit 湲곕컲 ?먮룞 ?앹꽦:
 | Test Coverage | 82% | 78% | +4% |
 | Code Review Time | 3h avg | 5h avg | -40% |
 
-### ?맀 踰꾧렇 ?닿껐
+### 🐛 버그 해결
 
-- **HIGH:** 1媛?(cache race condition)
-- **MEDIUM:** 3媛?
-- **LOW:** 2媛?
-- **Total MTTR:** 2.5 hours (?됯퇏)
+- **HIGH:** 1개 (cache race condition)
+- **MEDIUM:** 3개
+- **LOW:** 2개
+- **Total MTTR:** 2.5 hours (평균)
 
-### ?렞 紐⑺몴 ?ъ꽦瑜?
+### 🎯 목표 달성률
 
-- ???몄쬆 ?쒖뒪??援ы쁽 (100%)
-- ???깅뒫 理쒖쟻??(100%)
-- ??API 臾몄꽌??(60% - 吏꾪뻾 以?
-- ??紐⑤컮??SDK ?쒖옉 (0% - ?ㅼ쓬 二?
+- ✅ 인증 시스템 구현 (100%)
+- ✅ 성능 최적화 (100%)
+- ⏳ API 문서화 (60% - 진행 중)
+- ❌ 모바일 SDK 시작 (0% - 다음 주)
 
 ---
 
 ## Architecture Decisions
 
 ### ADR-042: JWT Authentication
-**Status:** ??Accepted
+**Status:** ✅ Accepted
 **Date:** 2026-01-27
 **Impact:** HIGH
 
-**Context:** ?ъ슜???몄쬆 諛⑹떇 寃곗젙 ?꾩슂
-**Decision:** JWT (stateless) 梨꾪깮
-**Consequences:** ?뺤옣 ?⑹씠, token revocation ?대젮?
+**Context:** 사용자 인증 방식 결정 필요
+**Decision:** JWT (stateless) 채택
+**Consequences:** 확장 용이, token revocation 어려움
 **Link:** docs/adr/0042-jwt-authentication.md
 
 ### ADR-043: Redis Distributed Lock
-**Status:** ??Accepted
+**Status:** ✅ Accepted
 **Date:** 2026-01-29
 **Impact:** MEDIUM
 
-**Context:** 罹먯떆 race condition ?닿껐 ?꾩슂
-**Decision:** Redis SETNX濡?distributed lock 援ы쁽
-**Consequences:** 罹먯떆 ?쇨????뺣낫, Redis ?섏〈??利앷?
+**Context:** 캐시 race condition 해결 필요
+**Decision:** Redis SETNX로 distributed lock 구현
+**Consequences:** 캐시 일관성 확보, Redis 의존성 증가
 **Link:** docs/adr/0043-redis-distributed-lock.md
 
 ---
 
 ## Technical Debt
 
-### 異붽???遺梨?
-1. **Refresh token rotation 誘멸뎄??*
+### 추가된 부채
+1. **Refresh token rotation 미구현**
    - Priority: HIGH
    - Estimated: 2 days
-   - Reason: ?쒓컙 遺議? ?곗꽑?쒖쐞 ??쓬
+   - Reason: 시간 부족, 우선순위 낮음
 
-### ?닿껐??遺梨?
-1. ??**Error handling 遺덉씪移?*
-   - Result ????꾩엯?쇰줈 ?닿껐
-   - 30媛?try-catch ??5媛?
+### 해결된 부채
+1. ✅ **Error handling 불일치**
+   - Result 타입 도입으로 해결
+   - 30개 try-catch → 5개
 
 ---
 
 ## Learnings & Insights
 
-### 諛곗슫 寃?
-1. **遺꾩궛 ?섍꼍 罹먯떛**
-   - ?⑥닚 罹먯떆??race condition 諛쒖깮
-   - Distributed lock ?꾩닔
-   - Cache warming ?꾨왂 ?꾩슂
+### 배운 것
+1. **분산 환경 캐싱**
+   - 단순 캐시는 race condition 발생
+   - Distributed lock 필수
+   - Cache warming 전략 필요
 
-2. **JWT 蹂댁븞**
-   - Access token 吏㏐쾶 (15遺?
-   - Refresh token rotation ?꾩슂
-   - HttpOnly cookie 沅뚯옣
+2. **JWT 보안**
+   - Access token 짧게 (15분)
+   - Refresh token rotation 필요
+   - HttpOnly cookie 권장
 
-### 媛쒖꽑 ?ъ씤??
-1. **肄붾뱶 由щ럭 ?쒓컙 ?⑥텞**
+### 개선 포인트
+1. **코드 리뷰 시간 단축**
    - Before: 5h avg
    - After: 3h avg
-   - How: PR ?ш린 ?쒗븳 (300 LOC), ?먮룞?붾맂 泥댄겕由ъ뒪??
+   - How: PR 크기 제한 (300 LOC), 자동화된 체크리스트
 
-2. **?뚯뒪??而ㅻ쾭由ъ? 利앷?**
-   - 78% ??82%
-   - TDD ?뚰겕?뚮줈???곸슜 ?④낵
+2. **테스트 커버리지 증가**
+   - 78% → 82%
+   - TDD 워크플로우 적용 효과
 
 ---
 
 ## Risks & Issues
 
-### ?뵶 HIGH Risk
-- **Refresh token rotation 誘멸뎄??*
-  - Impact: 蹂댁븞 痍⑥빟??
-  - Mitigation: ?ㅼ쓬 二??곗꽑 泥섎━
+### 🔴 HIGH Risk
+- **Refresh token rotation 미구현**
+  - Impact: 보안 취약점
+  - Mitigation: 다음 주 우선 처리
 
-### ?윞 MEDIUM Risk
-- **API 臾몄꽌 誘몄셿??*
-  - Impact: ?꾨줎?몄뿏??媛쒕컻 吏??媛??
-  - Mitigation: ?대쾲 二?湲덉슂?쇨퉴吏 ?꾨즺
+### 🟡 MEDIUM Risk
+- **API 문서 미완성**
+  - Impact: 프론트엔드 개발 지연 가능
+  - Mitigation: 이번 주 금요일까지 완료
 
 ---
 
 ## Next Week Goals
 
 1. **Refresh token rotation** (HIGH)
-2. **API 臾몄꽌 ?꾩꽦** (MEDIUM)
-3. **紐⑤컮??SDK ?쒖옉** (MEDIUM)
-4. **E2E ?뚯뒪???뺣?** (LOW)
+2. **API 문서 완성** (MEDIUM)
+3. **모바일 SDK 시작** (MEDIUM)
+4. **E2E 테스트 확대** (LOW)
 
 ---
 
 ## Team Updates
 
-- **?띻만??** ?몄쬆 ?쒖뒪??由щ뱶, ?ㅼ쓬 二?紐⑤컮??SDK ?쒖옉
-- **源泥좎닔:** ?깅뒫 理쒖쟻???꾨즺, ?ㅼ쓬 二?罹먯떛 ?꾨왂 臾몄꽌??
-- **?댁쁺??** 肄붾뱶 ?덉쭏 媛쒖꽑, ?ㅼ쓬 二?由ы뙥?좊쭅 怨꾩냽
+- **홍길동:** 인증 시스템 리드, 다음 주 모바일 SDK 시작
+- **김철수:** 성능 최적화 완료, 다음 주 캐싱 전략 문서화
+- **이영희:** 코드 품질 개선, 다음 주 리팩토링 계속
 ```
 
 ### 3. Architecture Decision Record (ADR)
 
 ```markdown
-# ADR-042: JWT 湲곕컲 ?몄쬆 梨꾪깮
+# ADR-042: JWT 기반 인증 채택
 
 **Status:** Accepted
 **Date:** 2026-01-27
-**Deciders:** ?띻만?? 源泥좎닔, ?댁쁺??
+**Deciders:** 홍길동, 김철수, 이영희
 **Tags:** #authentication #security #architecture
 
 ---
 
 ## Context
 
-?ъ슜???몄쬆 ?쒖뒪??援ы쁽???꾩슂?⑸땲?? ?꾩옱 ?쒖뒪??
-- 紐⑤?由ъ떇 ??留덉씠?щ줈?쒕퉬???꾪솚 ?덉젙
-- ??+ 紐⑤컮?????숈떆 吏???꾩슂
-- ?ъ슜??5留?紐??덉긽 (6媛쒖썡 ??
+사용자 인증 시스템 구현이 필요합니다. 현재 시스템:
+- 모놀리식 → 마이크로서비스 전환 예정
+- 웹 + 모바일 앱 동시 지원 필요
+- 사용자 5만 명 예상 (6개월 내)
 
-**?붽뎄?ы빆:**
-- Stateless (?섑룊 ?뺤옣 媛??
-- CORS 吏??
-- 紐⑤컮??移쒗솕??
-- 蹂댁븞 ?쒖? 以??
+**요구사항:**
+- Stateless (수평 확장 가능)
+- CORS 지원
+- 모바일 친화적
+- 보안 표준 준수
 
 ---
 
 ## Decision
 
-**JWT (JSON Web Token) 湲곕컲 ?몄쬆**??梨꾪깮?⑸땲??
+**JWT (JSON Web Token) 기반 인증**을 채택합니다.
 
-**援ы쁽 諛⑹떇:**
+**구현 방식:**
 ```
 Access Token (JWT):
 - Expiry: 15 minutes
@@ -329,10 +329,10 @@ Access Token (JWT):
 Refresh Token:
 - Expiry: 7 days
 - Storage: HttpOnly cookie
-- Purpose: Access token ?щ컻湲?
+- Purpose: Access token 재발급
 
 Token Rotation:
-- Refresh ???덈줈??Refresh token 諛쒓툒 (誘멸뎄?? ?ㅼ쓬 二?異붽?)
+- Refresh 시 새로운 Refresh token 발급 (미구현, 다음 주 추가)
 ```
 
 ---
@@ -341,42 +341,42 @@ Token Rotation:
 
 ### Positive
 
-1. **?뺤옣??*
-   - Stateless: ?쒕쾭 媛??몄뀡 怨듭쑀 遺덊븘??
-   - ?섑룊 ?뺤옣 ?⑹씠
+1. **확장성**
+   - Stateless: 서버 간 세션 공유 불필요
+   - 수평 확장 용이
 
-2. **留덉씠?щ줈?쒕퉬??移쒗솕??*
-   - 媛??쒕퉬?ㅺ? JWT 寃利?媛??
-   - API Gateway?먯꽌 以묒븰 寃利?媛??
+2. **마이크로서비스 친화적**
+   - 각 서비스가 JWT 검증 가능
+   - API Gateway에서 중앙 검증 가능
 
-3. **紐⑤컮??吏??*
-   - Token 湲곕컲?대씪 ?ㅼ씠?곕툕 ?깆뿉 ?곹빀
-   - Cookie ?섏〈???놁쓬
+3. **모바일 지원**
+   - Token 기반이라 네이티브 앱에 적합
+   - Cookie 의존성 없음
 
-4. **CORS 媛꾨떒**
-   - Authorization ?ㅻ뜑 ?ъ슜
-   - Preflight ?붿껌 理쒖냼??
+4. **CORS 간단**
+   - Authorization 헤더 사용
+   - Preflight 요청 최소화
 
 ### Negative
 
-1. **Token Revocation ?대젮?**
-   - JWT??諛쒓툒 ??痍⑥냼 遺덇???
-   - Mitigation: 吏㏃? expiry (15遺? + Refresh token
+1. **Token Revocation 어려움**
+   - JWT는 발급 후 취소 불가능
+   - Mitigation: 짧은 expiry (15분) + Refresh token
 
-2. **Token ?ш린**
-   - ?몄뀡 ID蹂대떎 ??(200-300 bytes)
-   - 留??붿껌留덈떎 ?꾩넚
-   - Impact: 臾댁떆 媛??(gzip ?곸슜 ??
+2. **Token 크기**
+   - 세션 ID보다 큼 (200-300 bytes)
+   - 매 요청마다 전송
+   - Impact: 무시 가능 (gzip 적용 시)
 
-3. **蹂댁븞 由ъ뒪??*
-   - XSS 怨듦꺽 ??Access token ?덉랬 媛??
-   - Mitigation: HttpOnly cookie??Refresh token ???
+3. **보안 리스크**
+   - XSS 공격 시 Access token 탈취 가능
+   - Mitigation: HttpOnly cookie에 Refresh token 저장
 
 ### Neutral
 
-1. **異붽? 援ы쁽 ?꾩슂**
-   - Refresh token rotation (?ㅼ쓬 二?
-   - Token blacklist (optional, ?곗꽑?쒖쐞 ??쓬)
+1. **추가 구현 필요**
+   - Refresh token rotation (다음 주)
+   - Token blacklist (optional, 우선순위 낮음)
 
 ---
 
@@ -384,62 +384,62 @@ Token Rotation:
 
 ### 1. Session-based Authentication
 **Pros:**
-- ?쒕쾭?먯꽌 ?몄뀡 痍⑥냼 媛??
-- 媛꾨떒??援ы쁽
+- 서버에서 세션 취소 가능
+- 간단한 구현
 
 **Cons:**
-- Stateful: Redis/DB ?꾩슂
-- ?섑룊 ?뺤옣 蹂듭옟
-- 留덉씠?щ줈?쒕퉬?ㅼ뿉 遺?곹빀
+- Stateful: Redis/DB 필요
+- 수평 확장 복잡
+- 마이크로서비스에 부적합
 
-**Decision:** ??Rejected
+**Decision:** ❌ Rejected
 
 ---
 
 ### 2. OAuth 2.0 (Authorization Code Flow)
 **Pros:**
-- ?쒖? ?꾨줈?좎퐳
-- ?⑤뱶?뚰떚 濡쒓렇??吏??
+- 표준 프로토콜
+- 써드파티 로그인 지원
 
 **Cons:**
-- ?꾩옱 遺덊븘??(?먯껜 ?몄쬆留?
-- 援ы쁽 蹂듭옟???믪쓬
-- 異붽? ?명봽???꾩슂 (Authorization Server)
+- 현재 불필요 (자체 인증만)
+- 구현 복잡도 높음
+- 추가 인프라 필요 (Authorization Server)
 
-**Decision:** ?몌툘 Deferred (?ν썑 ?뚯뀥 濡쒓렇??異붽? ???ш???
+**Decision:** ⏸️ Deferred (향후 소셜 로그인 추가 시 재검토)
 
 ---
 
 ### 3. Opaque Token + Introspection
 **Pros:**
-- Token revocation 媛??
-- Payload ?몄텧 ?놁쓬
+- Token revocation 가능
+- Payload 노출 없음
 
 **Cons:**
-- 留??붿껌留덈떎 DB 議고쉶
-- ?깅뒫 蹂묐ぉ 媛??
+- 매 요청마다 DB 조회
+- 성능 병목 가능
 
-**Decision:** ??Rejected (Stateless ?붽뎄?ы빆 ?꾨같)
+**Decision:** ❌ Rejected (Stateless 요구사항 위배)
 
 ---
 
 ## Implementation Plan
 
-### Phase 1: 湲곕낯 援ы쁽 (?꾨즺)
-- [x] JWT 諛쒓툒 (Access + Refresh)
-- [x] ?좏겙 寃利?誘몃뱾?⑥뼱
-- [x] Login/Logout ?붾뱶?ъ씤??
-- [x] 80%+ ?뚯뒪??而ㅻ쾭由ъ?
+### Phase 1: 기본 구현 (완료)
+- [x] JWT 발급 (Access + Refresh)
+- [x] 토큰 검증 미들웨어
+- [x] Login/Logout 엔드포인트
+- [x] 80%+ 테스트 커버리지
 
-### Phase 2: 蹂댁븞 媛뺥솕 (?ㅼ쓬 二?
+### Phase 2: 보안 강화 (다음 주)
 - [ ] Refresh token rotation
 - [ ] Rate limiting (login endpoint)
-- [ ] Brute-force 諛⑹뼱
+- [ ] Brute-force 방어
 
-### Phase 3: 紐⑤땲?곕쭅 (2二???
-- [ ] Token 諛쒓툒/寃利?硫뷀듃由?
-- [ ] ?ㅽ뙣 濡쒓렇 ?섏쭛
-- [ ] ?뚮┝ ?ㅼ젙
+### Phase 3: 모니터링 (2주 후)
+- [ ] Token 발급/검증 메트릭
+- [ ] 실패 로그 수집
+- [ ] 알림 설정
 
 ---
 
@@ -456,69 +456,69 @@ Token Rotation:
 
 - ADR-038: API Gateway Architecture
 - ADR-040: Microservices Communication
-- ADR-043: Redis Distributed Lock (related: token blacklist 寃??
+- ADR-043: Redis Distributed Lock (related: token blacklist 검토)
 
 ---
 
 ## Follow-up
 
-- **2二???由щ럭:** Refresh token rotation ?④낵 痢≪젙
-- **1媛쒖썡 ???뚭퀬:** 蹂댁븞 ?댁뒋 諛쒖깮 ?щ? ?뺤씤
-- **3媛쒖썡 ???ы룊媛:** OAuth 2.0 ?꾩슂???ш???
+- **2주 후 리뷰:** Refresh token rotation 효과 측정
+- **1개월 후 회고:** 보안 이슈 발생 여부 확인
+- **3개월 후 재평가:** OAuth 2.0 필요성 재검토
 ```
 
 ### 4. Problem-Solution Log
 
 ```markdown
-# 臾몄젣 ?닿껐 濡쒓렇
+# 문제 해결 로그
 
 ## 2026-01-29: Cache Race Condition
 
-### 臾몄젣 (Problem)
+### 문제 (Problem)
 **Severity:** HIGH
-**Impact:** DB 荑쇰━ 10諛?利앷?, ?묐떟 ?쒓컙 5諛?利앷?
-**Reporter:** 紐⑤땲?곕쭅 ?뚮┝ (Datadog)
+**Impact:** DB 쿼리 10배 증가, 응답 시간 5배 증가
+**Reporter:** 모니터링 알림 (Datadog)
 
-**利앹긽:**
-- ?숈떆 ?붿껌 1000 req/s ??DB 荑쇰━ 800 queries/s
+**증상:**
+- 동시 요청 1000 req/s 시 DB 쿼리 800 queries/s
 - Expected: 50 queries/s (cache hit ratio 95%)
-- ?쇳겕 ??꾩뿉 DB CPU 100%
+- 피크 타임에 DB CPU 100%
 
-**?ы쁽 議곌굔:**
+**재현 조건:**
 ```bash
-# ?숈떆 ?붿껌 100媛?
+# 동시 요청 100개
 ab -n 100 -c 100 http://localhost:8000/api/users/123
 ```
 
-**?먮윭 濡쒓렇:**
+**에러 로그:**
 ```
 [ERROR] Cache miss for key: user:123
 [ERROR] Cache miss for key: user:123
 [ERROR] Cache miss for key: user:123
-... (?숈떆??100媛?諛쒖깮)
+... (동시에 100개 발생)
 ```
 
 ---
 
-### 洹쇰낯 ?먯씤 (Root Cause)
+### 근본 원인 (Root Cause)
 
-**遺꾩꽍 怨쇱젙:**
-1. 罹먯떆 濡쒖쭅 ?뺤씤 ??Cache-Aside ?⑦꽩 ?ъ슜
-2. ?숈떆 ?붿껌 ??紐⑤몢 cache miss 諛쒖깮
-3. 紐⑤몢 DB 議고쉶 ??紐⑤몢 罹먯떆 ???(race condition)
+**분석 과정:**
+1. 캐시 로직 확인 → Cache-Aside 패턴 사용
+2. 동시 요청 시 모두 cache miss 발생
+3. 모두 DB 조회 → 모두 캐시 저장 (race condition)
 
 **Root Cause:**
 ```typescript
-// 湲곗〈 肄붾뱶 (臾몄젣)
+// 기존 코드 (문제)
 async function getUser(id: string): Promise<User> {
-  // 1. 紐⑤몢 罹먯떆 ?뺤씤 ??miss
+  // 1. 모두 캐시 확인 → miss
   const cached = await cache.get(`user:${id}`);
   if (cached) return cached;
 
-  // 2. 紐⑤몢 DB 議고쉶 (?숈떆??100媛?荑쇰━!)
+  // 2. 모두 DB 조회 (동시에 100개 쿼리!)
   const user = await db.users.findById(id);
 
-  // 3. 紐⑤몢 罹먯떆 ???
+  // 3. 모두 캐시 저장
   await cache.set(`user:${id}`, user, 3600);
 
   return user;
@@ -527,20 +527,20 @@ async function getUser(id: string): Promise<User> {
 
 **Diagram:**
 ```
-Request 1: [Cache Miss] ??[DB Query] ??[Cache Set]
-Request 2: [Cache Miss] ??[DB Query] ??[Cache Set]  ???숈떆 諛쒖깮
-Request 3: [Cache Miss] ??[DB Query] ??[Cache Set]
+Request 1: [Cache Miss] → [DB Query] → [Cache Set]
+Request 2: [Cache Miss] → [DB Query] → [Cache Set]  ← 동시 발생
+Request 3: [Cache Miss] → [DB Query] → [Cache Set]
 ...
 ```
 
 ---
 
-### ?닿껐 諛⑸쾿 (Solution)
+### 해결 방법 (Solution)
 
 **Approach:** Redis Distributed Lock (SETNX)
 
 ```typescript
-// 媛쒖꽑??肄붾뱶
+// 개선된 코드
 import Redis from 'ioredis';
 
 const redis = new Redis();
@@ -549,11 +549,11 @@ async function getUser(id: string): Promise<User> {
   const cacheKey = `user:${id}`;
   const lockKey = `lock:${cacheKey}`;
 
-  // 1. 罹먯떆 ?뺤씤
+  // 1. 캐시 확인
   const cached = await cache.get(cacheKey);
   if (cached) return cached;
 
-  // 2. Lock ?띾뱷 ?쒕룄 (10珥?TTL)
+  // 2. Lock 획득 시도 (10초 TTL)
   const lockAcquired = await redis.set(
     lockKey,
     'locked',
@@ -563,25 +563,25 @@ async function getUser(id: string): Promise<User> {
 
   if (lockAcquired) {
     try {
-      // 3. Double-check cache (?ㅻⅨ ?꾨줈?몄뒪媛 ??ν뻽?????덉쓬)
+      // 3. Double-check cache (다른 프로세스가 저장했을 수 있음)
       const cachedAgain = await cache.get(cacheKey);
       if (cachedAgain) return cachedAgain;
 
-      // 4. DB 議고쉶 (lock ?띾뱷??1媛쒕쭔 ?ㅽ뻾)
+      // 4. DB 조회 (lock 획득한 1개만 실행)
       const user = await db.users.findById(id);
 
-      // 5. 罹먯떆 ???
+      // 5. 캐시 저장
       await cache.set(cacheKey, user, 3600);
 
       return user;
     } finally {
-      // 6. Lock ?댁젣
+      // 6. Lock 해제
       await redis.del(lockKey);
     }
   } else {
-    // 7. Lock ?湲?(?ㅻⅨ ?꾨줈?몄뒪媛 DB 議고쉶 以?
-    await sleep(100);  // 100ms ?湲?
-    return getUser(id);  // ?ъ떆??(?대쾲??罹먯떆 hit)
+    // 7. Lock 대기 (다른 프로세스가 DB 조회 중)
+    await sleep(100);  // 100ms 대기
+    return getUser(id);  // 재시도 (이번엔 캐시 hit)
   }
 }
 
@@ -590,14 +590,14 @@ function sleep(ms: number): Promise<void> {
 }
 ```
 
-**媛쒖꽑 寃곌낵:**
+**개선 결과:**
 ```
 Before:
-  1000 req/s ??800 DB queries/s
+  1000 req/s → 800 DB queries/s
   Response time: 200ms avg
 
 After:
-  1000 req/s ??50 DB queries/s (95% cache hit)
+  1000 req/s → 50 DB queries/s (95% cache hit)
   Response time: 50ms avg
 
 Improvement:
@@ -607,40 +607,40 @@ Improvement:
 
 ---
 
-### ?숈뒿 ?댁슜 (Learnings)
+### 학습 내용 (Learnings)
 
-1. **Cache-Aside ?⑦꽩???쒓퀎**
-   - 怨좏듃?섑뵿 ?섍꼍?먯꽌 race condition 諛쒖깮
-   - Distributed lock ?꾩닔
+1. **Cache-Aside 패턴의 한계**
+   - 고트래픽 환경에서 race condition 발생
+   - Distributed lock 필수
 
-2. **Distributed Lock 援ы쁽**
-   - Redis SETNX ?ъ슜
-   - TTL ?ㅼ젙?쇰줈 deadlock 諛⑹?
-   - Double-check ?⑦꽩?쇰줈 遺덊븘?뷀븳 ?湲?諛⑹?
+2. **Distributed Lock 구현**
+   - Redis SETNX 사용
+   - TTL 설정으로 deadlock 방지
+   - Double-check 패턴으로 불필요한 대기 방지
 
-3. **紐⑤땲?곕쭅 以묒슂??*
-   - 臾몄젣瑜?議곌린??諛쒓껄 (Datadog ?뚮┝)
-   - 硫뷀듃由?異붿쟻?쇰줈 媛쒖꽑 ?④낵 痢≪젙
+3. **모니터링 중요성**
+   - 문제를 조기에 발견 (Datadog 알림)
+   - 메트릭 추적으로 개선 효과 측정
 
 ---
 
-### 異붽? 媛쒖꽑 ?ы빆
+### 추가 개선 사항
 
 1. **Cache Warming**
-   - ?쒕쾭 ?쒖옉 ???멸린 ?곗씠??誘몃━ 罹먯떛
-   - Cold start 臾몄젣 ?닿껐
+   - 서버 시작 시 인기 데이터 미리 캐싱
+   - Cold start 문제 해결
 
-2. **Lock 理쒖쟻??*
-   - Redlock ?뚭퀬由ъ쬁 ?곸슜 (怨좉??⑹꽦)
-   - Lock timeout ?쒕떇 (10珥???5珥?
+2. **Lock 최적화**
+   - Redlock 알고리즘 적용 (고가용성)
+   - Lock timeout 튜닝 (10초 → 5초)
 
-3. **紐⑤땲?곕쭅 媛뺥솕**
-   - Lock ?띾뱷 ?쒓컙 硫뷀듃由?異붽?
-   - Lock ?湲??잛닔 異붿쟻
+3. **모니터링 강화**
+   - Lock 획득 시간 메트릭 추가
+   - Lock 대기 횟수 추적
 
 ---
 
-### 愿???먮즺
+### 관련 자료
 
 - **PR:** #43 - Add Redis distributed lock
 - **ADR:** docs/adr/0043-redis-distributed-lock.md
@@ -649,22 +649,22 @@ Improvement:
 
 ---
 
-### ?쒓컙 ?뚯슂
+### 시간 소요
 
-- **遺꾩꽍:** 1 hour
-- **援ы쁽:** 1.5 hours
-- **?뚯뒪??** 0.5 hour
+- **분석:** 1 hour
+- **구현:** 1.5 hours
+- **테스트:** 0.5 hour
 - **Total:** 3 hours
 ```
 
 ---
 
-## ?먮룞 ?앹꽦 ?뚰겕?뚮줈??
+## 자동 생성 워크플로우
 
-### Git Commit 湲곕컲 ?쇱? ?앹꽦
+### Git Commit 기반 일지 생성
 
 ```bash
-# ?ㅻ뒛 而ㅻ컠?ㅻ줈 ?쇱? ?앹꽦
+# 오늘 커밋들로 일지 생성
 git log --since="today" --pretty=format:"%h|%an|%ad|%s" --date=format:"%H:%M" \
   | while IFS='|' read hash author time subject; do
     echo "### [$subject]"
@@ -672,51 +672,51 @@ git log --since="today" --pretty=format:"%h|%an|%ad|%s" --date=format:"%H:%M" \
     echo "**Author:** $author"
     echo "**Commit:** $hash"
     echo ""
-    # ?뚯씪 紐⑸줉
+    # 파일 목록
     git show --name-only --pretty="" $hash | head -5
     echo ""
   done > journal/$(date +%Y-%m-%d).md
 ```
 
-### Claude Code濡??쇱? ?앹꽦
+### Claude Code로 일지 생성
 
 ```bash
-# ?쇱씪 濡쒓렇
+# 일일 로그
 /dev-journal --daily
 
-# 二쇨컙 ?붿빟
+# 주간 요약
 /dev-journal --weekly
 
-# ADR ?앹꽦
+# ADR 생성
 /dev-journal --adr "JWT Authentication"
 
-# 臾몄젣 ?닿껐 濡쒓렇
+# 문제 해결 로그
 /dev-journal --problem "Cache race condition"
 ```
 
 ---
 
-## 異쒕젰 ?뺤떇
+## 출력 형식
 
-???ㅽ궗 ?ъ슜 ???ㅼ쓬 ?뺤떇?쇰줈 異쒕젰:
+이 스킬 사용 시 다음 형식으로 출력:
 
-1. **Markdown ?뚯씪 ?앹꽦**
-   - ?꾩튂: `docs/journal/YYYY-MM-DD.md`
-   - Git???먮룞 而ㅻ컠 (optional)
+1. **Markdown 파일 생성**
+   - 위치: `docs/journal/YYYY-MM-DD.md`
+   - Git에 자동 커밋 (optional)
 
-2. **?붿빟 ?듦퀎**
-   - 而ㅻ컠 ?? PR ?? ?댁뒋 ??
-   - ?뚯뒪??而ㅻ쾭由ъ? 蹂??
-   - 二쇱슂 蹂寃??ы빆
+2. **요약 통계**
+   - 커밋 수, PR 수, 이슈 수
+   - 테스트 커버리지 변화
+   - 주요 변경 사항
 
-3. **?먮룞 ?쒓렇**
+3. **자동 태그**
    - #bug, #feature, #refactor
    - #high-impact, #performance
    - #security, #architecture
 
 ---
 
-## ?듯빀 湲곕뒫
+## 통합 기능
 
 ### GitHub Integration
 
@@ -726,7 +726,7 @@ name: Daily Journal
 
 on:
   schedule:
-    - cron: '0 18 * * *'  # 留ㅼ씪 ???6??(KST)
+    - cron: '0 18 * * *'  # 매일 저녁 6시 (KST)
 
 jobs:
   generate-journal:
@@ -734,15 +734,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 100  # 理쒓렐 100 而ㅻ컠
+          fetch-depth: 100  # 최근 100 커밋
 
       - name: Generate daily log
         run: |
-          # ?ㅻ뒛 而ㅻ컠 ?섏쭛
+          # 오늘 커밋 수집
           git log --since="today" --pretty=format:"%h|%an|%ad|%s" \
             > temp_commits.txt
 
-          # Claude Code濡??쇱? ?앹꽦
+          # Claude Code로 일지 생성
           claude-code /dev-journal --daily --input temp_commits.txt
 
       - name: Commit journal
@@ -754,24 +754,24 @@ jobs:
           git push
 ```
 
-### Slack ?뚮┝
+### Slack 알림
 
 ```typescript
-// 二쇨컙 ?붿빟??Slack???먮룞 ?꾩넚
+// 주간 요약을 Slack에 자동 전송
 import { WebClient } from '@slack/web-api';
 
 const slack = new WebClient(process.env.SLACK_TOKEN);
 
 async function sendWeeklySummary() {
-  const summary = generateWeeklySummary();  // ?쇱? ?앹꽦
+  const summary = generateWeeklySummary();  // 일지 생성
 
   await slack.chat.postMessage({
     channel: '#dev-updates',
-    text: '?대쾲 二?媛쒕컻 ?붿빟',
+    text: '이번 주 개발 요약',
     blocks: [
       {
         type: 'header',
-        text: { type: 'plain_text', text: '?뱤 二쇨컙 媛쒕컻 ?붿빟' }
+        text: { type: 'plain_text', text: '📊 주간 개발 요약' }
       },
       {
         type: 'section',
@@ -784,99 +784,99 @@ async function sendWeeklySummary() {
 
 ---
 
-## 寃??& ?쒓렇
+## 검색 & 태그
 
-### ?쒓렇 湲곕컲 寃??
+### 태그 기반 검색
 
 ```bash
-# ?뱀젙 ?쒓렇濡?寃??
+# 특정 태그로 검색
 /dev-journal --search "#authentication"
 
-# ?щ윭 ?쒓렇
+# 여러 태그
 /dev-journal --search "#bug #high-impact"
 
-# ?좎쭨 踰붿쐞
+# 날짜 범위
 /dev-journal --search --from 2026-01-01 --to 2026-01-31
 ```
 
-### ?꾨Ц 寃??
+### 전문 검색
 
 ```bash
-# ?ㅼ썙??寃??
+# 키워드 검색
 /dev-journal --search "race condition"
 
-# ?뱀젙 ?묒꽦??
-/dev-journal --search --author "?띻만??
+# 특정 작성자
+/dev-journal --search --author "홍길동"
 
-# ADR留?寃??
+# ADR만 검색
 /dev-journal --search --type adr
 ```
 
 ---
 
-## ?ъ슜 ?덉떆
+## 사용 예시
 
-### ?좉퇋 ????⑤낫??
+### 신규 팀원 온보딩
 
 ```bash
-# 理쒓렐 ????二쇱슂 寃곗젙 ?ы빆
+# 최근 한 달 주요 결정 사항
 /dev-journal --summary --last 30days --type adr
 
-# 異쒕젰:
-# ?뱥 Architecture Decisions (Last 30 Days)
+# 출력:
+# 📋 Architecture Decisions (Last 30 Days)
 #
 # 1. ADR-042: JWT Authentication (Jan 27)
-#    - JWT 湲곕컲 ?몄쬆 梨꾪깮
+#    - JWT 기반 인증 채택
 #    - Impact: HIGH
 #
 # 2. ADR-043: Redis Distributed Lock (Jan 29)
-#    - 罹먯떆 race condition ?닿껐
+#    - 캐시 race condition 해결
 #    - Impact: MEDIUM
 #
-# 3. ADR-041: GraphQL ??REST (Jan 25)
-#    - GraphQL ?쒓굅, REST濡??⑥닚??
+# 3. ADR-041: GraphQL → REST (Jan 25)
+#    - GraphQL 제거, REST로 단순화
 #    - Impact: HIGH
 ```
 
-### ?꾨줈?앺듃 ?뚭퀬
+### 프로젝트 회고
 
 ```bash
-# ?대쾲 ??紐⑤뱺 ?쒕룞 ?붿빟
+# 이번 달 모든 활동 요약
 /dev-journal --monthly --month 2026-01
 
-# 異쒕젰:
-# ?뱤 ?붽컙 由ы룷??(2026??1??
+# 출력:
+# 📊 월간 리포트 (2026년 1월)
 #
 # ## Highlights
-# - ?몄쬆 ?쒖뒪???꾨즺
-# - ?깅뒫 95% 媛쒖꽑
-# - 20媛?踰꾧렇 ?닿껐
+# - 인증 시스템 완료
+# - 성능 95% 개선
+# - 20개 버그 해결
 #
 # ## Metrics
 # - 72 commits
 # - 24 PRs merged
 # - 32 issues closed
-# - ?뚯뒪??而ㅻ쾭由ъ?: 78% ??85%
+# - 테스트 커버리지: 78% → 85%
 ```
 
-### ?몄닔?멸퀎
+### 인수인계
 
 ```bash
-# ?꾨줈?앺듃 ?꾩껜 ?덉뒪?좊━ ?앹꽦
+# 프로젝트 전체 히스토리 생성
 /dev-journal --export --output handover.md
 
-# 異쒕젰:
-# - 紐⑤뱺 ADR
-# - 二쇱슂 踰꾧렇 ?닿껐 怨쇱젙
-# - ?꾪궎?띿쿂 蹂寃??대젰
-# - 誘명빐寃?湲곗닠 遺梨?
+# 출력:
+# - 모든 ADR
+# - 주요 버그 해결 과정
+# - 아키텍처 변경 이력
+# - 미해결 기술 부채
 ```
 
 ---
 
-## ?ㅼ젙
+## 설정
 
-### .clauderc ?ㅼ젙
+### .clauderc 설정
 
 ```json
 {
@@ -903,24 +903,24 @@ async function sendWeeklySummary() {
 
 ---
 
-## 紐⑤쾾 ?щ?
+## 모범 사례
 
-1. **留ㅼ씪 ?묒꽦**
-   - Git commit 湲곕컲 ?먮룞 ?앹꽦
-   - ??곸뿉 ?섎（ ?붿빟 由щ럭
+1. **매일 작성**
+   - Git commit 기반 자동 생성
+   - 저녁에 하루 요약 리뷰
 
-2. **二쇨컙 ?뚭퀬**
-   - 留ㅼ＜ 湲덉슂??二쇨컙 ?붿빟 ?앹꽦
-   - ?怨?怨듭쑀
+2. **주간 회고**
+   - 매주 금요일 주간 요약 생성
+   - 팀과 공유
 
-3. **ADR ?꾩닔**
-   - 以묒슂??寃곗젙? ADR ?묒꽦
-   - 誘몃옒???섎? ?꾪븳 臾몄꽌
+3. **ADR 필수**
+   - 중요한 결정은 ADR 작성
+   - 미래의 나를 위한 문서
 
-4. **?쒓렇 ?쒖슜**
-   - 寃?됱쓣 ?꾪븳 ?쇨????쒓렇
-   - #bug, #feature, #performance ??
+4. **태그 활용**
+   - 검색을 위한 일관된 태그
+   - #bug, #feature, #performance 등
 
-5. **留곹겕 ?곌껐**
-   - Issue, PR, Commit 留곹겕 ?ы븿
-   - 留λ씫 異붿쟻 ?⑹씠
+5. **링크 연결**
+   - Issue, PR, Commit 링크 포함
+   - 맥락 추적 용이

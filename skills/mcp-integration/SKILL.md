@@ -1,6 +1,6 @@
 ---
 name: mcp-integration
-description: Set up and integrate MCP servers.
+description: Model Context Protocol(MCP) 서버를 설정하고 통합합니다. "MCP 설정", "MCP 서버", "도구 연동", "외부 서비스 연결", "MCP setup", "MCP server", "tool integration" 등의 요청 시 사용합니다. Claude의 외부 도구, 데이터베이스, 서비스 연동을 지원합니다.
 ---
 
 # MCP Integration Skill
@@ -304,7 +304,7 @@ echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | npx my-mcp-server
 
 ```markdown
 # Add MCP server to config
-~/.claude/settings.json ??mcpServers
+~/.claude/settings.json → mcpServers
 
 # Server capabilities
 - tools: Execute actions

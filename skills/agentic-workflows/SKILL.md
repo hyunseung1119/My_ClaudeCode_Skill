@@ -1,6 +1,6 @@
 ---
 name: agentic-workflows
-description: Design and implement multi-agent workflows.
+description: 멀티 에이전트 시스템 및 자율 워크플로우를 설계하고 구현합니다. "멀티 에이전트", "워크플로우 자동화", "에이전트 협업", "오케스트레이션", "multi-agent", "agentic workflow", "orchestration" 등의 요청 시 사용합니다. ReAct, Plan-Execute, 멀티에이전트 패턴을 포함합니다.
 ---
 
 # Agentic Workflows Skill
@@ -64,7 +64,7 @@ class ReActAgent:
 
 ### 2. CRITIC (Self-Critique)
 
-Generate ??Critique ??Refine:
+Generate → Critique → Refine:
 
 ```markdown
 [GENERATION]
@@ -77,7 +77,7 @@ def quicksort(arr):
     return quicksort(left) + [pivot] + quicksort(right)
 
 [CRITIQUE]
-- Issue 1: Always picks first element as pivot (worst case O(n짼) for sorted)
+- Issue 1: Always picks first element as pivot (worst case O(n²) for sorted)
 - Issue 2: Creates new lists (O(n) extra space per recursion)
 - Issue 3: No handling for equal elements distribution
 
@@ -119,22 +119,22 @@ Explore multiple solution paths:
 Optimize database query taking 5 seconds
 
 [BRANCH 1: Index Optimization]
-?쒋?? Add composite index on (user_id, created_at)
-?쒋?? Estimated improvement: 80%
-?쒋?? Risk: Index maintenance overhead
-?붴?? Score: 8/10
+├── Add composite index on (user_id, created_at)
+├── Estimated improvement: 80%
+├── Risk: Index maintenance overhead
+└── Score: 8/10
 
 [BRANCH 2: Query Rewrite]
-?쒋?? Replace subquery with JOIN
-?쒋?? Estimated improvement: 60%
-?쒋?? Risk: Logic change might affect results
-?붴?? Score: 6/10
+├── Replace subquery with JOIN
+├── Estimated improvement: 60%
+├── Risk: Logic change might affect results
+└── Score: 6/10
 
 [BRANCH 3: Caching]
-?쒋?? Add Redis cache with 5min TTL
-?쒋?? Estimated improvement: 95% for repeated queries
-?쒋?? Risk: Cache invalidation complexity
-?붴?? Score: 7/10
+├── Add Redis cache with 5min TTL
+├── Estimated improvement: 95% for repeated queries
+├── Risk: Cache invalidation complexity
+└── Score: 7/10
 
 [EVALUATION]
 Branch 1 selected: Best balance of improvement and simplicity
@@ -319,32 +319,32 @@ class FallbackAgent:
 
 ### Sequential Pipeline
 ```
-Agent A ??Agent B ??Agent C
+Agent A → Agent B → Agent C
 ```
 
 ### Parallel Fan-Out
 ```
-       ?뚢넂 Agent A ???
-Input ??쇄넂 Agent B ??쇄넂 Aggregate
-       ?붴넂 Agent C ???
+       ┌→ Agent A ─┐
+Input ─┼→ Agent B ─┼→ Aggregate
+       └→ Agent C ─┘
 ```
 
 ### Supervisor
 ```
-Supervisor ??р? Worker 1
-            ?쒋? Worker 2
-            ?붴? Worker 3
+Supervisor ─┬─ Worker 1
+            ├─ Worker 2
+            └─ Worker 3
 ```
 
 ## Quick Reference
 
 ```markdown
 Patterns:
-- ReAct: Think ??Act ??Observe loop
-- CRITIC: Generate ??Critique ??Refine
-- ToT: Branch ??Evaluate ??Prune ??Select
-- Debate: Pro vs Con ??Synthesis
-- Ensemble: Multiple agents ??Aggregate
+- ReAct: Think → Act → Observe loop
+- CRITIC: Generate → Critique → Refine
+- ToT: Branch → Evaluate → Prune → Select
+- Debate: Pro vs Con → Synthesis
+- Ensemble: Multiple agents → Aggregate
 
 State:
 - Checkpoint frequently

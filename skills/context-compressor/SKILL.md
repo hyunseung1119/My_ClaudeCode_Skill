@@ -1,6 +1,6 @@
 ---
 name: context-compressor
-description: Compress context while preserving key information.
+description: 컨텍스트를 압축하여 토큰 사용을 최적화합니다. "컨텍스트 압축", "토큰 절약", "요약", "정보 압축", "context compression", "token optimization", "summarize context" 등의 요청 시 사용합니다. 코드, 문서, 대화 컨텍스트의 정보 밀도를 높이면서 핵심 정보를 보존합니다.
 ---
 
 # Context Compressor Skill
@@ -72,13 +72,13 @@ export class OrderService {
 class OrderService {
   deps: repository, eventBus, validator
 
-  createOrder(input) ??Order
-    validates ??creates ??saves ??publishes event
+  createOrder(input) → Order
+    validates → creates → saves → publishes event
 
-  cancelOrder(orderId) ??void
-    finds ??validates cancellable ??updates status ??publishes
+  cancelOrder(orderId) → void
+    finds → validates cancellable → updates status → publishes
 
-  getOrder(orderId) ??Order | null
+  getOrder(orderId) → Order | null
     cache-first lookup
 }
 ```
@@ -128,7 +128,7 @@ Services (all in src/services/auth/):
 - TVS: TokenValidationService
 - JWT: JWTService
 
-Flow: UAS ??TVS ??JWT for token validation
+Flow: UAS → TVS → JWT for token validation
 ```
 
 ### 5. Semantic Chunking
@@ -145,8 +145,8 @@ Line 156: User service
 
 # OUTPUT: Grouped
 User module structure:
-- Model (L45) ??Validation (L123)
-- Repository (L89) ??Service (L156) ??Controller (L200)
+- Model (L45) → Validation (L123)
+- Repository (L89) → Service (L156) → Controller (L200)
 ```
 
 ## Compression Levels
@@ -206,7 +206,7 @@ Examples:
 
 ---
 
-## ?뵩 ?ㅼ젣 援ы쁽 (Implementation)
+## 🔧 실제 구현 (Implementation)
 
 ### Context Compressor (TypeScript)
 
@@ -258,7 +258,7 @@ export class ContextCompressor {
       const { result: refSubstituted, replaced } = this.applyReferenceSubstitution(compressed);
       compressed = refSubstituted;
       techniques.push('Reference Substitution');
-      preserved.push(...replaced.map(r => `${r.original} ??${r.shortened}`));
+      preserved.push(...replaced.map(r => `${r.original} → ${r.shortened}`));
     }
 
     if (options.level === 'medium' || options.level === 'heavy') {
@@ -524,7 +524,7 @@ export class ContextCompressor {
   }
 
   private abbreviate(name: string): string {
-    // CamelCase to acronym: UserAuthenticationService ??UAS
+    // CamelCase to acronym: UserAuthenticationService → UAS
     const words = name.match(/[A-Z][a-z]+/g);
     if (words && words.length > 2) {
       return words.map(w => w[0]).join('');
@@ -557,7 +557,7 @@ export async function compressContext(
   });
 
   // Output
-  console.log('?뿙截? Context Compression Results\n');
+  console.log('🗜️  Context Compression Results\n');
   console.log(`Original: ${result.originalTokens} tokens`);
   console.log(`Compressed: ${result.compressedTokens} tokens`);
   console.log(`Ratio: ${result.compressionRatio.toFixed(2)}x`);
@@ -569,11 +569,11 @@ export async function compressContext(
   // Write compressed output
   const outputFile = inputFile.replace(/(\.\w+)$/, '.compressed$1');
   fs.writeFileSync(outputFile, result.compressed);
-  console.log(`\n?뱞 Output: ${outputFile}`);
+  console.log(`\n📄 Output: ${outputFile}`);
 
   // Quality metrics
   const quality = compressor.measureQuality(content, result.compressed);
-  console.log(`\n?뱤 Quality Score: ${quality.score.toFixed(1)}/100`);
+  console.log(`\n📊 Quality Score: ${quality.score.toFixed(1)}/100`);
   console.log(`   Token Savings: ${quality.tokenSavings.toFixed(1)}%`);
   console.log(`   Info Retention: ${quality.informationRetention.toFixed(1)}%`);
 }
@@ -586,8 +586,8 @@ export function setupAutoCompression(contextProvider: any): void {
 
     const result = compressor.autoCompress(context.content, usage);
     if (result) {
-      console.log(`\n?좑툘  Context usage: ${(usage * 100).toFixed(1)}%`);
-      console.log(`?뿙截? Auto-compression applied: ${result.techniques.join(', ')}`);
+      console.log(`\n⚠️  Context usage: ${(usage * 100).toFixed(1)}%`);
+      console.log(`🗜️  Auto-compression applied: ${result.techniques.join(', ')}`);
       console.log(`   Saved ${result.originalTokens - result.compressedTokens} tokens\n`);
 
       context.content = result.compressed;
@@ -632,7 +632,7 @@ npm install -g context-compressor
 context-compress large-file.ts --level medium
 
 # Output:
-# ?뿙截? Context Compression Results
+# 🗜️  Context Compression Results
 #
 # Original: 5000 tokens
 # Compressed: 1200 tokens
@@ -643,14 +643,14 @@ context-compress large-file.ts --level medium
 #   - Reference Substitution
 #   - Code Skeleton Extraction
 #
-# ?뱞 Output: large-file.compressed.ts
+# 📄 Output: large-file.compressed.ts
 #
-# ?뱤 Quality Score: 85.3/100
+# 📊 Quality Score: 85.3/100
 #    Token Savings: 76.0%
 #    Info Retention: 90.4%
 ```
 
 ---
 
-**踰꾩쟾**: 2.0 (援ы쁽 異붽?)
-**理쒖쥌 ?섏젙**: 2026-01-29 (?뺤텞 濡쒖쭅 援ы쁽 ?꾨즺)
+**버전**: 2.0 (구현 추가)
+**최종 수정**: 2026-01-29 (압축 로직 구현 완료)

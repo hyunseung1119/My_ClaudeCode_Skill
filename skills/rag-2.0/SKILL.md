@@ -1,6 +1,6 @@
 ---
 name: rag-2.0
-description: Advanced retrieval-augmented generation patterns.
+description: 2026년 기준 고급 RAG 시스템을 설계하고 구현합니다. "RAG", "검색 증강 생성", "벡터 검색", "하이브리드 검색", "임베딩", "RAG system", "retrieval", "vector search", "hybrid search" 등의 요청 시 사용합니다. Hybrid Search, GraphRAG, Advanced Retrieval 패턴을 포함합니다.
 ---
 
 # RAG 2.0 Skill
@@ -276,14 +276,14 @@ TARGETS = {
 
 ```markdown
 Retrieval Patterns:
-- Hybrid Search: BM25 + Vector (慣=0.5)
-- HyDE: Generate hypothetical ??search
-- Multi-Query: Query variants ??merge
-- Parent-Child: Small search ??large return
+- Hybrid Search: BM25 + Vector (α=0.5)
+- HyDE: Generate hypothetical → search
+- Multi-Query: Query variants → merge
+- Parent-Child: Small search → large return
 
 Self-Correcting:
 - Self-RAG: Retrieve if needed, critique
-- CRAG: Evaluate ??correct ??fallback
+- CRAG: Evaluate → correct → fallback
 
 Metrics (RAGAS):
 - Faithfulness > 0.9
