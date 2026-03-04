@@ -226,23 +226,78 @@ Claude Code CLI를 위한 종합 설정 저장소. 30개 스킬, 23개 에이전
 
 ---
 
-## 최신 업데이트 (2026-03-04)
+## 최신 업데이트 (2026-03-04) — CLAUDE.md 경량화 & Learning Mode
 
-### 이번 동기화에서 변경된 사항
+### 핵심 개선: "짧은 CLAUDE.md가 더 강하다"
 
-**추가:**
-- `developer-growth` 스킬 — 프론트/백엔드/AI/인프라 4개 성장 경로 + 3단계 레벨링
-- `CLAUDE.md` — PC 활성 글로벌 지침 동기화
+Claude Code에서 CLAUDE.md와 rules 파일은 **매 대화마다 컨텍스트에 로드**됩니다.
+너무 길면 실제 작업에 쓸 컨텍스트가 줄어들고, Claude가 지침을 선택적으로 무시하는 문제가 발생합니다.
 
-**정리 (삭제):**
-- `docs/` 디렉토리 (루트 문서 중복 복사본 8개)
-- `hooks/` 빈 디렉토리
-- `.claude/settings.local.json` 오래된 중첩 설정
-- 이전 루트 레벨 문서: CHANGELOG.md, GLOSSARY.md, INSTALLATION.md, MCP_SETUP_GUIDE.md, MIGRATION_2026.md, OPTIMIZATION_SUMMARY.md, UPDATE.md, USAGE_GUIDE.md
+**이번 업데이트의 핵심은 "지침을 줄이되, 지키게 만드는 것"입니다.**
 
-**규칙 통합 (12개 → 5개):**
-- 삭제: architecture.md, hooks.md, modern-frontend.md, observability.md, patterns.md, performance.md, token-efficiency.md
-- 유지/수정: agents.md, coding-style.md, git-workflow.md, security.md, testing.md
+#### Before vs After
+
+| 항목 | Before | After | 변화 |
+|------|--------|-------|------|
+| **CLAUDE.md** | 34줄 (프론트엔드 지침만) | 70줄 (종합 지침 6개 영역) | 범위 확장 but 간결 유지 |
+| **Rules 파일** | 12개 / 3,270줄 | 5개 / 120줄 | **96% 감소** |
+| **총 상시 로드 토큰** | ~4,500 토큰 | ~500 토큰 | **~90% 절약** |
+
+#### 왜 줄였나?
+
+```
+[Before] 12개 rules 파일에 3,270줄
+  → modern-frontend.md 혼자 784줄
+  → observability.md 738줄
+  → Claude가 긴 지침 중 일부를 무시하는 현상 발생
+  → 실제 코딩에 쓸 컨텍스트 낭비
+
+[After] 5개 rules 파일에 120줄
+  → 핵심만 남김 (코딩 스타일, 보안, 테스트, Git, 에이전트)
+  → 상세 내용은 skills/로 이동 (필요할 때만 로드)
+  → Claude가 지침을 실제로 따르는 비율 향상
+```
+
+#### CLAUDE.md 구조 변경
+
+```
+[Before] 프론트엔드 자동 적용 규칙만 (34줄)
+  → "프론트엔드 작업 시 modern-frontend.md 참조" 수준
+  → 코드 품질, 보안, 테스트 등 핵심 지침 없음
+
+[After] 6개 영역 종합 지침 (70줄)
+  ├── Learning Mode (70/30 가이드)      ← NEW
+  ├── Core Quality Rules (코드/보안/Git/테스트)
+  ├── Frontend Work (Anti-AI 디자인)
+  ├── Agent Usage (6개 핵심 에이전트)
+  └── Skills (주요 스킬 참조)
+```
+
+### Learning Mode 도입
+
+이번 업데이트의 두 번째 핵심입니다. CLAUDE.md에 **Learning Mode (Guided)** 를 추가했습니다.
+
+```markdown
+## Learning Mode (Guided)
+1. Explain WHY before writing code
+2. Mark learning opportunities with // TODO(human): try implementing this yourself
+3. Ratio: ~70% Claude writes + ~30% human implements
+4. After completing a task, briefly note 1-2 concepts worth studying deeper
+```
+
+**왜 필요한가:**
+- Claude에게 코드를 전부 맡기면 빠르지만, 개발자가 성장하지 않음
+- 70/30 비율로 핵심 로직은 Claude가 작성하되, 학습 가치가 있는 부분은 사용자가 직접 구현
+- `// TODO(human):` 마커로 사용자가 구현할 부분을 명확히 표시
+- 작업 후 "What You Learned" 요약 제공
+
+**관련 스킬:** `developer-growth` (이번에 추가) — Frontend/Backend/AI/Infra 4개 성장 경로, Level 1~3 학습 단계
+
+### 그 외 변경사항
+
+- `developer-growth` 스킬 추가 (PC에만 있던 것 동기화)
+- 불필요 파일 정리: docs/ (중복 8개), hooks/ (빈 폴더), 오래된 루트 문서 8개
+- `.claude/settings.local.json` 중첩 설정 제거
 
 ### 이전 주요 업데이트
 
