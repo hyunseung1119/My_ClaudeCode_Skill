@@ -1,34 +1,70 @@
-# Global Claude Code Instructions
+# Global Instructions
 
-이 파일은 모든 프로젝트에서 적용되는 전역 지침입니다.
+## Learning Mode (Guided)
 
-## 프론트엔드 개발 시 필수 적용
+I am a growing developer. When working with me:
 
-프론트엔드 작업(React, Vue, HTML/CSS 등)을 수행할 때는 반드시:
+1. **Explain WHY before writing code** — architecture decisions, pattern choices, trade-offs
+2. **Mark learning opportunities** with `// TODO(human): try implementing this yourself`
+3. **Ratio**: ~70% Claude writes + ~30% human implements (guided sections)
+4. **After completing a task**, briefly note 1-2 concepts worth studying deeper
 
-1. **`~/.claude/rules/modern-frontend.md` 규칙을 참조하여 적용합니다**
-2. **AI 클리셰 패턴을 피합니다** (보라색 그라데이션, 단순 카드 그리드 등)
-3. **WebSearch로 2026 트렌드를 조사합니다**
-4. **UX 연구 기반으로 설계합니다**
+### When I ask "explain this code":
+- Start with the mental model (what problem it solves)
+- Walk through the flow, not line-by-line
+- Highlight non-obvious decisions
+- Suggest related concepts to explore
 
-## 자동 적용 규칙
+## Core Quality Rules
 
-### 프론트엔드 작업 감지 시 자동 실행:
-- React 컴포넌트 생성/수정
-- CSS/스타일 작업
-- UI/UX 관련 질문
-- 웹 디자인 작업
+### Code
+- Immutability: always create new objects, never mutate
+- Functions < 50 lines, files < 400 lines
+- Validate user input at system boundaries (use zod/joi)
+- Handle errors explicitly — no silent failures
+- No hardcoded secrets — use env vars
 
-### 적용 내용:
-- 최신 트렌드 조사 (Bento Grid, Glass Morphism 2.0, Variable Fonts 등)
-- 마이크로인터랙션 적용
-- Skeleton Loading 구현
-- Container Queries 사용
-- 접근성(a11y) 고려
-- 성능 최적화
+### Security (always apply)
+- No secrets in code; .env in .gitignore
+- Parameterized queries only (no string concatenation for SQL)
+- Validate + sanitize all user input
+- Check object ownership (BOLA prevention)
+- Check function-level auth (BFLA prevention)
 
-## 참조 문서
+### Git
+- Conventional commits: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`
+- Test before committing
 
-- `~/.claude/rules/modern-frontend.md` - Anti-AI 디자인 원칙 (자동 적용)
-- `~/.claude/skills/react-component/SKILL.md` - 종합 프론트엔드 디자인 시스템
-- `/modern-frontend` 커맨드 - 위 두 문서를 명시적으로 활성화
+### Testing
+- TDD: write test first (RED) -> implement (GREEN) -> refactor
+- Target 80%+ coverage
+
+## Frontend Work
+
+When doing React/Vue/CSS/UI work, use `/modern-frontend` command to load Anti-AI design principles. Key points:
+- No purple/blue gradients, no centered-everything layouts
+- No pill buttons, no glass morphism, no icon+title+desc cards
+- Use: asymmetric grids, solid colors, sharp corners, editorial typography
+- Full guide: `~/.claude/skills/react-component/SKILL.md`
+
+## Agent Usage
+
+Use specialized agents proactively:
+- **planner**: complex features
+- **code-reviewer**: after writing code
+- **tdd-guide**: new features/bug fixes
+- **security-reviewer**: before commits
+- **build-error-resolver**: build failures
+- **debugger**: runtime errors
+
+Parallel execution for independent tasks. Sequential when results inform next step.
+
+## Skills (load on demand, not always)
+
+Skills are in `~/.claude/skills/`. Use `/skill-name` to activate. Key skills:
+- `/modern-frontend` — Anti-AI frontend design
+- `/security-audit` — OWASP security review
+- `/architecture-design` — system design + ADR
+- `/tdd-workflow` — test-driven development
+- `/code-review` — 5-layer review
+- `/developer-growth` — learning path guidance

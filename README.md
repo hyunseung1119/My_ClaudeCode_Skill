@@ -1,165 +1,309 @@
-# My Claude Code Skills
+# My Claude Code Settings
 
-Professional Claude Code skills for team collaboration.
+Claude Code CLI를 위한 종합 설정 저장소. 30개 스킬, 23개 에이전트, 28개 커맨드, 5개 규칙을 포함합니다.
 
-## 📦 Skills Included
-
-### 🎯 Product Planning Skills (New!)
-
-1. **product-planner** - 20-year senior PM expertise
-   - Market research automation (TAM/SAM/SOM)
-   - Competitor analysis
-   - Business model validation
-   - PRD generation
-   - Multi-domain support (EdTech, FinTech, HealthTech, etc.)
-
-2. **chatbot-designer** - Conversational UX automation
-   - Dialog flow generation (Mermaid)
-   - Intent/Entity classification
-   - FAQ generation (50+ pairs)
-   - Multi-platform export
-
-3. **llm-app-planner** - LLM application architecture
-   - App type selection (RAG/Agent/Fine-tuning)
-   - Cost calculator (all major LLMs)
-   - Prompt engineering templates
-   - Architecture diagrams
-
-### 🛠️ Development Skills
-
-- **backend-api** - FastAPI endpoint implementation
-- **clean-code** - Code refactoring and best practices
-- **ml-training** - ML/AI model training and RAG systems
-- **react-component** - React component development
-
-### 📝 Documentation & Quality
-
-- **api-spec-generator** - OpenAPI specification generation
-- **dev-journal** - Development journal automation
-- **frontend-codemap** - Frontend codebase mapping
-- **context-compressor** - Context optimization
-
-### 🤖 AI & Research
-
-- **ai-research-integration** - Research paper search and integration
-- **agent-evaluator** - Agent performance evaluation
-- **agentic-workflows** - Multi-agent orchestration
-- **rag-2.0** - Advanced RAG systems with GraphRAG
-
-### 🔧 Other Skills
-
-- **mcp-integration** - Model Context Protocol
-- **prompt-optimizer** - Prompt engineering
-- **research-agent-tech** - Research automation
-
-## 🚀 Quick Start
-
-### Automated Installation (Recommended)
-
-**Windows (PowerShell):**
-\`\`\`powershell
-# One-line install
-iwr -useb https://raw.githubusercontent.com/hyunseung1119/My_ClaudeCode_Skill/main/setup.ps1 | iex
-\`\`\`
-
-**Linux / macOS:**
-\`\`\`bash
-# One-line install
-curl -fsSL https://raw.githubusercontent.com/hyunseung1119/My_ClaudeCode_Skill/main/setup.sh | bash
-\`\`\`
-
-**Manual Installation:**
-\`\`\`bash
-# 1. Clone repository
-git clone https://github.com/hyunseung1119/My_ClaudeCode_Skill.git
-cd My_ClaudeCode_Skill
-
-# 2. Run setup script
-./setup.sh  # Linux/macOS
-.\setup.ps1 # Windows
-
-# 3. Verify installation
-ls ~/.claude/skills/
-\`\`\`
-
-See [INSTALLATION.md](INSTALLATION.md) for detailed installation options.
-
-### Usage
-
-\`\`\`bash
-# Use skills via Claude Code CLI
-/<skill-name> "<your-input>"
-
-# Examples
-/product-planner "AI-powered education platform"
-/chatbot-designer "E-commerce customer support bot"
-/llm-app-planner "Legal document analysis service"
-\`\`\`
-
-## 📊 Quality Metrics
-
-All skills have been reviewed and tested:
-- ✅ Code quality: A-grade
-- ✅ Input validation
-- ✅ Error handling
-- ✅ Documentation (Korean + English)
-- ✅ Production-ready
-
-## 🆕 Recent Updates (2026-01-29)
-
-### Product Planning Skills Launch
-- Added 3 comprehensive PM skills
-- English summaries for international teams
-- Input validation and error handling
-- Requirements files for dependencies
-
-### Quality Improvements
-- Fixed critical bugs (type errors, unicode issues)
-- Enhanced input validation
-- Improved error messages
-- Added bilingual documentation
-
-## 🔄 Auto-Updates
-
-Skills are installed as **symbolic links**, so updates are automatic!
-
-```bash
-# Navigate to repository
-cd ~/My_ClaudeCode_Skill
-
-# Pull latest changes
-git pull origin main
-
-# Skills auto-update instantly! 🎉
-```
-
-See [UPDATE.md](UPDATE.md) for update procedures and rollback strategies.
-
-## 📚 Documentation
-
-- [INSTALLATION.md](INSTALLATION.md) - Installation guide (manual & automated)
-- [UPDATE.md](UPDATE.md) - Update procedures and auto-update setup
-- [USAGE_GUIDE.md](USAGE_GUIDE.md) - Detailed usage examples
-- [CHANGELOG.md](CHANGELOG.md) - Version history and release notes
-- [GLOSSARY.md](GLOSSARY.md) - Technical terminology reference
-
-## 🤝 Contributing
-
-These skills are designed for team use. Feel free to:
-- Report issues
-- Suggest improvements
-- Share your use cases
-- Contribute enhancements
-
-## 📄 License
-
-MIT License - Free for team use
-
-## 👥 Author
-
-**hyunseung1119**
-- GitHub: [@hyunseung1119](https://github.com/hyunseung1119)
+> **최신 업데이트: 2026-03-04** — PC 활성 설정 전체 동기화, `developer-growth` 스킬 추가, 불필요 파일 정리, 프로젝트 구조 재정비
 
 ---
 
-**Built with Claude Code** 🚀
+## 프로젝트 구조
+
+```
+.claude/                          ← 프로젝트 루트
+├── CLAUDE.md                     ← 글로벌 지침 (Learning Mode, 코드 품질, 보안)
+├── settings.local.json           ← 프로젝트 설정 (권한, 모델, 훅)
+├── README.md                     ← 이 파일
+├── setup.sh / setup.ps1          ← 설치 스크립트 (Linux/macOS, Windows)
+├── uninstall.sh / uninstall.ps1  ← 제거 스크립트
+│
+├── skills/ (30개)                ← 전문 스킬 라이브러리
+│   ├── SKILL.md                  ← 각 스킬별 문서
+│   ├── skill.json                ← 스킬 설정
+│   └── src/                      ← 구현 코드 (Python/TypeScript)
+│
+├── agents/ (23개)                ← 특화 서브 에이전트
+│   └── *.md                      ← 에이전트 정의 파일
+│
+├── commands/ (28개)              ← CLI 커맨드 (/command-name)
+│   └── *.md                      ← 커맨드 정의 파일
+│
+└── rules/ (5개)                  ← 프로젝트 규칙 (항상 로드)
+    ├── agents.md                 ← 에이전트 오케스트레이션
+    ├── coding-style.md           ← 코딩 스타일 (함수 <50줄, 파일 <400줄)
+    ├── git-workflow.md           ← Git 워크플로우 (Conventional Commits)
+    ├── security.md               ← 보안 (OWASP API Top 10)
+    └── testing.md                ← 테스트 (TDD, 80%+ 커버리지)
+```
+
+---
+
+## 핵심 설정 (CLAUDE.md)
+
+프로젝트 전역에 적용되는 지침:
+
+| 항목 | 내용 |
+|------|------|
+| **Learning Mode** | 70% Claude 작성 + 30% 사용자 구현 (가이드) |
+| **코드 품질** | 불변성, 함수 <50줄, 파일 <400줄, 경계에서 입력 검증 |
+| **보안** | 시크릿 금지, 파라미터화 쿼리, BOLA/BFLA 방지 |
+| **Git** | Conventional Commits (feat/fix/refactor/docs/test/chore) |
+| **테스트** | TDD 필수 (RED → GREEN → REFACTOR), 80%+ 커버리지 |
+| **프론트엔드** | Anti-AI 디자인 (비대칭, 단색, 각진 모서리) |
+
+---
+
+## 프로젝트 설정 (settings.local.json)
+
+```jsonc
+{
+  "env": {
+    "MAX_THINKING_TOKENS": "32000",     // 사고 토큰 한도
+    "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "16000",
+    "PARALLEL_AGENT_LIMIT": "3",        // 병렬 에이전트 수
+    "TOKEN_BUDGET_WARNING": "0.8"       // 토큰 예산 경고 임계값
+  },
+  "model": "sonnet",                    // 기본 모델
+  "modelOverrides": {
+    "planning": "opus",                 // 기획/설계 → Opus
+    "architecture": "opus",
+    "simple-edit": "haiku",             // 단순 수정 → Haiku
+    "formatting": "haiku",
+    "code-review": "sonnet",            // 리뷰 → Sonnet
+    "security-review": "sonnet"
+  },
+  "agentDefaults": {
+    "maxIterations": 10,
+    "parallelLimit": 3,
+    "timeoutMs": 300000                 // 5분 타임아웃
+  }
+}
+```
+
+**훅 설정:**
+- `PostToolUse` — JS/TS 파일 수정 시 Prettier 자동 포맷
+- `PreToolUse` — pytest/npm test 실행 시 결과 필터링
+
+---
+
+## 스킬 (30개)
+
+`/skill-name`으로 활성화. 각 스킬은 SKILL.md 문서 + 구현 코드를 포함.
+
+### 제품 기획
+
+| 스킬 | 설명 |
+|------|------|
+| `product-planner` | 시니어 PM 수준 제품 기획 (TAM/SAM/SOM, JTBD, RICE, Lean Canvas) |
+| `chatbot-designer` | 대화형 UX 설계 (다이얼로그 플로우, Intent/Entity, FAQ 생성) |
+| `llm-app-planner` | LLM 앱 아키텍처 (RAG vs Agent vs Fine-tuning 비교, 비용 계산) |
+
+### 개발
+
+| 스킬 | 설명 |
+|------|------|
+| `architecture-design` | 시스템 설계 + ADR (Clean Architecture, DDD, 마이크로서비스) |
+| `backend-api` | FastAPI 구현 (라우터, 미들웨어, Pydantic 검증) |
+| `react-component` | React 컴포넌트 + Anti-AI 디자인 원칙 |
+| `api-design` | RESTful/GraphQL API 설계 (OpenAPI 3.x, RFC 9457) |
+| `api-spec-generator` | API 명세서 자동 생성 (시퀀스 다이어그램, 에러 코드) |
+| `clean-code` | 코드 리팩토링, 클린 코드 원칙 |
+| `refactoring` | 안전한 리팩토링 (동작 변경 없이 구조 개선) |
+| `debugging` | 체계적 디버깅 (가설 기반, 이분 탐색, RCA) |
+| `performance-optimization` | 성능 분석/최적화 (프로파일링, DB 쿼리, 번들) |
+| `mcp-integration` | Model Context Protocol 서버 설정/연동 |
+
+### AI / 연구
+
+| 스킬 | 설명 |
+|------|------|
+| `rag-2.0` | 고급 RAG (Hybrid Search, GraphRAG, Advanced Retrieval) |
+| `ml-training` | ML 모델 학습/평가, 임베딩, 벡터 검색 |
+| `agent-evaluator` | AI 에이전트 자동 테스트/평가 (다차원 성능 지표) |
+| `agentic-workflows` | 멀티 에이전트 시스템 (ReAct, Plan-Execute 패턴) |
+| `ai-developer-practice` | AI 개발자 실무 7대 역량 (OWASP LLM Top 10, MITRE ATLAS) |
+| `ai-research-integration` | 논문 조사/평가/POC (5가지 평가 기준 스코어링) |
+| `research-agent-tech` | LLM/Agent 최신 트렌드 (arXiv, GitHub Trending) |
+| `prompt-optimizer` | 프롬프트 엔지니어링 + LangGraph 최적화 |
+
+### 문서 / 품질
+
+| 스킬 | 설명 |
+|------|------|
+| `code-review` | 5-Layer 코드 리뷰 (정확성/설계/보안/성능/유지보수) |
+| `security-audit` | OWASP Top 10 보안 감사 (취약점 스캔, 시크릿 탐지) |
+| `tdd-workflow` | TDD 워크플로우 (Red-Green-Refactor) |
+| `documentation-gen` | 기술 문서 자동 생성 (README, API 문서, CHANGELOG) |
+| `dev-journal` | 개발 일지 자동화 (히스토리, 의사결정, 문제 해결 기록) |
+| `frontend-codemap` | 프론트엔드 코드맵 (UI 구조 + 코드 매핑) |
+| `context-compressor` | 컨텍스트 압축으로 토큰 최적화 |
+| `git-workflow` | 고급 Git (Conventional Commits, 자동 PR, 브랜치 전략) |
+| `developer-growth` | 개발자 성장 프레임워크 (프론트/백엔드/AI/인프라 학습 경로) |
+
+---
+
+## 에이전트 (23개)
+
+자동으로 트리거되는 특화 서브 에이전트:
+
+### 핵심 에이전트 (자동 트리거)
+
+| 에이전트 | 트리거 조건 |
+|----------|-------------|
+| `planner` | 복잡한 기능 요청 |
+| `code-reviewer` | 코드 작성 후 |
+| `tdd-guide` | 새 기능/버그 수정 |
+| `security-reviewer` | 커밋 전 |
+| `build-error-resolver` | 빌드 실패 |
+| `debugger` | 런타임 에러 |
+| `architect` | 시스템 설계 결정 |
+
+### 도메인 전문가
+
+| 에이전트 | 전문 영역 |
+|----------|-----------|
+| `react-agent` | React 컴포넌트 개발 |
+| `rust-expert` | Rust 개발 |
+| `go-build-resolver` | Go 빌드 문제 해결 |
+| `go-reviewer` | Go 코드 리뷰 |
+| `graphql-expert` | GraphQL API |
+| `database-reviewer` | 데이터베이스 설계/쿼리 |
+| `vector-db-agent` | 벡터 DB/임베딩 |
+
+### 품질/운영
+
+| 에이전트 | 역할 |
+|----------|------|
+| `a11y-reviewer` | 접근성 (WCAG 2.1) |
+| `performance-optimizer` | 성능 최적화 |
+| `refactor-cleaner` | 리팩토링 실행 |
+| `doc-updater` | 문서 자동 업데이트 |
+| `e2e-runner` | E2E 테스트 (Playwright) |
+| `infrastructure-agent` | 인프라 (Docker, K8s, Terraform) |
+| `coordinator` | 멀티 에이전트 오케스트레이션 |
+| `critic-agent` | 결과물 비평/검증 |
+| `tree-of-thoughts` | 복잡한 문제 사고 트리 탐색 |
+
+---
+
+## 커맨드 (28개)
+
+`/command-name`으로 실행하는 CLI 커맨드:
+
+### 핵심 워크플로우
+`/plan` `/tdd` `/code-review` `/build-fix` `/verify` `/checkpoint`
+
+### 프론트엔드
+`/modern-frontend` `/frontend-codemap` `/update-codemaps` `/e2e`
+
+### 문서/분석
+`/update-docs` `/token-analysis` `/test-coverage` `/eval` `/learn`
+
+### 멀티 에이전트
+`/multi-agent` `/orchestrate` `/evolve`
+
+### 리팩토링
+`/refactor-clean` `/skill-create` `/setup-pm`
+
+### Go / Rust
+`/go-build` `/go-review` `/go-test` `/rust`
+
+### 설정 관리
+`/instinct-export` `/instinct-import` `/instinct-status`
+
+---
+
+## 규칙 (5개)
+
+항상 로드되는 프로젝트 규칙:
+
+| 규칙 | 핵심 내용 |
+|------|-----------|
+| **agents.md** | 7개 핵심 에이전트 자동 트리거, 병렬/순차 실행 전략 |
+| **coding-style.md** | Functional Core + Imperative Shell, 불변성, Result 타입, 복잡도 <10 |
+| **git-workflow.md** | Conventional Commits, TDD 우선, PR 워크플로우 |
+| **security.md** | OWASP API Top 10, BOLA/BFLA 방지, 시크릿 관리, Rate Limiting |
+| **testing.md** | TDD 필수, Unit+Integration+E2E, 80%+ 커버리지 목표 |
+
+---
+
+## 최신 업데이트 (2026-03-04)
+
+### 이번 동기화에서 변경된 사항
+
+**추가:**
+- `developer-growth` 스킬 — 프론트/백엔드/AI/인프라 4개 성장 경로 + 3단계 레벨링
+- `CLAUDE.md` — PC 활성 글로벌 지침 동기화
+
+**정리 (삭제):**
+- `docs/` 디렉토리 (루트 문서 중복 복사본 8개)
+- `hooks/` 빈 디렉토리
+- `.claude/settings.local.json` 오래된 중첩 설정
+- 이전 루트 레벨 문서: CHANGELOG.md, GLOSSARY.md, INSTALLATION.md, MCP_SETUP_GUIDE.md, MIGRATION_2026.md, OPTIMIZATION_SUMMARY.md, UPDATE.md, USAGE_GUIDE.md
+
+**규칙 통합 (12개 → 5개):**
+- 삭제: architecture.md, hooks.md, modern-frontend.md, observability.md, patterns.md, performance.md, token-efficiency.md
+- 유지/수정: agents.md, coding-style.md, git-workflow.md, security.md, testing.md
+
+### 이전 주요 업데이트
+
+| 날짜 | 내용 |
+|------|------|
+| 2026-02-02 | 29개 스킬, 규칙, 커맨드 전체 동기화 |
+| 2026-01-29 | PM 기획 스킬 3종 추가 (product-planner, chatbot-designer, llm-app-planner) |
+| 2026-01-29 | 자동 설치/업데이트 시스템 추가 |
+
+---
+
+## 설치
+
+### 자동 설치
+
+**Windows (PowerShell):**
+```powershell
+iwr -useb https://raw.githubusercontent.com/hyunseung1119/My_ClaudeCode_Skill/main/setup.ps1 | iex
+```
+
+**Linux / macOS:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/hyunseung1119/My_ClaudeCode_Skill/main/setup.sh | bash
+```
+
+### 수동 설치
+
+```bash
+git clone https://github.com/hyunseung1119/My_ClaudeCode_Skill.git
+cd My_ClaudeCode_Skill
+./setup.sh        # Linux/macOS
+# .\setup.ps1     # Windows
+```
+
+설치 스크립트는 `~/.claude/skills/`, `~/.claude/commands/`, `~/.claude/rules/`에 심볼릭 링크를 생성합니다. `git pull`로 자동 업데이트됩니다.
+
+### 제거
+
+```bash
+./uninstall.sh     # Linux/macOS
+# .\uninstall.ps1  # Windows
+```
+
+---
+
+## 구성 요약
+
+| 항목 | 수량 | 설명 |
+|------|------|------|
+| Skills | 30 | 전문 스킬 (기획, 개발, AI, 문서, 품질) |
+| Agents | 23 | 자동 트리거 서브 에이전트 |
+| Commands | 28 | CLI 커맨드 |
+| Rules | 5 | 항상 적용 규칙 |
+| 기본 모델 | Sonnet | Opus(기획), Haiku(단순), Sonnet(리뷰) |
+| 테스트 커버리지 | 80%+ | TDD 필수 |
+| 함수 제한 | <50줄 | 파일 <400줄, 복잡도 <10 |
+
+---
+
+## Author
+
+**hyunseung1119** — [@hyunseung1119](https://github.com/hyunseung1119)
+
+MIT License
