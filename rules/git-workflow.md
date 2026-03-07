@@ -1,5 +1,7 @@
 # Git Workflow
 
+globs: ['**/*']
+
 ## Commit Format
 ```
 <type>: <description>

@@ -1,0 +1,16 @@
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+
+# Progress (session-specific, not tracked)
+progress/handoff-*.md
+
+# Cache
+.cache/
+*.pyc
+__pycache__/
+node_modules/

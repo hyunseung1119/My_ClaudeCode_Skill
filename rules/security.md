@@ -1,5 +1,7 @@
 # Security
 
+globs: ['**/*.ts', '**/*.js', '**/*.py', '**/*.go', '**/*.rs', '**/Dockerfile', '**/*.yaml', '**/*.yml']
+
 ## Pre-Commit Checklist
 - [ ] No hardcoded secrets (use env vars, .env in .gitignore)
 - [ ] All user inputs validated and sanitized

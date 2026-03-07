@@ -1,5 +1,7 @@
 # Testing Requirements
 
+globs: ['**/*.test.*', '**/*.spec.*', '**/tests/**', '**/test/**', '**/__tests__/**']
+
 ## Minimum Test Coverage: 80%
 
 Test Types (ALL required):
@@ -16,6 +18,15 @@ MANDATORY workflow:
 4. Run test - it should PASS
 5. Refactor (IMPROVE)
 6. Verify coverage (80%+)
+
+## Test Integrity (NEVER weaken tests to pass)
+
+Prohibited patterns — fix implementation, not tests:
+- `toBeTruthy()` replacing specific matchers (e.g., `toBe(value)`)
+- `test.skip`, `xit(`, `xdescribe(`, `@pytest.mark.skip` without documented reason
+- Timeout inflation (>30s without justification)
+- Empty catch blocks in test assertions
+- Removing assertions to make tests pass
 
 ## Troubleshooting Test Failures
 

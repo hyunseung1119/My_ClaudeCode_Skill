@@ -1,0 +1,5 @@
+# Protect critical configuration files from unreviewed changes
+CLAUDE.md @owner
+.claude/settings.local.json @owner
+.claude/rules/ @owner
+.claude/hooks/ @owner

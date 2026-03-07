@@ -15,49 +15,17 @@ I am a growing developer. When working with me:
 - Highlight non-obvious decisions
 - Suggest related concepts to explore
 
-## Core Quality Rules
+## Session Management
 
-### Code
-- Immutability: always create new objects, never mutate
-- Functions < 50 lines, files < 400 lines
-- Validate user input at system boundaries (use zod/joi)
-- Handle errors explicitly — no silent failures
-- No hardcoded secrets — use env vars
-
-### Security (always apply)
-- No secrets in code; .env in .gitignore
-- Parameterized queries only (no string concatenation for SQL)
-- Validate + sanitize all user input
-- Check object ownership (BOLA prevention)
-- Check function-level auth (BFLA prevention)
-
-### Git
-- Conventional commits: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`
-- Test before committing
-
-### Testing
-- TDD: write test first (RED) -> implement (GREEN) -> refactor
-- Target 80%+ coverage
-
-## Frontend Work
-
-When doing React/Vue/CSS/UI work, use `/modern-frontend` command to load Anti-AI design principles. Key points:
-- No purple/blue gradients, no centered-everything layouts
-- No pill buttons, no glass morphism, no icon+title+desc cards
-- Use: asymmetric grids, solid colors, sharp corners, editorial typography
-- Full guide: `~/.claude/skills/react-component/SKILL.md`
+- Prefer `/clear` over `/compact` between tasks (no information loss)
+- At 70% context, proactively compact or start new session
+- 2x same fix on same issue -> `/clear` and restart with fresh context
+- Complex features: research -> spec file -> new session for implementation
+- On compaction: MUST preserve modified file list, test commands, and current task state
 
 ## Agent Usage
 
-Use specialized agents proactively:
-- **planner**: complex features
-- **code-reviewer**: after writing code
-- **tdd-guide**: new features/bug fixes
-- **security-reviewer**: before commits
-- **build-error-resolver**: build failures
-- **debugger**: runtime errors
-
-Parallel execution for independent tasks. Sequential when results inform next step.
+Use specialized agents proactively. Parallel for independent tasks, sequential when results inform next step.
 
 ## Skills (load on demand, not always)
 
@@ -68,3 +36,7 @@ Skills are in `~/.claude/skills/`. Use `/skill-name` to activate. Key skills:
 - `/tdd-workflow` — test-driven development
 - `/code-review` — 5-layer review
 - `/developer-growth` — learning path guidance
+
+## Frontend Work
+
+When doing React/Vue/CSS/UI work, use `/modern-frontend` command to load Anti-AI design principles.

@@ -1,5 +1,7 @@
 # Coding Style
 
+globs: ['**/*.ts', '**/*.js', '**/*.tsx', '**/*.jsx', '**/*.py', '**/*.go', '**/*.rs']
+
 ## Principles
 - **Functional Core, Imperative Shell**: Pure business logic separate from I/O
 - **Type-Driven**: Define types/interfaces first, then implement

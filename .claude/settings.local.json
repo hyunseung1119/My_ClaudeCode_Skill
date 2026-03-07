@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(for f in C:/Users/user/.claude/skills/*/SKILL.md)",
+      "Bash(do echo \"=== $f ===\")",
+      "Read(//c/Users/user/Desktop/.claude/**)",
+      "Bash(done)",
+      "Bash(wc:*)",
+      "Bash(ls:*)",
+      "Bash(for skill in api-spec-generator backend-api context-compressor react-component)",
+      "Bash(do echo \"=== $skill ===\")",
+      "Read(//c/Users/user/.claude/skills/$skill/**)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)"
+    ]
+  }
+}
