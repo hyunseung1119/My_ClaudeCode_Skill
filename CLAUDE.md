@@ -24,13 +24,9 @@
 | 상황 | 참조 규칙 |
 |------|----------|
 | 코드 작성/리뷰 | `coding-style.md`, `testing.md` |
-| 프론트엔드 작업 | `modern-frontend.md` — Anti-AI 디자인, 2026 트렌드 |
 | API/인증/입력처리 | `security.md` — OWASP API Top 10 |
-| 아키텍처 설계 | `architecture.md` — Layered/Hexagonal/DDD |
 | 에이전트 디스패치 | `agents.md` — 23개 에이전트 역할 |
 | Git/PR | `git-workflow.md` — Conventional Commits |
-| 토큰/비용 관리 | `token-efficiency.md` — 모델별 가격, 예산 배분 |
-| AI 모니터링 | `observability.md` — OpenTelemetry, Prometheus |
+| 세션/컨텍스트 | `context-management.md` — 세션 라이프사이클 |
 | 훅 설정 변경 | `hooks.md` — 9개 훅 스크립트 가이드 |
-| 디자인 패턴 | `patterns.md` — API envelope, Repository |
-| 성능 최적화 | `performance.md` — 모델 선택, 컨텍스트 관리 |
+| 프론트엔드/아키텍처/성능 | 관련 스킬 참조 (`/modern-frontend`, `/architecture-design` 등) |
