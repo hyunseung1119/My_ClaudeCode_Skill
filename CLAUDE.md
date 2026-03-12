@@ -1,42 +1,36 @@
-# Global Instructions
+# Global Claude Code Instructions
 
-## Learning Mode (Guided)
+이 파일은 모든 프로젝트에서 적용되는 전역 지침입니다.
 
-I am a growing developer. When working with me:
+## 핵심 워크플로우 (ALWAYS)
 
-1. **Explain WHY before writing code** — architecture decisions, pattern choices, trade-offs
-2. **Mark learning opportunities** with `// TODO(human): try implementing this yourself`
-3. **Ratio**: ~70% Claude writes + ~30% human implements (guided sections)
-4. **After completing a task**, briefly note 1-2 concepts worth studying deeper
+**반드시 `~/.claude/rules/workflow.md`를 따릅니다:**
+1. Explain → Approve → Execute → Reflect
+2. Evidence Rule: 근거 없는 추천 금지
+3. Learning Mode: 시니어 생산성 + 주니어 학습 병행
+4. Session Learning: `/clear` 전 `/learn` 필수
 
-### When I ask "explain this code":
-- Start with the mental model (what problem it solves)
-- Walk through the flow, not line-by-line
-- Highlight non-obvious decisions
-- Suggest related concepts to explore
+## 하네스 미들웨어 (ALWAYS)
 
-## Session Management
+**`~/.claude/rules/harness-engineering.md` 참조:**
+- 자기 검증 강제: 코드 작성 후 반드시 테스트 실행
+- 반복 루프 방지: 같은 에러 3회 반복 시 접근법 변경
+- 추론 예산 배분: 계획(Opus) → 구현(Sonnet) → 검증(Sonnet)
 
-- Prefer `/clear` over `/compact` between tasks (no information loss)
-- At 70% context, proactively compact or start new session
-- 2x same fix on same issue -> `/clear` and restart with fresh context
-- Complex features: research -> spec file -> new session for implementation
-- On compaction: MUST preserve modified file list, test commands, and current task state
+## 상황별 규칙 참조 (on-demand)
 
-## Agent Usage
+아래 규칙은 해당 상황에서만 참조합니다. 항상 로드하지 않습니다:
 
-Use specialized agents proactively. Parallel for independent tasks, sequential when results inform next step.
-
-## Skills (load on demand, not always)
-
-Skills are in `~/.claude/skills/`. Use `/skill-name` to activate. Key skills:
-- `/modern-frontend` — Anti-AI frontend design
-- `/security-audit` — OWASP security review
-- `/architecture-design` — system design + ADR
-- `/tdd-workflow` — test-driven development
-- `/code-review` — 5-layer review
-- `/developer-growth` — learning path guidance
-
-## Frontend Work
-
-When doing React/Vue/CSS/UI work, use `/modern-frontend` command to load Anti-AI design principles.
+| 상황 | 참조 규칙 |
+|------|----------|
+| 코드 작성/리뷰 | `coding-style.md`, `testing.md` |
+| 프론트엔드 작업 | `modern-frontend.md` — Anti-AI 디자인, 2026 트렌드 |
+| API/인증/입력처리 | `security.md` — OWASP API Top 10 |
+| 아키텍처 설계 | `architecture.md` — Layered/Hexagonal/DDD |
+| 에이전트 디스패치 | `agents.md` — 23개 에이전트 역할 |
+| Git/PR | `git-workflow.md` — Conventional Commits |
+| 토큰/비용 관리 | `token-efficiency.md` — 모델별 가격, 예산 배분 |
+| AI 모니터링 | `observability.md` — OpenTelemetry, Prometheus |
+| 훅 설정 변경 | `hooks.md` — 9개 훅 스크립트 가이드 |
+| 디자인 패턴 | `patterns.md` — API envelope, Repository |
+| 성능 최적화 | `performance.md` — 모델 선택, 컨텍스트 관리 |

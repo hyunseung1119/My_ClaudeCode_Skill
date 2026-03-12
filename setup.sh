@@ -26,7 +26,7 @@ echo -e "${GREEN}Claude Code: $CLAUDE_DIR${NC}"
 echo ""
 
 # Create Claude directories if not exist
-for dir in skills agents rules; do
+for dir in skills agents rules hooks; do
     if [ ! -d "$CLAUDE_DIR/$dir" ]; then
         echo -e "${YELLOW}Creating directory: $CLAUDE_DIR/$dir${NC}"
         mkdir -p "$CLAUDE_DIR/$dir"
@@ -102,6 +102,23 @@ for rule_file in "$SCRIPT_DIR/rules"/*.md; do
 done
 
 echo ""
+
+# Install hooks
+echo -e "${CYAN}Installing Hooks...${NC}"
+
+for hook_file in "$SCRIPT_DIR/hooks"/*.sh; do
+    if [ -f "$hook_file" ]; then
+        hook_name=$(basename "$hook_file")
+        if create_symlink "$hook_file" "$CLAUDE_DIR/hooks/$hook_name"; then
+            chmod +x "$CLAUDE_DIR/hooks/$hook_name" 2>/dev/null
+            ((success_count++))
+        else
+            ((fail_count++))
+        fi
+    fi
+done
+
+echo ""
 echo -e "${CYAN}==================================================${NC}"
 if [ $fail_count -eq 0 ]; then
     echo -e "${GREEN}Installation Complete!${NC}"
@@ -142,6 +159,8 @@ rule_count=$(ls -1 "$CLAUDE_DIR/rules" 2>/dev/null | wc -l)
 echo -e "  ${GREEN}✓${NC} $skill_count skills installed"
 echo -e "  ${GREEN}✓${NC} $agent_count agents installed"
 echo -e "  ${GREEN}✓${NC} $rule_count rules installed"
+hook_count=$(ls -1 "$CLAUDE_DIR/hooks" 2>/dev/null | wc -l)
+echo -e "  ${GREEN}✓${NC} $hook_count hooks installed"
 
 echo ""
 echo -e "${CYAN}Next Steps:${NC}"

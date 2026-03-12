@@ -32,7 +32,7 @@ Write-Host "Claude Code: $CLAUDE_DIR" -ForegroundColor Green
 Write-Host ""
 
 # Create Claude directories if not exist
-$directories = @("skills", "agents", "rules")
+$directories = @("skills", "agents", "rules", "hooks")
 foreach ($dir in $directories) {
     $path = Join-Path $CLAUDE_DIR $dir
     if (-not (Test-Path $path)) {
@@ -115,6 +115,25 @@ Get-ChildItem $rulesDir -File | ForEach-Object {
 }
 
 Write-Host ""
+
+# Install hooks
+Write-Host "Installing Hooks..." -ForegroundColor Cyan
+$hooksDir = Join-Path $SCRIPT_DIR "hooks"
+
+if (Test-Path $hooksDir) {
+    Get-ChildItem $hooksDir -File -Filter "*.sh" | ForEach-Object {
+        $target = $_.FullName
+        $link = Join-Path (Join-Path $CLAUDE_DIR "hooks") $_.Name
+
+        if (New-SymlinkSafe -Target $target -Link $link) {
+            $successCount++
+        } else {
+            $failCount++
+        }
+    }
+}
+
+Write-Host ""
 Write-Host "==================================================" -ForegroundColor Cyan
 Write-Host "Installation Complete!" -ForegroundColor Green
 Write-Host "Success: $successCount | Failed: $failCount" -ForegroundColor $(if ($failCount -eq 0) { "Green" } else { "Yellow" })
@@ -155,6 +174,9 @@ Write-Host "  ✓ $($installedAgents.Count) agents installed" -ForegroundColor G
 
 $installedRules = Get-ChildItem (Join-Path $CLAUDE_DIR "rules") | Measure-Object
 Write-Host "  ✓ $($installedRules.Count) rules installed" -ForegroundColor Green
+
+$installedHooks = Get-ChildItem (Join-Path $CLAUDE_DIR "hooks") -ErrorAction SilentlyContinue | Measure-Object
+Write-Host "  ✓ $($installedHooks.Count) hooks installed" -ForegroundColor Green
 
 Write-Host ""
 Write-Host "Next Steps:" -ForegroundColor Cyan
