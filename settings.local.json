@@ -12,6 +12,8 @@
       "Bash(cd:*)",
       "Bash(ls:*)",
       "Bash(pytest:*)",
+      "Bash(npx:*)",
+      "Bash(ruff:*)",
       "Bash(cargo:*)",
       "Bash(rustc:*)",
       "Bash(kubectl:*)",
