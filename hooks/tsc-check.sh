@@ -2,6 +2,7 @@
 # shellcheck shell=bash
 # PostToolUse: Type-check TypeScript files after edit
 # Project-level hook (depends on project's tsconfig.json)
+# Output format: {"decision":"approve|block","reason":"..."}
 
 INPUT=$(cat)
 TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty')
@@ -50,13 +51,11 @@ ERRORS=$("$TSC" --noEmit --incremental --tsBuildInfoFile /tmp/.tsbuildinfo --pre
 
 if [ -n "$ERRORS" ] && echo "$ERRORS" | grep -q "error TS"; then
   ERROR_COUNT=$(echo "$ERRORS" | grep -c "error TS")
-  SAMPLE=$(echo "$ERRORS" | head -5)
+  SAMPLE=$(echo "$ERRORS" | head -10)
   BASENAME=$(basename "$FILE_PATH")
   jq -n --arg cnt "$ERROR_COUNT" --arg f "$BASENAME" --arg s "$SAMPLE" '{
-    hookSpecificOutput: {
-      hookEventName: "PostToolUse",
-      additionalContext: ("[TSC] " + $cnt + " TypeScript error(s) after editing " + $f + ":\n" + $s + "\n\nFix these before proceeding.")
-    }
+    decision: "approve",
+    reason: ("[TSC] " + $cnt + " TypeScript error(s) after editing " + $f + ":\n" + $s + "\n\nFix these before proceeding.")
   }'
 fi
 

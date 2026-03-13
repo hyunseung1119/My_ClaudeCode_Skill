@@ -2,11 +2,13 @@
 # shellcheck shell=bash
 # Stop: PreCompletionChecklist — verify tests were actually run before session ends
 # Checks git diff for code changes and warns if no test execution was detected
+# Output format: {"decision":"approve|block","reason":"..."}
 
 INPUT=$(cat)
 
-# File-based lock to prevent infinite loop, with trap for cleanup
-LOCK_FILE="${TMPDIR:-/tmp}/claude-pre-completion-lock"
+# Session-specific lock to prevent infinite loop and multi-session conflicts
+SESSION_KEY="${CLAUDE_SESSION_ID:-$$}"
+LOCK_FILE="${TMPDIR:-/tmp}/claude-pre-completion-${SESSION_KEY}"
 trap 'rm -f "$LOCK_FILE"' EXIT
 
 if [ -f "$LOCK_FILE" ]; then
@@ -54,10 +56,19 @@ if git diff --name-only HEAD 2>/dev/null | grep -qE '\.(ts|tsx|js|jsx)$' || \
   fi
 fi
 
+# Go: check for test cache
+if git diff --name-only HEAD 2>/dev/null | grep -qE '\.go$' || \
+   git ls-files --others --exclude-standard 2>/dev/null | grep -qE '\.go$'; then
+  GO_CACHE=$(go env GOCACHE 2>/dev/null)
+  if [ -z "$GO_CACHE" ] || [ ! -d "$GO_CACHE" ] || [ "$(find "$GO_CACHE" -maxdepth 1 -mmin -30 2>/dev/null | head -1)" = "" ]; then
+    WARNINGS="${WARNINGS}Go files changed but no recent go test run detected. "
+  fi
+fi
+
 if [ -n "$WARNINGS" ]; then
   jq -n --arg w "$WARNINGS" --arg cnt "$TOTAL_CODE" '{
     decision: "block",
-    reason: ("[PRE-COMPLETION CHECK] " + $cnt + " code file(s) changed. " + $w + "\nBefore finishing, run tests to verify:\n- Python: pytest tests/ -x -q\n- JS/TS: npx vitest run\n- Go: go test ./...\n\nSkip only if changes are config/docs only.")
+    reason: ("[PRE-COMPLETION CHECK] " + $cnt + " code file(s) changed. " + $w + "\nBefore finishing, run tests to verify:\n- Python: pytest tests/ -x -q\n- JS/TS: npx vitest run\n- Go: go test ./...\n- Rust: cargo test\n\nSkip only if changes are config/docs only.")
   }'
 else
   jq -n '{

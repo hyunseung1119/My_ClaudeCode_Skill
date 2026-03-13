@@ -2,6 +2,7 @@
 # shellcheck shell=bash
 # PostToolUse: Auto-lint and format Python files with ruff
 # Project-level hook (depends on ruff being installed in venv or globally)
+# Output format: {"decision":"approve","reason":"..."}
 
 INPUT=$(cat)
 TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty')
@@ -22,12 +23,18 @@ if echo "$FILE_PATH" | grep -qE '(migrations/|venv/|__pycache__|\.pyc$|site-pack
   exit 0
 fi
 
-# Try project venv ruff first, then global (max 10 levels)
+# Try project venv ruff first (check pyproject.toml/setup.py location for project root)
 RUFF=""
 DIR=$(dirname "$FILE_PATH")
+PROJECT_ROOT=""
 DEPTH=0
 while [ "$DIR" != "/" ] && [ "$DIR" != "." ] && [ $DEPTH -lt 10 ]; do
-  for CANDIDATE in "$DIR/venv/Scripts/ruff.exe" "$DIR/venv/bin/ruff" "$DIR/.venv/Scripts/ruff.exe" "$DIR/.venv/bin/ruff"; do
+  # Check for project markers first
+  if [ -f "$DIR/pyproject.toml" ] || [ -f "$DIR/setup.py" ] || [ -f "$DIR/setup.cfg" ]; then
+    PROJECT_ROOT="$DIR"
+  fi
+  # Check for venv ruff
+  for CANDIDATE in "$DIR/.venv/bin/ruff" "$DIR/venv/bin/ruff" "$DIR/.venv/Scripts/ruff.exe" "$DIR/venv/Scripts/ruff.exe"; do
     if [ -f "$CANDIDATE" ]; then
       RUFF="$CANDIDATE"
       break 2
@@ -39,32 +46,34 @@ done
 
 # Fallback to global ruff
 if [ -z "$RUFF" ]; then
-  RUFF=$(which ruff 2>/dev/null)
+  RUFF=$(command -v ruff 2>/dev/null)
 fi
 
 if [ -z "$RUFF" ]; then
   exit 0
 fi
 
-# Run ruff check --fix then format
-CHECK_OUTPUT=$("$RUFF" check --fix "$FILE_PATH" 2>&1)
-"$RUFF" format "$FILE_PATH" 2>&1
-
+# Run ruff check --fix then format (capture both outputs)
 BASENAME=$(basename "$FILE_PATH")
+CHECK_OUTPUT=$("$RUFF" check --fix "$FILE_PATH" 2>&1)
+CHECK_EXIT=$?
+FORMAT_OUTPUT=$("$RUFF" format "$FILE_PATH" 2>&1)
+FORMAT_EXIT=$?
 
-if echo "$CHECK_OUTPUT" | grep -qE 'Found [1-9]'; then
+if [ $CHECK_EXIT -ne 0 ] && echo "$CHECK_OUTPUT" | grep -qE 'Found [1-9]'; then
   jq -n --arg f "$BASENAME" --arg issues "$CHECK_OUTPUT" '{
-    hookSpecificOutput: {
-      hookEventName: "PostToolUse",
-      additionalContext: ("[RUFF] Auto-fixed lint issues in " + $f + ":\n" + $issues + "\n\nFormatted with ruff format.")
-    }
+    decision: "approve",
+    reason: ("[RUFF] Auto-fixed lint issues in " + $f + ":\n" + $issues + "\nFormatted with ruff format.")
+  }'
+elif [ $FORMAT_EXIT -ne 0 ]; then
+  jq -n --arg f "$BASENAME" --arg err "$FORMAT_OUTPUT" '{
+    decision: "approve",
+    reason: ("[RUFF] Format failed on " + $f + ": " + $err)
   }'
 else
   jq -n --arg f "$BASENAME" '{
-    hookSpecificOutput: {
-      hookEventName: "PostToolUse",
-      additionalContext: ("[RUFF] Formatted: " + $f)
-    }
+    decision: "approve",
+    reason: ("[RUFF] Formatted: " + $f)
   }'
 fi
 

@@ -2,6 +2,7 @@
 # shellcheck shell=bash
 # PostToolUse: Loop Detection Middleware
 # Tracks file edit counts per session and warns when threshold exceeded
+# Output format: {"decision":"approve","reason":"..."}
 
 INPUT=$(cat)
 TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty')
@@ -17,11 +18,16 @@ if [ -z "$FILE_PATH" ]; then
 fi
 
 # Track edits in a temp file keyed by session
-TRACK_DIR="${TMPDIR:-/tmp}/claude-loop-detector"
+# Use CLAUDE_SESSION_ID if available, otherwise use PID-based isolation
+SESSION_KEY="${CLAUDE_SESSION_ID:-$$}"
+TRACK_DIR="${TMPDIR:-/tmp}/claude-loop-detector-${SESSION_KEY}"
 mkdir -p "$TRACK_DIR"
 
-# Use filename hash as key
-FILE_KEY=$(echo "$FILE_PATH" | md5 -q 2>/dev/null || echo "$FILE_PATH" | md5sum | cut -d' ' -f1)
+# Cross-platform hash: shasum (macOS/Linux) > md5sum (Linux) > md5 (macOS) > fallback
+FILE_KEY=$(echo "$FILE_PATH" | shasum -a 256 2>/dev/null | cut -d' ' -f1 \
+  || echo "$FILE_PATH" | md5sum 2>/dev/null | cut -d' ' -f1 \
+  || echo "$FILE_PATH" | md5 -q 2>/dev/null \
+  || echo "$FILE_PATH" | tr -cd '[:alnum:]')
 TRACK_FILE="$TRACK_DIR/$FILE_KEY"
 
 # Increment counter
@@ -38,10 +44,8 @@ THRESHOLD=4
 
 if [ "$COUNT" -ge "$THRESHOLD" ]; then
   jq -n --arg f "$BASENAME" --arg c "$COUNT" '{
-    hookSpecificOutput: {
-      hookEventName: "PostToolUse",
-      additionalContext: ("[LOOP DETECTION] " + $f + " has been edited " + $c + " times this session. You may be in a doom loop.\n\nSTOP and reassess:\n1. Are you repeating the same fix?\n2. Is there a fundamentally different approach?\n3. Should you step back and re-read the error from scratch?\n\nIf stuck 2+ times on the same issue, use /clear and restart with a fresh approach.")
-    }
+    decision: "approve",
+    reason: ("[LOOP DETECTION] " + $f + " has been edited " + $c + " times this session. You may be in a doom loop.\n\nSTOP and reassess:\n1. Are you repeating the same fix?\n2. Is there a fundamentally different approach?\n3. Should you step back and re-read the error from scratch?\n\nIf stuck 2+ times on the same issue, use /clear and restart with a fresh approach.")
   }'
 fi
 

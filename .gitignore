@@ -14,3 +14,27 @@ progress/handoff-*.md
 *.pyc
 __pycache__/
 node_modules/
+
+# Build artifacts
+dist/
+build/
+.next/
+out/
+*.min.js
+*.min.css
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test artifacts
+coverage/
+.pytest_cache/
+.nyc_output/

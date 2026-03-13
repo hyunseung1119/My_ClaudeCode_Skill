@@ -1,12 +1,14 @@
 #!/bin/bash
 # shellcheck shell=bash
-# PreToolUse (UserPromptSubmit): Local Context Middleware
+# UserPromptSubmit: Local Context Middleware
 # Auto-injects environment context at the beginning of a session
+# Output format: {"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","additionalContext":"..."}}
 
 INPUT=$(cat)
 
-# Only inject once per session
-LOCK_FILE="${TMPDIR:-/tmp}/claude-env-context-injected"
+# Only inject once per session (use session-specific lock)
+SESSION_KEY="${CLAUDE_SESSION_ID:-default}"
+LOCK_FILE="${TMPDIR:-/tmp}/claude-env-context-${SESSION_KEY}"
 if [ -f "$LOCK_FILE" ]; then
   exit 0
 fi

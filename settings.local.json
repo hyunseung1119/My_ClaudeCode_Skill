@@ -102,6 +102,11 @@
             "type": "command",
             "command": "bash ~/.claude/hooks/loop-detector.sh",
             "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/trace-logger.sh",
+            "timeout": 3
           }
         ]
       },
@@ -132,6 +137,11 @@
             "type": "command",
             "command": "bash ~/.claude/hooks/loop-detector.sh",
             "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/trace-logger.sh",
+            "timeout": 3
           }
         ]
       }

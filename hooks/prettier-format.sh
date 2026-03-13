@@ -2,6 +2,7 @@
 # shellcheck shell=bash
 # PostToolUse: Auto-format JS/TS/CSS/JSON files with Prettier
 # Project-level hook (depends on project's node_modules)
+# Output format: {"decision":"approve","reason":"..."}
 
 INPUT=$(cat)
 TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty')
@@ -46,21 +47,16 @@ if [ ! -f "$PRETTIER" ]; then
 fi
 
 # Run prettier
+BASENAME=$(basename "$FILE_PATH")
 if "$PRETTIER" --write "$FILE_PATH" 2>/dev/null; then
-  BASENAME=$(basename "$FILE_PATH")
   jq -n --arg f "$BASENAME" '{
-    hookSpecificOutput: {
-      hookEventName: "PostToolUse",
-      additionalContext: ("[FORMAT] Prettier auto-formatted: " + $f)
-    }
+    decision: "approve",
+    reason: ("[FORMAT] Prettier auto-formatted: " + $f)
   }'
 else
-  BASENAME=$(basename "$FILE_PATH")
   jq -n --arg f "$BASENAME" '{
-    hookSpecificOutput: {
-      hookEventName: "PostToolUse",
-      additionalContext: ("[FORMAT] Prettier failed on: " + $f + ". Check for syntax errors.")
-    }
+    decision: "approve",
+    reason: ("[FORMAT] Prettier failed on: " + $f + ". Check for syntax errors.")
   }'
 fi
 

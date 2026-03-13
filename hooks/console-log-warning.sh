@@ -2,6 +2,7 @@
 # shellcheck shell=bash
 # PostToolUse: Warn when console.log is added to code
 # Matches Edit and Write tools on JS/TS files
+# Output format: {"decision":"approve|block","reason":"..."}
 
 INPUT=$(cat)
 TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty')
@@ -24,12 +25,10 @@ else
   CONTENT=$(echo "$INPUT" | jq -r '.tool_input.content // empty')
 fi
 
-if echo "$CONTENT" | grep -qE 'console\.(log|debug|info)\('; then
+if echo "$CONTENT" | grep -qE 'console\.(log|debug|info|warn|error|trace)\('; then
   jq -n --arg fp "$FILE_PATH" '{
-    hookSpecificOutput: {
-      hookEventName: "PostToolUse",
-      additionalContext: ("[WARN] console.log/debug/info detected in " + $fp + ". Consider: (1) Is this debug code that should be removed before commit? (2) Should this use a proper logger instead? (3) If intentional, add a comment explaining why.")
-    }
+    decision: "approve",
+    reason: ("[WARN] console.log/debug/info/warn/error/trace detected in " + $fp + ". Consider: (1) Is this debug code that should be removed before commit? (2) Should this use a proper logger instead? (3) If intentional, add a comment explaining why.")
   }'
   exit 0
 fi

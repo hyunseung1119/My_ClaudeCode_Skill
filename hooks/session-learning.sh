@@ -2,11 +2,13 @@
 # shellcheck shell=bash
 # Stop: Session learning reminder
 # Reminds to extract patterns before session ends
+# Output format: {"decision":"approve","reason":"..."}
 
 INPUT=$(cat)
 
-# File-based lock to prevent infinite loop
-LOCK_FILE="${TMPDIR:-/tmp}/claude-session-learning-lock"
+# Session-specific lock to prevent infinite loop
+SESSION_KEY="${CLAUDE_SESSION_ID:-$$}"
+LOCK_FILE="${TMPDIR:-/tmp}/claude-session-learning-${SESSION_KEY}"
 trap 'rm -f "$LOCK_FILE"' EXIT
 
 if [ -f "$LOCK_FILE" ]; then
