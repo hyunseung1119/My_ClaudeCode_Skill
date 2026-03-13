@@ -2,12 +2,18 @@
 
 ## Hook Types
 
+- **UserPromptSubmit**: On user message (environment context injection)
 - **PreToolUse**: Before tool execution (validation, parameter modification, blocking)
-- **PostToolUse**: After tool execution (auto-format, type checks, warnings)
+- **PostToolUse**: After tool execution (auto-format, type checks, warnings, loop detection)
 - **PostToolUseFailure**: After tool failure (root cause analysis, learning)
 - **Stop**: When session ends (learning summary, verification)
 
 ## Provided Hook Scripts (`hooks/` directory)
+
+### UserPromptSubmit
+| Script | Matcher | Purpose |
+|--------|---------|---------|
+| `env-context-injector.sh` | (all) | 세션 시작 시 Git/프로젝트/런타임 환경 정보 자동 주입 (1회) |
 
 ### PreToolUse
 | Script | Matcher | Purpose |
@@ -22,6 +28,7 @@
 | `prettier-format.sh` | Edit, Write | JS/TS/CSS/JSON 자동 포맷 (프로젝트 node_modules 의존) |
 | `tsc-check.sh` | Edit, Write | TypeScript 타입 체크 (프로젝트 tsconfig 의존) |
 | `ruff-format.sh` | Edit, Write | Python ruff check --fix + ruff format (venv 또는 글로벌) |
+| `loop-detector.sh` | Edit, Write | 같은 파일 4회+ 편집 시 doom loop 경고 및 재고 강제 |
 
 ### PostToolUseFailure
 | Script | Matcher | Purpose |
@@ -41,15 +48,21 @@
 | 미들웨어 패턴 | 훅 구현체 |
 |-------------|----------|
 | PreCompletionChecklist (검증 강제) | `pre-completion-check.sh` (Stop) — 코드 변경 시 테스트 실행 검증 |
-| LocalContextMiddleware (환경 주입) | CLAUDE.md + 프로젝트 설정 |
-| LoopDetectionMiddleware (반복 방지) | `failure-explainer.sh` (PostToolUseFailure) |
+| LocalContextMiddleware (환경 주입) | `env-context-injector.sh` (UserPromptSubmit) — Git/프로젝트/런타임 자동 주입 |
+| LoopDetectionMiddleware (반복 방지) | `loop-detector.sh` (PostToolUse) — 파일별 편집 횟수 추적, 4회+ 경고 |
 | Safety Guard (안전 장치) | `dangerous-command-blocker.sh` + `secret-detector.sh` (PreToolUse) |
+| Failure Analysis (실패 학습) | `failure-explainer.sh` (PostToolUseFailure) — 에러 WHY 추적 |
 
 ## settings.json 훅 설정 예시
 
 ```json
 {
   "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [{ "type": "command", "command": "bash ~/.claude/hooks/env-context-injector.sh", "timeout": 5 }]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Bash",
@@ -67,7 +80,8 @@
           { "type": "command", "command": "bash ~/.claude/hooks/console-log-warning.sh", "timeout": 5 },
           { "type": "command", "command": "bash ~/.claude/hooks/prettier-format.sh", "timeout": 10 },
           { "type": "command", "command": "bash ~/.claude/hooks/tsc-check.sh", "timeout": 30 },
-          { "type": "command", "command": "bash ~/.claude/hooks/ruff-format.sh", "timeout": 10 }
+          { "type": "command", "command": "bash ~/.claude/hooks/ruff-format.sh", "timeout": 10 },
+          { "type": "command", "command": "bash ~/.claude/hooks/loop-detector.sh", "timeout": 5 }
         ]
       },
       {
@@ -76,7 +90,8 @@
           { "type": "command", "command": "bash ~/.claude/hooks/console-log-warning.sh", "timeout": 5 },
           { "type": "command", "command": "bash ~/.claude/hooks/prettier-format.sh", "timeout": 10 },
           { "type": "command", "command": "bash ~/.claude/hooks/tsc-check.sh", "timeout": 30 },
-          { "type": "command", "command": "bash ~/.claude/hooks/ruff-format.sh", "timeout": 10 }
+          { "type": "command", "command": "bash ~/.claude/hooks/ruff-format.sh", "timeout": 10 },
+          { "type": "command", "command": "bash ~/.claude/hooks/loop-detector.sh", "timeout": 5 }
         ]
       }
     ],

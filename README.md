@@ -1,9 +1,9 @@
 # My Claude Code Settings
 
 Claude Code CLI를 위한 종합 설정 저장소.
-30개 스킬, 23개 에이전트, 30개 커맨드, 9개 규칙, **9개 훅 스크립트(하네스 미들웨어)** 를 포함합니다.
+30개 스킬, 23개 에이전트, 30개 커맨드, 9개 규칙, **11개 훅 스크립트(하네스 미들웨어)** 를 포함합니다.
 
-> **최신 업데이트: 2026-03-12** — 2026 하네스 엔지니어링 적용, 9개 훅 스크립트 추가, CLAUDE.md on-demand 로딩 전환
+> **최신 업데이트: 2026-03-13** — 하네스 미들웨어 완성 (env-context-injector, loop-detector 추가), hook 출력 형식 decision/reason 전환, 실행 권한 정비
 
 ---
 
@@ -16,18 +16,20 @@ Claude Code CLI를 위한 종합 설정 저장소.
 
 ```
 Agent Request
+  → LocalContextMiddleware     (env-context-injector.sh — UserPromptSubmit)
   → Safety Guard              (dangerous-command-blocker.sh + secret-detector.sh)
-  → LocalContextMiddleware     (CLAUDE.md + 프로젝트 설정)
-  → LoopDetectionMiddleware    (failure-explainer.sh)
-  → PreCompletionChecklist     (pre-completion-check.sh)
+  → LoopDetectionMiddleware    (loop-detector.sh — PostToolUse)
+  → PreCompletionChecklist     (pre-completion-check.sh — Stop)
 Agent Response
 ```
 
 | 미들웨어 | 훅 스크립트 | 역할 |
 |----------|-----------|------|
+| Local Context | `env-context-injector.sh` | 세션 시작 시 Git/프로젝트/런타임 환경 자동 주입 |
 | Safety Guard | `dangerous-command-blocker.sh` | `rm -rf`, `--force` push, `DROP TABLE` 차단 |
 | Safety Guard | `secret-detector.sh` | 하드코딩된 API 키/시크릿 감지 및 차단 |
-| Loop Detection | `failure-explainer.sh` | 명령 실패 시 WHY 2~3단계 추적 강제 |
+| Loop Detection | `loop-detector.sh` | 같은 파일 4회+ 편집 시 doom loop 경고 |
+| Failure Analysis | `failure-explainer.sh` | 명령 실패 시 WHY 2~3단계 추적 강제 |
 | PreCompletion | `pre-completion-check.sh` | 코드 변경 시 테스트 실행 여부 검증 |
 | Session Learning | `session-learning.sh` | 세션 종료 시 학습 패턴 추출 |
 | Auto-format | `prettier-format.sh` | JS/TS/CSS/JSON 자동 포맷 |
@@ -45,7 +47,7 @@ Agent Response
 ├── setup.sh / setup.ps1          ← 설치 스크립트
 ├── uninstall.sh / uninstall.ps1  ← 제거 스크립트
 │
-├── hooks/ (9개)                  ← 하네스 미들웨어 훅 스크립트
+├── hooks/ (11개)                 ← 하네스 미들웨어 훅 스크립트
 │   └── *.sh                      ← jq 기반 안전한 JSON 출력
 │
 ├── rules/ (9개)                  ← 규칙 (ALWAYS 2개 + on-demand 7개)
@@ -82,11 +84,11 @@ CLAUDE.md는 **라우터** 역할만 합니다. 항상 로드되는 규칙은 2�
 
 ```jsonc
 {
-  "model": "sonnet",                        // 기본 모델
   "permissions": { "allow": [...], "deny": ["rm -rf", "del", "format"] },
   "hooks": {
+    "UserPromptSubmit":  ["env-context-injector.sh"],
     "PreToolUse":        ["dangerous-command-blocker.sh", "secret-detector.sh"],
-    "PostToolUse":       ["console-log-warning.sh", "prettier-format.sh", "tsc-check.sh", "ruff-format.sh"],
+    "PostToolUse":       ["console-log-warning.sh", "prettier-format.sh", "tsc-check.sh", "ruff-format.sh", "loop-detector.sh"],
     "PostToolUseFailure": ["failure-explainer.sh"],
     "Stop":              ["pre-completion-check.sh", "session-learning.sh"]
   }
@@ -228,7 +230,7 @@ cd My_ClaudeCode_Skill
 | Agents | 23 | 자동 트리거 서브 에이전트 |
 | Commands | 30 | CLI 커맨드 |
 | Rules | 9 | ALWAYS 2개 + on-demand 7개 |
-| Hooks | 9 | 하네스 미들웨어 (PreToolUse 2, PostToolUse 4, PostToolUseFailure 1, Stop 2) |
+| Hooks | 11 | 하네스 미들웨어 (UserPromptSubmit 1, PreToolUse 2, PostToolUse 5, PostToolUseFailure 1, Stop 2) |
 | 기본 모델 | Sonnet | 계획(Opus), 구현(Sonnet), 검증(Sonnet), 단순(Haiku) |
 | 테스트 커버리지 | 80%+ | TDD 필수 |
 
@@ -238,7 +240,8 @@ cd My_ClaudeCode_Skill
 
 | 날짜 | 내용 |
 |------|------|
-| **2026-03-12** | 하네스 엔지니어링 적용 (9개 훅, workflow/harness rules, CLAUDE.md on-demand 전환, secret-detector 추가) |
+| **2026-03-13** | 하네스 미들웨어 완성 — env-context-injector(환경 주입), loop-detector(반복 방지) 추가, hook 출력 decision/reason 형식 전환, 실행 권한(+x) 정비, 11개 훅 체제 |
+| 2026-03-12 | 하네스 엔지니어링 적용 (9개 훅, workflow/harness rules, CLAUDE.md on-demand 전환, secret-detector 추가) |
 | 2026-03-11 | Harness v3, Vercel React, Office 스킬 추가 |
 | 2026-03-04 | CLAUDE.md 경량화, Learning Mode, PC 설정 동기화 |
 | 2026-02-02 | 29개 스킬, 규칙, 커맨드 전체 동기화 |

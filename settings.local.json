@@ -40,8 +40,18 @@
       "Bash(format:*)"
     ]
   },
-  "model": "sonnet",
   "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/env-context-injector.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Bash",
@@ -87,6 +97,11 @@
             "type": "command",
             "command": "bash ~/.claude/hooks/ruff-format.sh",
             "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/loop-detector.sh",
+            "timeout": 5
           }
         ]
       },
@@ -112,6 +127,11 @@
             "type": "command",
             "command": "bash ~/.claude/hooks/ruff-format.sh",
             "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/loop-detector.sh",
+            "timeout": 5
           }
         ]
       }
