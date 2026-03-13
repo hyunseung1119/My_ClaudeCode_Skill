@@ -56,17 +56,13 @@ fi
 
 if [ -n "$WARNINGS" ]; then
   jq -n --arg w "$WARNINGS" --arg cnt "$TOTAL_CODE" '{
-    hookSpecificOutput: {
-      hookEventName: "Stop",
-      additionalContext: ("[PRE-COMPLETION CHECK] " + $cnt + " code file(s) changed. " + $w + "\n\nBefore finishing, run tests to verify:\n- Python: pytest tests/ -x -q\n- JS/TS: npx vitest run\n- Go: go test ./...\n\nSkip only if changes are config/docs only.")
-    }
+    decision: "block",
+    reason: ("[PRE-COMPLETION CHECK] " + $cnt + " code file(s) changed. " + $w + "\nBefore finishing, run tests to verify:\n- Python: pytest tests/ -x -q\n- JS/TS: npx vitest run\n- Go: go test ./...\n\nSkip only if changes are config/docs only.")
   }'
 else
   jq -n '{
-    hookSpecificOutput: {
-      hookEventName: "Stop",
-      additionalContext: "[PRE-COMPLETION CHECK] Tests appear to have been run recently. Good."
-    }
+    decision: "approve",
+    reason: "[PRE-COMPLETION CHECK] Tests appear to have been run recently. Good."
   }'
 fi
 

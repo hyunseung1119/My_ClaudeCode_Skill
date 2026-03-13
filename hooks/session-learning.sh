@@ -15,10 +15,8 @@ fi
 touch "$LOCK_FILE"
 
 jq -n '{
-  hookSpecificOutput: {
-    hookEventName: "Stop",
-    additionalContext: "[LEARNING] If new patterns or error resolutions were discovered in this session, summarize the key 1-2 takeaways."
-  }
+  decision: "approve",
+  reason: "[LEARNING] If new patterns or error resolutions were discovered in this session, summarize the key 1-2 takeaways."
 }'
 
 exit 0
