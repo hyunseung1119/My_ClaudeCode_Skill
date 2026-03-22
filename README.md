@@ -274,9 +274,202 @@ cd My_ClaudeCode_Skill
 | Agents | 23 | 자동 트리거 서브 에이전트 (4개 카테고리) |
 | Commands | 30 | CLI 커맨드 |
 | Rules | 9 | ALWAYS 2개 + on-demand 7개 |
-| Hooks | 12 | 하네스 미들웨어 (UserPromptSubmit 1, PreToolUse 2, PostToolUse 6, PostToolUseFailure 1, Stop 2) |
+| Hooks | 14 | 하네스 미들웨어 (UserPromptSubmit 1, PreToolUse 2, PostToolUse 7, PostToolUseFailure 1, Stop 2, 분석 1) |
 | Tracing | JSONL | `~/.claude/traces/` 7일 보관, 하네스 디버깅용 |
 | 테스트 커버리지 | 80%+ | TDD 필수 |
+
+---
+
+## 튜토리얼 & 학습 가이드
+
+> Claude Code를 처음 접하는 동료를 위한 단계별 가이드입니다.
+
+### 1. 하네스 엔지니어링이란?
+
+AI 코딩 도구의 결과가 들쭉날쭉하다면, **모델을 바꿀 게 아니라 하네스를 바꿔야** 합니다.
+
+하네스(harness)는 말에게 씌우는 고삐처럼, **AI를 감싸는 시스템 전체**를 의미합니다. LangChain은 하네스만 개선해서 같은 모델로 벤치마크 52.8% → 66.5%를 달성했습니다.
+
+하네스의 3축:
+
+| 축 | 역할 | 비유 | 이 저장소의 구현 |
+|----|------|------|---------------|
+| **System Prompt** | AI 행동 규칙 | 신입 온보딩 매뉴얼 | `rules/` (9개 규칙 파일) |
+| **Tools** | AI가 쓸 수 있는 도구 | 전문가 팀 구성 | `agents/` (23개 에이전트) |
+| **Middleware** | 자동 검사/가드레일 | 공장 품질 검사 라인 | `hooks/` (12개 훅 스크립트) |
+
+### 2. 규칙 파일 (rules/) — AI에게 주는 업무 매뉴얼
+
+CLAUDE.md와 rules/는 매 세션 시작 시 AI가 자동으로 읽는 규칙서입니다. AI는 세션마다 기억이 리셋되므로, **항상 적용될 규칙**을 파일로 관리합니다.
+
+#### 핵심 규칙 요약
+
+| 규칙 파일 | 한줄 설명 | 없으면 어떤 일이? |
+|----------|---------|----------------|
+| `workflow.md` | "코드 쓰기 전에 설명→승인→실행" | AI가 질문하자마자 코드부터 500줄 씀 |
+| `coding-style.md` | "함수 50줄, 파일 400줄 제한" | 200줄짜리 함수가 나옴 |
+| `testing.md` | "테스트 먼저 쓰고, 약하게 바꾸지 마" | 테스트를 삭제해서 "통과"시킴 |
+| `security.md` | "API 키 하드코딩 금지" | `api_key = "sk-1234..."` 작성 |
+| `context-management.md` | "70%에서 정리, 80% 넘기지 마" | 대화 후반에 앞부분을 까먹음 |
+| `agents.md` | "상황별 전문가 에이전트 자동 투입" | 혼자 다 하다가 보안 허점 놓침 |
+
+#### 예시: workflow.md의 효과
+
+```
+[규칙 없을 때]
+사용자: "로그인 기능 만들어줘"
+AI: (바로 코드 500줄 작성) → 방향 틀림 → 다시 작성 → 시간 낭비
+
+[규칙 있을 때]
+사용자: "로그인 기능 만들어줘"
+AI: "두 가지 접근법이 있습니다:
+     Option A: JWT — 확장성 좋음, 토큰 관리 필요
+     Option B: 세션 — 단순, 서버 부하
+     어느 쪽으로 할까요?"
+사용자: "A로"
+AI: (그제서야 코드 작성)
+```
+
+#### 팁: WHY를 같이 써라
+
+```markdown
+# 나쁜 예
+- TypeScript strict mode 사용
+
+# 좋은 예
+- TypeScript strict mode 사용 — implicit any로 프로덕션 버그가 발생한 적이 있음
+```
+
+WHY가 있으면 AI가 예외 상황에서도 올바른 판단을 합니다.
+
+### 3. 훅 (hooks/) — 자동화의 핵심
+
+훅은 **특정 이벤트 발생 시 자동 실행되는 스크립트**입니다. "100% 매번 실행돼야 하는 것"은 훅으로, "판단이 필요한 가이드라인"은 규칙으로 분리합니다.
+
+#### 훅 실행 타이밍
+
+```
+사용자 메시지 입력 ─── UserPromptSubmit
+     │
+AI가 도구 실행 전 ─── PreToolUse (차단 가능)
+     │
+도구 실행 성공 ─────── PostToolUse (자동 처리)
+도구 실행 실패 ─────── PostToolUseFailure (분석)
+     │
+AI 작업 완료 ──────── Stop (최종 검증)
+```
+
+#### 각 훅의 역할 (비유로 이해하기)
+
+| 훅 | 비유 | 실제 동작 |
+|----|------|---------|
+| `env-context-injector` | 출근하면 자동 브리핑 | Git 상태, 프로젝트 정보 자동 주입 |
+| `dangerous-command-blocker` | 위험한 버튼에 안전 커버 | `rm -rf`, `git push --force` 차단 |
+| `secret-detector` | 비밀번호 포스트잇 감지기 | API 키 하드코딩, .env 파일 쓰기 차단 |
+| `dependency-audit` | 새 직원 신원조회 | npm/pip 패키지 URL 설치, 위험 플래그 차단 |
+| `console-log-warning` | 프로덕션 디버그 로그 경고 | console.log 감지 시 경고 |
+| `prettier/tsc/ruff` | 자동 맞춤법 검사 | 파일 수정 후 포맷팅 + 타입 체크 |
+| `loop-detector` | 같은 실수 4번이면 멈춰 | 동일 파일 4회+ 편집 시 경고 |
+| `trace-logger` | CCTV 녹화 | 모든 도구 호출 JSONL 기록 |
+| `failure-explainer` | 왜 실패했는지 3단계 추적 | 에러 분류 → WHY 분석 → 에스컬레이션 |
+| `pre-completion-check` | 퇴근 전 체크리스트 | 코드 변경 후 테스트 실행 확인 |
+| `session-learning` | 오늘 뭘 배웠나 정리 | 세션 종료 시 패턴 추출 |
+| `trace-analyzer` | 주간 보안 리포트 | 실패 패턴, doom loop 후보 분석 |
+
+#### 실제 차단 예시
+
+```
+AI: "불필요한 파일을 정리합니다" → rm -rf ./src
+훅: [SAFETY] rm -rf 감지. 차단됨.
+AI: "개별 파일을 하나씩 삭제하겠습니다" → 안전한 방법으로 전환
+```
+
+```
+AI: config.py에 api_key = "sk-1234abcd..." 작성
+훅: [SECURITY] 하드코딩된 API 키 감지. 차단됨.
+AI: "환경 변수로 변경합니다" → os.environ.get("API_KEY")
+```
+
+### 4. 에이전트 (agents/) — 혼자 다 하지 마라
+
+에이전트는 상황별로 **자동 투입되는 전문가**입니다.
+
+#### 자동 트리거 흐름 예시
+
+```
+사용자: "결제 기능 만들어줘"
+
+1. [자동] planner → 설계도 작성
+2. 사용자 승인
+3. AI가 코드 작성
+4. [자동] code-reviewer → "리팩터링 필요"
+5. [자동] security-reviewer → "SQL 인젝션 위험"
+6. [자동] tdd-guide → "테스트 커버리지 60%, 추가 필요"
+7. 전부 반영 → 완료
+```
+
+사용자는 "결제 기능 만들어줘" 한 마디만 했습니다.
+
+#### 추론 예산 배분
+
+모든 작업에 비싼 모델을 쓰면 비용이 폭발합니다:
+
+| 단계 | 모델 | 이유 |
+|------|------|------|
+| 계획 | Opus (최고) | 아키텍처를 잘못 잡으면 전부 재작업 |
+| 구현 | Sonnet (균형) | 코드 작성은 중급이면 충분 |
+| 검증 | Sonnet (균형) | 테스트 실행과 결과 대조 |
+| 단순 편집 | Haiku (경량) | 포맷팅, 주석 같은 단순 작업 |
+
+### 5. 15분 만에 시작하기
+
+#### Step 1: 설치
+
+```bash
+git clone https://github.com/hyunseung1119/My_ClaudeCode_Skill.git
+cd My_ClaudeCode_Skill
+./setup.sh  # macOS/Linux
+```
+
+#### Step 2: 동작 확인
+
+```bash
+claude  # Claude Code 시작
+
+# 테스트 1: 위험 명령 차단
+> "rm -rf / 실행해"  → [SAFETY] 차단됨 ✓
+
+# 테스트 2: 시크릿 감지
+> ".env 파일에 API_KEY=sk-1234 써줘"  → [SECURITY] 차단됨 ✓
+
+# 테스트 3: 워크플로우
+> "로그인 기능 만들어줘"  → 코드 없이 설명부터 시작 ✓
+```
+
+#### Step 3: 점진적 확장
+
+| 주차 | 익힐 것 | 핵심 |
+|------|--------|------|
+| 1주차 | 안전 훅 3개 | `dangerous-command-blocker` + `secret-detector` + `loop-detector` |
+| 2주차 | 품질 훅 | `prettier` + `tsc` + `ruff` (자동 포맷/타입 체크) |
+| 3주차 | 워크플로우 규칙 | `workflow.md` + `testing.md` (Explain→Approve→Execute + TDD) |
+| 4주차 | 에이전트 활용 | `planner` + `code-reviewer` 자동 트리거 |
+
+**핵심 원칙: 단순하게 시작하고, 문제가 보이는 곳에 훅/규칙을 추가합니다.**
+
+### 6. CLAUDE.md vs 훅, 언제 뭘 쓰나?
+
+| 상황 | CLAUDE.md (규칙) | 훅 |
+|------|-----------------|-----|
+| 100% 매번 실행 | | **O** |
+| 판단이 필요한 가이드 | **O** | |
+| 코드 포맷팅 | | **O** (prettier) |
+| "함수 50줄 이내" | **O** | |
+| API 키 감지 | | **O** (secret-detector) |
+| "테스트 먼저 써" | **O** | |
+| 위험 명령 차단 | | **O** (dangerous-command-blocker) |
+
+자동화할 수 있으면 훅, 판단이 필요하면 규칙.
 
 ---
 
@@ -284,7 +477,8 @@ cd My_ClaudeCode_Skill
 
 | 날짜 | 내용 |
 |------|------|
-| **2026-03-13** | 하네스 v4 — 12개 훅 체제, JSON 출력 통일(`decision/reason`), trace-logger 추가, failure-explainer 실질 구현(에러 분류+WHY+에스컬레이션), 세션 격리(race condition 해결), 크로스 플랫폼 호환(shasum 폴백), 에이전트 23개 전체 문서화(4카테고리), CODEOWNERS/@gitignore 정비 |
+| **2026-03-22** | dependency-audit 훅 추가, trace-analyzer 추가, Write에 trace-logger 연결, README 튜토리얼 & 학습 가이드 추가 |
+| 2026-03-13 | 하네스 v4 — 12개 훅 체제, JSON 출력 통일(`decision/reason`), trace-logger 추가, failure-explainer 실질 구현(에러 분류+WHY+에스컬레이션), 세션 격리(race condition 해결), 크로스 플랫폼 호환(shasum 폴백), 에이전트 23개 전체 문서화(4카테고리), CODEOWNERS/@gitignore 정비 |
 | 2026-03-12 | 하네스 엔지니어링 적용 (9개 훅, workflow/harness rules, CLAUDE.md on-demand 전환, secret-detector 추가) |
 | 2026-03-11 | Harness v3, Vercel React, Office 스킬 추가 |
 | 2026-03-04 | CLAUDE.md 경량화, Learning Mode, PC 설정 동기화 |
