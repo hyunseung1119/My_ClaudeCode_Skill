@@ -34,9 +34,10 @@ Hooks within the same event run **sequentially** in the order listed. Each hook 
 | `dangerous-command-blocker.sh` | Bash | `rm -rf`, `git push --force`, `git reset --hard`, `git clean -f`, `DROP TABLE` 차단 |
 | `secret-detector.sh` | Edit, Write | 하드코딩된 API 키/시크릿 감지 및 차단, `.env`/`.pem`/`.key` 파일 쓰기 차단 |
 
-### PostToolUse (6)
+### PostToolUse (7)
 | Script | Matcher | Purpose | Order |
 |--------|---------|---------|-------|
+| `dependency-audit.sh` | Bash | npm/pip/cargo/go 패키지 설치 시 버전 고정, URL 설치, 위험 플래그 검사 | 1st (Bash) |
 | `console-log-warning.sh` | Edit, Write | JS/TS console.log/debug/info/warn/error/trace 경고 | 1st |
 | `prettier-format.sh` | Edit, Write | JS/TS/CSS/JSON Prettier 자동 포맷 | 2nd |
 | `tsc-check.sh` | Edit, Write | TypeScript 증분 타입 체크 (head -10) | 3rd |
@@ -64,6 +65,7 @@ Agent Request
   → LocalContextMiddleware     (env-context-injector.sh — UserPromptSubmit)
   → Safety Guard              (dangerous-command-blocker.sh + secret-detector.sh — PreToolUse)
   → [Tool Execution]
+  → SupplyChainGuard          (dependency-audit.sh — PostToolUse/Bash)
   → Quality Gate              (console-log, prettier, tsc, ruff — PostToolUse)
   → LoopDetectionMiddleware    (loop-detector.sh — PostToolUse)
   → ExecutionTracing           (trace-logger.sh — PostToolUse)
@@ -76,6 +78,7 @@ Agent Response
 |-------------|----------|
 | LocalContextMiddleware (환경 주입) | `env-context-injector.sh` — Git/프로젝트/런타임 자동 주입 |
 | Safety Guard (안전 장치) | `dangerous-command-blocker.sh` + `secret-detector.sh` |
+| SupplyChainGuard (공급망 보안) | `dependency-audit.sh` — 버전 고정, URL 설치, 위험 플래그 검사 |
 | Quality Gate (품질 게이트) | `console-log-warning.sh` + `prettier` + `tsc` + `ruff` |
 | LoopDetectionMiddleware (반복 방지) | `loop-detector.sh` — 파일별 편집 추적, 4회+ 경고 |
 | ExecutionTracing (실행 추적) | `trace-logger.sh` — JSONL 트레이스, 7일 보관 |
@@ -111,6 +114,12 @@ Agent Response
       }
     ],
     "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "bash ~/.claude/hooks/dependency-audit.sh", "timeout": 5 }
+        ]
+      },
       {
         "matcher": "Edit",
         "hooks": [

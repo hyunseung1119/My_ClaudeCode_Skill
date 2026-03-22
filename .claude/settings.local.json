@@ -1,18 +1,189 @@
 {
   "permissions": {
     "allow": [
-      "WebSearch",
-      "Bash(for f in C:/Users/user/.claude/skills/*/SKILL.md)",
-      "Bash(do echo \"=== $f ===\")",
-      "Read(//c/Users/user/Desktop/.claude/**)",
-      "Bash(done)",
-      "Bash(wc:*)",
+      "Bash(dir:*)",
+      "Bash(findstr:*)",
+      "Bash(test:*)",
+      "Bash(find:*)",
+      "Bash(python:*)",
+      "Bash(pip:*)",
+      "Bash(npm:*)",
+      "Bash(git:*)",
+      "Bash(cd:*)",
       "Bash(ls:*)",
-      "Bash(for skill in api-spec-generator backend-api context-compressor react-component)",
-      "Bash(do echo \"=== $skill ===\")",
-      "Read(//c/Users/user/.claude/skills/$skill/**)",
-      "WebFetch(domain:github.com)",
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "Bash(pytest:*)",
+      "Bash(npx:*)",
+      "Bash(ruff:*)",
+      "Bash(cargo:*)",
+      "Bash(rustc:*)",
+      "Bash(kubectl:*)",
+      "Bash(terraform:*)",
+      "Bash(docker:*)",
+      "Edit",
+      "Write",
+      "Read",
+      "Grep",
+      "Glob",
+      "WebSearch",
+      "Task",
+      "Bash(wc:*)",
+      "Bash(iconv:*)",
+      "Bash(tee:*)",
+      "Skill(react-component)",
+      "Skill(multi-agent)",
+      "Skill(token-analysis)",
+      "Skill(rust)"
+    ],
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(del:*)",
+      "Bash(format:*)"
     ]
-  }
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/env-context-injector.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/dangerous-command-blocker.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/secret-detector.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/dependency-audit.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/console-log-warning.sh",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/prettier-format.sh",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/tsc-check.sh",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/ruff-format.sh",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/loop-detector.sh",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/trace-logger.sh",
+            "timeout": 3
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/console-log-warning.sh",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/prettier-format.sh",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/tsc-check.sh",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/ruff-format.sh",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/loop-detector.sh",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/trace-logger.sh",
+            "timeout": 3
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/failure-explainer.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/pre-completion-check.sh",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/session-learning.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "skipDangerousModePermissionPrompt": true
 }

@@ -7,9 +7,8 @@
 INPUT=$(cat)
 
 # Session-specific lock to prevent infinite loop and multi-session conflicts
-SESSION_KEY="${CLAUDE_SESSION_ID:-$$}"
+SESSION_KEY="${CLAUDE_SESSION_ID:-${PPID:-unknown}}"
 LOCK_FILE="${TMPDIR:-/tmp}/claude-pre-completion-${SESSION_KEY}"
-trap 'rm -f "$LOCK_FILE"' EXIT
 
 if [ -f "$LOCK_FILE" ]; then
   exit 0
@@ -46,11 +45,12 @@ fi
 if git diff --name-only HEAD 2>/dev/null | grep -qE '\.(ts|tsx|js|jsx)$' || \
    git ls-files --others --exclude-standard 2>/dev/null | grep -qE '\.(ts|tsx|js|jsx)$'; then
   VITEST_RAN=false
-  for cache_dir in node_modules/.vitest node_modules/.cache/jest; do
+  while IFS= read -r cache_dir; do
     if [ -d "$cache_dir" ] && [ "$(find "$cache_dir" -maxdepth 1 -mmin -30 2>/dev/null | head -1)" != "" ]; then
       VITEST_RAN=true
+      break
     fi
-  done
+  done < <(find . -maxdepth 3 -type d \( -path "*/node_modules/.vitest" -o -path "*/node_modules/.cache/jest" \) 2>/dev/null)
   if [ "$VITEST_RAN" = false ]; then
     WARNINGS="${WARNINGS}JS/TS files changed but no recent test run detected. "
   fi
