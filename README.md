@@ -1,9 +1,9 @@
 # My Claude Code Settings
 
 Claude Code CLI를 위한 종합 설정 저장소.
-30개 스킬, 23개 에이전트, 30개 커맨드, 9개 규칙, **12개 훅 스크립트(하네스 미들웨어)** 를 포함합니다.
+30개 스킬, 24개 에이전트, 30개 커맨드, 9개 규칙, **17개 훅 스크립트(하네스 미들웨어)** 를 포함합니다.
 
-> **최신 업데이트: 2026-03-13** — 하네스 미들웨어 완성 (12개 훅, JSON 출력 통일, 실행 트레이싱, 세션 격리, 에이전트 전체 문서화)
+> **최신 업데이트: 2026-03-24** — 하네스 v5: 훅 계약 통일, regression gate, python-reviewer, secret 14패턴, progress 강화
 
 ---
 
@@ -40,6 +40,7 @@ Agent Response
 | Execution Tracing | `trace-logger.sh` | 모든 도구 호출을 JSONL로 기록 (7일 보관) |
 | Failure Analysis | `failure-explainer.sh` | 에러 분류 + WHY 3단계 추적 + 에스컬레이션 |
 | PreCompletion | `pre-completion-check.sh` | 코드 변경 시 테스트 실행 여부 검증 |
+| Regression Gate | `regression-gate.sh` | 이전 세션 실패 테스트 회귀 검사 |
 | Session Learning | `session-learning.sh` | 세션 종료 시 학습 패턴 추출 |
 
 ### 핵심 설계 원칙
@@ -187,11 +188,12 @@ CLAUDE.md는 **라우터** 역할만 합니다. 항상 로드되는 규칙은 2�
 | debugger | 버그 진단 및 수정 | 런타임 에러, 테스트 실패 |
 | architect | 시스템 설계 결정 | 아키텍처 변경 |
 
-### Quality & Review (9) — 도메인별 리뷰
+### Quality & Review (10) — 도메인별 리뷰
 | 에이전트 | 역할 |
 |----------|------|
 | a11y-reviewer | WCAG 2.1 접근성 |
 | database-reviewer | PostgreSQL/Supabase 최적화 |
+| python-reviewer | Python 타입 힌트/async/Pydantic/보안 |
 | go-reviewer | Go 코드 리뷰 |
 | go-build-resolver | Go 빌드 에러 |
 | graphql-expert | GraphQL 스키마/리졸버 |
@@ -271,10 +273,10 @@ cd My_ClaudeCode_Skill
 | 항목 | 수량 | 설명 |
 |------|------|------|
 | Skills | 30 | 전문 스킬 (기획, 개발, AI, 문서, 품질) |
-| Agents | 23 | 자동 트리거 서브 에이전트 (4개 카테고리) |
+| Agents | 24 | 자동 트리거 서브 에이전트 (4개 카테고리) |
 | Commands | 30 | CLI 커맨드 |
 | Rules | 9 | ALWAYS 2개 + on-demand 7개 |
-| Hooks | 14 | 하네스 미들웨어 (UserPromptSubmit 1, PreToolUse 2, PostToolUse 7, PostToolUseFailure 1, Stop 2, 분석 1) |
+| Hooks | 17 | 하네스 미들웨어 (SessionStart 3, UserPromptSubmit 1, PreToolUse 4, PostToolUse 7, PostToolUseFailure 1, PostCompact 1, Stop 4) |
 | Tracing | JSONL | `~/.claude/traces/` 7일 보관, 하네스 디버깅용 |
 | 테스트 커버리지 | 80%+ | TDD 필수 |
 
@@ -477,7 +479,8 @@ claude  # Claude Code 시작
 
 | 날짜 | 내용 |
 |------|------|
-| **2026-03-22** | dependency-audit 훅 추가, trace-analyzer 추가, Write에 trace-logger 연결, README 튜토리얼 & 학습 가이드 추가 |
+| **2026-03-24** | 하네스 v5 — 훅 계약 통일(dependency-audit stdin, code-quality-gate JSON), regression-gate 신규(SessionStart 회귀 검사), python-reviewer 에이전트(24번째), secret-detector 14 provider 패턴, progress-tracker 강화(DoD/테스트/언어 요약) |
+| 2026-03-22 | dependency-audit 훅 추가, trace-analyzer 추가, Write에 trace-logger 연결, README 튜토리얼 & 학습 가이드 추가 |
 | 2026-03-13 | 하네스 v4 — 12개 훅 체제, JSON 출력 통일(`decision/reason`), trace-logger 추가, failure-explainer 실질 구현(에러 분류+WHY+에스컬레이션), 세션 격리(race condition 해결), 크로스 플랫폼 호환(shasum 폴백), 에이전트 23개 전체 문서화(4카테고리), CODEOWNERS/@gitignore 정비 |
 | 2026-03-12 | 하네스 엔지니어링 적용 (9개 훅, workflow/harness rules, CLAUDE.md on-demand 전환, secret-detector 추가) |
 | 2026-03-11 | Harness v3, Vercel React, Office 스킬 추가 |

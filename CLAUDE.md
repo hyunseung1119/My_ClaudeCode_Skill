@@ -28,5 +28,5 @@
 | 에이전트 디스패치 | `agents.md` — 23개 에이전트 역할 (4개 카테고리) |
 | Git/PR | `git-workflow.md` — Conventional Commits |
 | 세션/컨텍스트 | `context-management.md` — 세션 라이프사이클 |
-| 훅 설정 변경 | `hooks.md` — 11개 훅 스크립트 가이드 |
+| 훅 설정 변경 | `hooks.md` — 17개 훅 스크립트 가이드 |
 | 프론트엔드/아키텍처/성능 | 관련 스킬 참조 (`/react-component`, `/architecture-design` 등) |

@@ -11,11 +11,12 @@
 | debugger | Runtime errors, test failures | sonnet |
 | architect | System design, scalability, technical decisions | opus |
 
-## Quality & Review Agents (9)
+## Quality & Review Agents (10)
 | Agent | When to Use | Model |
 |-------|-------------|-------|
 | a11y-reviewer | UI, forms, navigation, interactive components (WCAG 2.1) | sonnet |
 | database-reviewer | SQL, migrations, schema design, RLS (PostgreSQL/Supabase) | sonnet |
+| python-reviewer | All Python code changes — type hints, async, Pydantic, security | sonnet |
 | go-reviewer | All Go code changes — idiomatic, concurrency, errors | sonnet |
 | go-build-resolver | Go build, vet, compilation errors | sonnet |
 | graphql-expert | GraphQL schema, resolvers, security, performance | sonnet |
@@ -48,6 +49,7 @@
 - Auth/API/input handling → **security-reviewer** (parallel)
 - UI changes → **a11y-reviewer**
 - DB/SQL changes → **database-reviewer**
+- Python code → **python-reviewer**
 - Go code → **go-reviewer**
 - React code → **react-agent**
 

@@ -37,11 +37,12 @@ if [ -z "$CONTENT" ]; then
   exit 0
 fi
 
-# Detect common secret patterns
-if echo "$CONTENT" | grep -qEi '(api[_-]?key\s*=\s*["\x27][A-Za-z0-9]{16,}|api[_-]?secret\s*=|aws_access_key_id\s*=\s*["\x27]AK|aws_secret_access_key|sk-[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{36}|AKIA[0-9A-Z]{16}|-----BEGIN\s+(RSA|EC|DSA)?\s*PRIVATE\s+KEY)'; then
-  cat <<'EOF'
-{"decision":"block","reason":"[SECURITY] Potential secret/API key detected in code. Use environment variables instead."}
-EOF
+# Detect common secret patterns (2026-03 updated — 14 providers)
+if echo "$CONTENT" | grep -qEi '(api[_-]?key\s*=\s*["\x27][A-Za-z0-9]{16,}|api[_-]?secret\s*=|aws_access_key_id\s*=\s*["\x27]AK|aws_secret_access_key|sk-[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{36}|AKIA[0-9A-Z]{16}|-----BEGIN\s+(RSA|EC|DSA)?\s*PRIVATE\s+KEY|sk-ant-[a-zA-Z0-9]{20,}|xox[bprs]-[a-zA-Z0-9\-]{10,}|gho_[a-zA-Z0-9]{36}|glpat-[a-zA-Z0-9\-]{20}|AIza[a-zA-Z0-9_\-]{35}|whsec_[a-zA-Z0-9]{20,}|shpat_[a-zA-Z0-9]{32}|SG\.[a-zA-Z0-9_\-]{22}\.[a-zA-Z0-9_\-]{43})'; then
+  jq -n '{
+    decision: "block",
+    reason: "[SECURITY] Potential secret/API key detected in code. Use environment variables instead.\nDetected pattern matches: AWS, OpenAI, Anthropic, Slack, GitHub, GitLab, Google, Stripe, Shopify, or SendGrid key."
+  }'
   exit 0
 fi
 

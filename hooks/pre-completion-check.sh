@@ -66,6 +66,11 @@ if git diff --name-only HEAD 2>/dev/null | grep -qE '\.go$' || \
 fi
 
 if [ -n "$WARNINGS" ]; then
+  # regression-gate 연동: 실패 기록 저장
+  FAIL_LOG="$HOME/.claude/traces/last-test-failures.txt"
+  mkdir -p "$(dirname "$FAIL_LOG")"
+  git diff --name-only HEAD 2>/dev/null | grep -E '\.(py|ts|tsx|js|jsx|go|rs)$' > "$FAIL_LOG" 2>/dev/null
+
   jq -n --arg w "$WARNINGS" --arg cnt "$TOTAL_CODE" '{
     decision: "block",
     reason: ("[PRE-COMPLETION CHECK] " + $cnt + " code file(s) changed. " + $w + "\nBefore finishing, run tests to verify:\n- Python: pytest tests/ -x -q\n- JS/TS: npx vitest run\n- Go: go test ./...\n- Rust: cargo test\n\nSkip only if changes are config/docs only.")
