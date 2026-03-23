@@ -45,6 +45,11 @@
             "type": "command",
             "command": "bash ~/.claude/hooks/env-context-injector.sh",
             "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/progress-loader.sh",
+            "timeout": 5
           }
         ]
       }
@@ -77,6 +82,11 @@
           {
             "type": "command",
             "command": "bash ~/.claude/hooks/pre-commit-security.sh",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/code-quality-gate.sh",
             "timeout": 10
           }
         ]
@@ -161,9 +171,30 @@
         ]
       }
     ],
+    "PostCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/compact-checkpoint.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/dod-checker.sh",
+            "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/progress-tracker.sh",
+            "timeout": 5
+          },
           {
             "type": "command",
             "command": "bash ~/.claude/hooks/pre-completion-check.sh",
