@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Pretendard", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Noto Serif KR", Georgia, "Times New Roman", serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background-color: #e7e5e4;
+  color: #1c1917;
+}
+
+/* Anti-AI: No gradients, no glow, no neon. Just ink on paper. */
