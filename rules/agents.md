@@ -67,9 +67,23 @@
 - Research/exploration agents: return summary only, never modify files
 
 ## Reasoning Budget (Harness Engineering)
+
+> Terminal Bench 2.0 실측: high(63.6%) > xhigh(53.9%). xhigh는 과도한 내부 토큰(50,000+)으로 타임아웃 발생.
+> 따라서 Planning도 high 사용. Opus 모델의 기본 추론력으로 충분.
+
 | Phase | Level | Agent Mapping |
 |-------|-------|---------------|
-| Planning | xhigh | planner, architect (Opus) |
+| Planning | high | planner, architect (Opus) |
 | Implementation | high | code-reviewer, tdd-guide, security-reviewer (Sonnet) |
 | Verification | high | e2e-runner, debugger (Sonnet) |
 | Simple edits | low | doc-updater, refactor-cleaner (Haiku when available) |
+
+## Tool Strategy (Bash-First)
+
+> mini-SWE-agent: bash-only로 SWE-bench 74% 달성 (Princeton/Stanford).
+> 전용 도구는 bash로 대체 불가능한 5-10% 케이스에만 사용.
+
+- **Core agents** (planner, code-reviewer, tdd-guide): Read, Grep, Glob, Bash만 사용
+- **Build agents** (build-error-resolver, go-build-resolver): + Edit, Write 추가
+- **Specialized agents** (e2e-runner, infrastructure-agent): 전용 도구 허용
+- **Research agents** (architect, critic-agent, tree-of-thoughts): Read, Grep, Glob만 (수정 금지)

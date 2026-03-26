@@ -39,9 +39,12 @@ create_symlink() {
     local link=$2
     local name=$(basename "$link")
     
-    # Remove existing link/file if exists
-    if [ -e "$link" ] || [ -L "$link" ]; then
-        rm -rf "$link"
+    # Remove existing symlink; warn if real file/directory
+    if [ -L "$link" ]; then
+        rm -f "$link"
+    elif [ -e "$link" ]; then
+        echo -e "  ${YELLOW}!${NC} $name - 기존 파일/디렉토리 존재 (심볼릭 링크 아님). 백업 후 진행하세요."
+        return 1
     fi
     
     if ln -sf "$target" "$link" 2>/dev/null; then

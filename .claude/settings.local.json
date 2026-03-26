@@ -15,10 +15,10 @@
       "Bash(npx:*)",
       "Bash(ruff:*)",
       "Bash(cargo:*)",
-      "Bash(rustc:*)",
-      "Bash(kubectl:*)",
-      "Bash(terraform:*)",
       "Bash(docker:*)",
+      "Bash(wc:*)",
+      "Bash(iconv:*)",
+      "Bash(tee:*)",
       "Edit",
       "Write",
       "Read",
@@ -26,21 +26,39 @@
       "Glob",
       "WebSearch",
       "Task",
-      "Bash(wc:*)",
-      "Bash(iconv:*)",
-      "Bash(tee:*)",
       "Skill(react-component)",
       "Skill(multi-agent)",
-      "Skill(token-analysis)",
-      "Skill(rust)"
+      "Skill(token-analysis)"
     ],
     "deny": [
       "Bash(rm -rf:*)",
       "Bash(del:*)",
       "Bash(format:*)"
-    ]
+    ],
+    "defaultMode": "default"
   },
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/env-context-injector.sh",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/progress-loader.sh",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/regression-gate.sh",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
     "UserPromptSubmit": [
       {
         "hooks": [
@@ -64,6 +82,26 @@
         ]
       },
       {
+        "matcher": "Bash(git commit*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/pre-commit-security.sh",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/code-quality-gate.sh",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/test-coverage-gate.sh",
+            "timeout": 15
+          }
+        ]
+      },
+      {
         "matcher": "Edit|Write",
         "hooks": [
           {
@@ -82,6 +120,16 @@
             "type": "command",
             "command": "bash ~/.claude/hooks/dependency-audit.sh",
             "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/trace-logger.sh",
+            "timeout": 3
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/learning-indexer.sh",
+            "timeout": 5
           }
         ]
       },
@@ -95,27 +143,22 @@
           },
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/prettier-format.sh",
-            "timeout": 10
-          },
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/tsc-check.sh",
-            "timeout": 30
-          },
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/ruff-format.sh",
-            "timeout": 10
-          },
-          {
-            "type": "command",
             "command": "bash ~/.claude/hooks/loop-detector.sh",
             "timeout": 5
           },
           {
             "type": "command",
             "command": "bash ~/.claude/hooks/trace-logger.sh",
+            "timeout": 3
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/verification-loop.sh",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/observability-metrics.sh",
             "timeout": 3
           }
         ]
@@ -130,27 +173,22 @@
           },
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/prettier-format.sh",
-            "timeout": 10
-          },
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/tsc-check.sh",
-            "timeout": 30
-          },
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/ruff-format.sh",
-            "timeout": 10
-          },
-          {
-            "type": "command",
             "command": "bash ~/.claude/hooks/loop-detector.sh",
             "timeout": 5
           },
           {
             "type": "command",
             "command": "bash ~/.claude/hooks/trace-logger.sh",
+            "timeout": 3
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/verification-loop.sh",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/observability-metrics.sh",
             "timeout": 3
           }
         ]
@@ -168,9 +206,30 @@
         ]
       }
     ],
+    "PostCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/compact-checkpoint.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/dod-checker.sh",
+            "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/progress-tracker.sh",
+            "timeout": 5
+          },
           {
             "type": "command",
             "command": "bash ~/.claude/hooks/pre-completion-check.sh",
@@ -185,5 +244,12 @@
       }
     ]
   },
-  "skipDangerousModePermissionPrompt": true
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true,
+    "explanatory-output-style@claude-plugins-official": true,
+    "commit-commands@claude-plugins-official": true
+  },
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  }
 }

@@ -24,7 +24,7 @@ Hooks within the same event run **sequentially** in the order listed. Each hook 
 
 **Important:** If any hook in a chain outputs `"decision":"block"`, the action is blocked regardless of other hooks.
 
-## Provided Hook Scripts (`hooks/` directory) — 17 total
+## Provided Hook Scripts (`hooks/` directory) — 21 total
 
 ### SessionStart (3)
 | Script | Purpose |
@@ -44,9 +44,10 @@ Hooks within the same event run **sequentially** in the order listed. Each hook 
 | `dangerous-command-blocker.sh` | Bash | `rm -rf`, `git push --force`, `git reset --hard`, `git clean -f`, `DROP TABLE` 차단 |
 | `pre-commit-security.sh` | Bash(git commit*) | 커밋 전 staged diff에서 시크릿/credential 검사 |
 | `code-quality-gate.sh` | Bash(git commit*) | 커밋 전 merge conflict marker, TODO/FIXME, 디버그 로그, 대용량 변경 검사 |
+| `test-coverage-gate.sh` | Bash(git commit*) | 커밋 전 테스트 커버리지 80% 미만 시 차단 (Python/Node/Go, 10분 캐시) |
 | `secret-detector.sh` | Edit, Write | 14개 provider 패턴 감지 (AWS, OpenAI, Anthropic, Slack, GitHub, GitLab, Google, Stripe, Shopify, SendGrid 등) |
 
-### PostToolUse (7)
+### PostToolUse (8)
 | Script | Matcher | Purpose | Order |
 |--------|---------|---------|-------|
 | `dependency-audit.sh` | Bash | npm/pip/cargo/go 패키지 설치 시 URL 설치, 위험 플래그, typosquatting 검사 | 1st (Bash) |
@@ -56,6 +57,9 @@ Hooks within the same event run **sequentially** in the order listed. Each hook 
 | `ruff-format.sh` | Edit, Write | Python ruff check --fix + format (pyproject.toml 감지) | 4th |
 | `loop-detector.sh` | Edit, Write | 같은 파일 4회+ 편집 시 doom loop 경고 (session-specific) | 5th |
 | `trace-logger.sh` | (all) | 모든 도구 호출을 `~/.claude/traces/` JSONL로 기록 (7일 보관) | 6th |
+| `learning-indexer.sh` | Bash | `/learn` 실행 후 학습 패턴 자동 인덱싱 → 크로스세션 검색 지원 | 7th |
+| `verification-loop.sh` | Edit, Write | 코드 변경 후 관련 테스트 자동 실행 → 실패 시 피드백 주입 (Spotify Honk 패턴) | 8th |
+| `observability-metrics.sh` | Edit, Write | 도구 호출 메트릭 수집 → `~/.claude/traces/metrics.jsonl` (5MB 로테이션, 7일 보관) | 9th |
 
 ### PostToolUseFailure (1)
 | Script | Matcher | Purpose |

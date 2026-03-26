@@ -46,3 +46,36 @@
 - 인증/API/입력처리 → **security-reviewer** 병렬
 - 빌드/타입 에러 → **build-error-resolver** 즉시
 - 기능+버그 → **tdd-guide** 테스트 먼저
+
+## Command → Agent 자동 연결 (ALWAYS)
+
+슬래시 커맨드 실행 시, 대응하는 에이전트를 **자동으로 호출**한다. 사용자가 별도로 에이전트를 지정할 필요 없다.
+
+| Command | Agent | 실행 방식 |
+|---------|-------|----------|
+| `/plan` | planner | 커맨드가 planner 에이전트를 직접 호출 |
+| `/code-review` | code-reviewer | 커맨드가 code-reviewer 에이전트를 직접 호출 |
+| `/tdd` | tdd-guide | 커맨드가 tdd-guide 에이전트를 직접 호출 |
+| `/verify` | build-error-resolver | 빌드 실패 시 자동 에스컬레이션 |
+| `/e2e` | e2e-runner | 커맨드가 e2e-runner 에이전트를 직접 호출 |
+| `/go-review` | go-reviewer | 커맨드가 go-reviewer 에이전트를 직접 호출 |
+| `/go-build` | go-build-resolver | 커맨드가 go-build-resolver 에이전트를 직접 호출 |
+| `/rust` | rust-expert | 커맨드가 rust-expert 에이전트를 직접 호출 |
+| `/refactor-clean` | refactor-cleaner | 커맨드가 refactor-cleaner 에이전트를 직접 호출 |
+| `/multi-agent` | coordinator | 커맨드가 coordinator 에이전트를 직접 호출 |
+
+**규칙**: 커맨드 실행 시 매핑된 에이전트가 있으면, 에이전트의 전문 지식을 활용하여 실행한다. 커맨드는 "무엇을 할지", 에이전트는 "어떻게 할지"를 담당한다.
+
+## Cross-Session Learning (ALWAYS)
+
+세션 간 학습 연속성을 보장한다:
+
+1. **자동 인덱싱**: `/learn` 실행 시 `~/.claude/skills/learned/` 에 저장된 패턴에 태그 부여
+2. **자동 추천**: 새 세션에서 유사한 작업 감지 시, 과거 학습 패턴을 자동 참조
+3. **학습 이력**: `~/.claude/traces/learning-index.jsonl` 에 학습 내역 누적
+4. **검색**: `/instinct-status` 로 축적된 패턴을 도메인별로 조회
+
+### 학습 자동 트리거
+- 에러 해결 후 → 해결 패턴 자동 기록 (failure-explainer 연동)
+- 새로운 라이브러리/패턴 사용 후 → 사용법 요약 자동 기록
+- 세션 종료 시 → session-learning.sh + `/learn` 자동 실행

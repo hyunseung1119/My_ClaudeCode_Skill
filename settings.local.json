@@ -93,6 +93,11 @@
             "type": "command",
             "command": "bash ~/.claude/hooks/code-quality-gate.sh",
             "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/test-coverage-gate.sh",
+            "timeout": 15
           }
         ]
       },
@@ -120,6 +125,11 @@
             "type": "command",
             "command": "bash ~/.claude/hooks/trace-logger.sh",
             "timeout": 3
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/learning-indexer.sh",
+            "timeout": 5
           }
         ]
       },
@@ -140,6 +150,16 @@
             "type": "command",
             "command": "bash ~/.claude/hooks/trace-logger.sh",
             "timeout": 3
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/verification-loop.sh",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/observability-metrics.sh",
+            "timeout": 3
           }
         ]
       },
@@ -159,6 +179,16 @@
           {
             "type": "command",
             "command": "bash ~/.claude/hooks/trace-logger.sh",
+            "timeout": 3
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/verification-loop.sh",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/observability-metrics.sh",
             "timeout": 3
           }
         ]
@@ -218,5 +248,8 @@
     "frontend-design@claude-plugins-official": true,
     "explanatory-output-style@claude-plugins-official": true,
     "commit-commands@claude-plugins-official": true
+  },
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   }
 }
