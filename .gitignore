@@ -1,3 +1,7 @@
+# Docs site (deployed separately via Vercel, not part of the setup)
+docs-site/
+.vercel/
+
 # Secrets
 .env
 .env.*
