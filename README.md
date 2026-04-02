@@ -1,7 +1,7 @@
 # My Claude Code Settings
 
 Claude Code CLI를 위한 종합 하네스 엔지니어링 저장소.
-**37개 스킬, 24개 에이전트, 32개 커맨드, 12개 규칙, 29개 훅 스크립트**를 포함합니다.
+**36개 스킬, 24개 에이전트, 31개 커맨드, 13개 규칙, 29개 훅 스크립트**를 포함합니다.
 
 > **최신 업데이트: 2026-04-02** — 하네스 v7: 29개 훅 (11-Event), CLAUDE.md 최적화 (51→24 lines), 4개 신규 이벤트 훅 (MainAgentTokenDepletion, WorktreeCreate, SubagentStart, PermissionDenied), Reasoning Budget 정정 (xhigh→high)
 
@@ -94,18 +94,20 @@ Session End
 │   ├── 검증: verification-loop, test-coverage-gate, regression-gate ★
 │   ├── 추적: trace-logger, observability-metrics, learning-indexer ★
 │   ├── 세션: env-context-injector, progress-loader, progress-tracker
-│   └── 분석: failure-explainer, loop-detector, dod-checker, compact-checkpoint, session-learning
+│   ├── 생명주기: token-depletion, worktree-setup, subagent-context, permission-logger ★
+│   ├── 분석: failure-explainer, loop-detector, dod-checker, compact-checkpoint, session-learning
+│   └── 유틸: trace-analyzer (수동 실행 전용, 훅 미배선)
 │
-├── rules/ (12개)                ← AI 행동 규칙
+├── rules/ (13개)                ← AI 행동 규칙
 │   ├── ALWAYS: workflow.md, harness-engineering.md, defaults.md
 │   ├── 에이전트: agents.md (24개 오케스트레이션 + Tool Strategy)
 │   ├── 코드: coding-style.md, testing.md, security.md, git-workflow.md
-│   ├── 시스템: hooks.md, context-management.md, cs-boost.md
+│   ├── 시스템: hooks.md, context-management.md, cs-boost.md, mcp-patterns.md ★
 │   └── 고급: advanced-workflows.md (Headless, Worktree, /loop, Auto Mode) ★
 │
-├── skills/ (37개)               ← 전문 스킬 (/skill-name으로 활성화)
+├── skills/ (36개)               ← 전문 스킬 (/skill-name으로 활성화)
 ├── agents/ (24개)               ← 특화 서브 에이전트
-├── commands/ (32개)             ← CLI 커맨드 (/command-name)
+├── commands/ (31개)             ← CLI 커맨드 (/command-name)
 └── progress/                    ← 세션 상태 관리
     ├── README.md
     └── SCHEMA.md                ← claude-progress.txt 스키마 ★
@@ -117,11 +119,11 @@ Session End
 
 | 항목 | 수량 | 설명 |
 |------|------|------|
-| **Rules** | 12 | ALWAYS 3개 + on-demand 9개 |
+| **Rules** | 13 | ALWAYS 3개 + on-demand 10개 |
 | **Hooks** | 29 | 11-Event 파이프라인 (SessionStart 3, UserPromptSubmit 1, PreToolUse 5, PostToolUse 10, PostToolUseFailure 1, PostCompact 1, MainAgentTokenDepletion 1, WorktreeCreate 1, SubagentStart 1, PermissionDenied 1, Stop 4) |
-| **Commands** | 32 | `/plan`, `/tdd`, `/verify`, `/tool-registry` 등 |
+| **Commands** | 31 | `/plan`, `/tdd`, `/verify`, `/tool-registry` 등 |
 | **Agents** | 24 | Core 7 + Quality 10 + Domain 4 + Meta 3 |
-| **Skills** | 37 | 기획, 개발, AI, 문서, 품질, QA |
+| **Skills** | 36 | 기획, 개발, AI, 문서, 품질, QA |
 | **MCP** | 3 | Context7, GitHub, Playwright |
 | **Tracing** | JSONL | `~/.claude/traces/` (metrics + traces, 7일 보관) |
 
