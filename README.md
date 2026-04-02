@@ -138,6 +138,11 @@ Session End
 | `progress-loader.sh` | 이전 세션 상태 로드 |
 | `regression-gate.sh` | 이전 실패 테스트 회귀 검사 (24h TTL) |
 
+### UserPromptSubmit (1)
+| 훅 | 역할 |
+|----|------|
+| `env-context-injector.sh` | 세션 컨텍스트 재주입 fallback (SessionStart 미실행 시) |
+
 ### PreToolUse (5)
 | 훅 | 매처 | 역할 |
 |----|------|------|
@@ -201,7 +206,7 @@ Session End
 
 ---
 
-## 스킬 (37개)
+## 스킬 (36개)
 
 `/skill-name`으로 활성화.
 
@@ -289,13 +294,13 @@ Session End
 
 ---
 
-## 커맨드 (32개)
+## 커맨드 (31개)
 
 | 카테고리 | 커맨드 |
 |----------|--------|
 | **핵심** | `/plan` `/tdd` `/code-review` `/build-fix` `/verify` `/checkpoint` `/define-dod` `/handoff` |
 | **검색** | `/tool-registry` ★ — 92개 도구 카테고리별 검색 |
-| **프론트엔드** | `/modern-frontend` `/frontend-codemap` `/update-codemaps` `/e2e` `/mobile-redesign` |
+| **프론트엔드** | `/modern-frontend` `/frontend-codemap` `/update-codemaps` `/e2e` |
 | **문서/분석** | `/update-docs` `/token-analysis` `/test-coverage` `/eval` `/learn` |
 | **멀티에이전트** | `/multi-agent` `/orchestrate` `/evolve` |
 | **리팩토링** | `/refactor-clean` `/skill-create` `/setup-pm` |
@@ -369,6 +374,7 @@ git pull
 
 | 날짜 | 내용 |
 |------|------|
+| **2026-04-02** | **하네스 v7** — CLAUDE.md 최적화 (51→24줄), 4개 신규 이벤트 훅 (MainAgentTokenDepletion, WorktreeCreate, SubagentStart, PermissionDenied), 수치 전면 정정 (실제 파일 기준), docs-site 배포 업데이트 |
 | **2026-03-26** | **하네스 v6** — Verification Loop(Spotify Honk 패턴), Observability 메트릭, Test Coverage Gate(80% 강제), Learning Indexer, Agent Teams 활성화, Tool Strategy(Bash-First), Reasoning Budget 실측 반영(high>xhigh), industry-persona-qa 스킬, tool-registry 커맨드, .claudeignore, advanced-workflows(Headless/Worktree/Loop/Auto Mode), MCP 가이드, 입문자 GUIDE.md |
 | 2026-03-24 | 하네스 v5 — 훅 계약 통일, regression gate, python-reviewer, secret 14패턴 |
 | 2026-03-22 | dependency-audit, trace-analyzer 추가, 튜토리얼 가이드 |
