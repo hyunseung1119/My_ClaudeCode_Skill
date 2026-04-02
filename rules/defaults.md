@@ -1,5 +1,8 @@
 # Defaults
 
+> **⚠️ DEPRECATED**: 이 파일의 내용은 `workflow.md`와 완전 중복입니다.
+> `workflow.md`를 참조하세요. 이 파일은 하위 호환성을 위해 보존됩니다.
+
 ## Workflow: Explain → Approve → Execute (ALWAYS)
 코드 작성 전 반드시:
 1. **Explain**: 문제 분석 + WHY + 대안 트레이드오프 (코드 없이)

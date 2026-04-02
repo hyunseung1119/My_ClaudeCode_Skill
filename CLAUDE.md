@@ -11,6 +11,13 @@
 4. Session Learning: `/clear` 전 `/learn` 필수
 5. Command → Agent 자동 연결: `/plan` → planner, `/code-review` → code-reviewer 등
 
+## CS & 코딩 역량 강화 (ALWAYS)
+
+**반드시 `~/.claude/rules/cs-boost.md`를 따릅니다:**
+- 코드 변경 시 `📌 변경: [파일:라인] [무엇을] → [어떻게] | WHY: | CS:` 형식으로 요약
+- 에러 발생 시 `🔍 에러 분해: WHAT / WHERE / WHY / FIX / PREVENT` — 수정 전 반드시 먼저
+- 커밋 전 `🔐 보안 체크: .env, 토큰, SQL 보간` 확인
+
 ## 하네스 미들웨어 (ALWAYS)
 
 **`~/.claude/rules/harness-engineering.md` 참조:**
