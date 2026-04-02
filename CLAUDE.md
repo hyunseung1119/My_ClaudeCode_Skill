@@ -2,50 +2,23 @@
 
 이 파일은 모든 프로젝트에서 적용되는 전역 지침입니다.
 
-## 핵심 워크플로우 (ALWAYS)
+## ALWAYS (모든 작업)
 
-**반드시 `~/.claude/rules/workflow.md`를 따릅니다:**
-1. Explain → Approve → Execute → Reflect
-2. Evidence Rule: 근거 없는 추천 금지
-3. Learning Mode: 시니어 생산성 + 주니어 학습 병행
-4. Session Learning: `/clear` 전 `/learn` 필수
-5. Command → Agent 자동 연결: `/plan` → planner, `/code-review` → code-reviewer 등
+- **workflow.md**: Explain→Approve→Execute→Reflect, Evidence Rule, Learning Mode, `/clear` 전 `/learn` 필수
+- **cs-boost.md**: 코드변경 `📌변경` 요약, 에러 `🔍분해` (수정 전 필수), 커밋 전 `🔐보안체크`
+- **harness-engineering.md**: 20단계 미들웨어 파이프라인, ReasoningSandwich (Opus→Sonnet→Haiku)
+- **agents.md**: 새기능→planner(필수), 코드수정→code-reviewer(필수), 인증/API→security-reviewer(병렬)
 
-## CS & 코딩 역량 강화 (ALWAYS)
+## 상황별 규칙 (on-demand)
 
-**반드시 `~/.claude/rules/cs-boost.md`를 따릅니다:**
-- 코드 변경 시 `📌 변경: [파일:라인] [무엇을] → [어떻게] | WHY: | CS:` 형식으로 요약
-- 에러 발생 시 `🔍 에러 분해: WHAT / WHERE / WHY / FIX / PREVENT` — 수정 전 반드시 먼저
-- 커밋 전 `🔐 보안 체크: .env, 토큰, SQL 보간` 확인
-
-## 하네스 미들웨어 (ALWAYS)
-
-**`~/.claude/rules/harness-engineering.md` 참조:**
-- 자기 검증 강제: 코드 작성 후 반드시 테스트 실행
-- Verification Loop: 코드 변경 → 관련 테스트 자동 실행 → 실패 시 피드백 주입
-- 반복 루프 방지: 같은 에러 3회 반복 시 접근법 변경
-- 추론 예산 배분: 계획(Opus/high) → 구현(Sonnet/high) → 검증(Sonnet) → 단순(Haiku)
-
-## Auto Team Agent (ALWAYS)
-
-**`~/.claude/rules/agents.md` 참조:**
-- 새 기능 → **planner** 먼저 (필수)
-- 코드 작성/수정 후 → **code-reviewer** 자동 (필수)
-- 인증/API/입력처리 → **security-reviewer** 병렬
-- 빌드/타입 에러 → **build-error-resolver** 즉시
-- 기능+버그 → **tdd-guide** 테스트 먼저
-
-## 상황별 규칙 참조 (on-demand)
-
-| 상황 | 참조 규칙 |
-|------|----------|
+| 상황 | 규칙 |
+|------|------|
 | 코드 작성/리뷰 | `coding-style.md`, `testing.md` |
-| API/인증/입력처리 | `security.md` — OWASP API Top 10 |
-| 에이전트 디스패치 | `agents.md` — 24개 에이전트 (4 카테고리, Tool Strategy) |
-| Git/PR | `git-workflow.md` — Conventional Commits |
-| 세션/컨텍스트 | `context-management.md` — 세션 라이프사이클 |
-| 훅 설정 변경 | `hooks.md` — 29개 훅 스크립트 가이드 |
-| MCP 서버 연동/설정 | `mcp-patterns.md` — MCP 서버 설정, 허용/차단, 감사 패턴 |
-| 고급 워크플로우 | `advanced-workflows.md` — Headless, Worktree, /loop, Auto Mode |
-| 프론트엔드/아키텍처 | 관련 스킬 참조 (`/react-component`, `/architecture-design` 등) |
-| 도구 찾기 | `/tool-registry` — 92개 도구 카테고리별 검색 |
+| API/인증/입력처리 | `security.md` |
+| 에이전트 디스패치 | `agents.md` |
+| Git/PR | `git-workflow.md` |
+| 세션/컨텍스트 | `context-management.md` |
+| 훅 설정 변경 | `hooks.md` |
+| MCP 서버 연동 | `mcp-patterns.md` |
+| 고급 워크플로우 | `advanced-workflows.md` |
+| 도구 찾기 | `/tool-registry` |

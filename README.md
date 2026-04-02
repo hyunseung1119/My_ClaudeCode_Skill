@@ -1,9 +1,9 @@
 # My Claude Code Settings
 
 Claude Code CLI를 위한 종합 하네스 엔지니어링 저장소.
-**37개 스킬, 24개 에이전트, 32개 커맨드, 12개 규칙, 25개 훅 스크립트**를 포함합니다.
+**37개 스킬, 24개 에이전트, 32개 커맨드, 12개 규칙, 29개 훅 스크립트**를 포함합니다.
 
-> **최신 업데이트: 2026-03-26** — 하네스 v6: Verification Loop, Observability, Test Coverage Gate, Agent Teams, Tool Strategy (Bash-First), industry-persona-qa 스킬, tool-registry 커맨드
+> **최신 업데이트: 2026-04-02** — 하네스 v7: 29개 훅 (11-Event), CLAUDE.md 최적화 (51→24 lines), 4개 신규 이벤트 훅 (MainAgentTokenDepletion, WorktreeCreate, SubagentStart, PermissionDenied), Reasoning Budget 정정 (xhigh→high)
 
 > **처음이신가요?** → [GUIDE.md](GUIDE.md)를 먼저 읽어보세요 (15분 입문 가이드)
 
@@ -38,6 +38,12 @@ Agent Request
 
 Context Compression
   → CompactionCheckpoint       (compact-checkpoint.sh)
+
+Lifecycle Events
+  → TokenBudgetGuard           (token-depletion.sh)             ← NEW
+  → WorktreeLifecycle          (worktree-setup.sh)              ← NEW
+  → SubagentMonitor            (subagent-context.sh, async)     ← NEW
+  → PermissionAudit            (permission-logger.sh, async)    ← NEW
 
 Session End
   → DoD Verification           (dod-checker.sh)
@@ -82,7 +88,7 @@ Session End
 ├── setup.sh / setup.ps1         ← 설치 스크립트
 ├── uninstall.sh / uninstall.ps1 ← 제거 스크립트
 │
-├── hooks/ (25개)                ← 하네스 미들웨어 훅 스크립트
+├── hooks/ (29개)                ← 하네스 미들웨어 훅 스크립트
 │   ├── 안전: dangerous-command-blocker, secret-detector, pre-commit-security
 │   ├── 품질: console-log-warning, prettier, tsc, ruff, code-quality-gate
 │   ├── 검증: verification-loop, test-coverage-gate, regression-gate ★
@@ -112,7 +118,7 @@ Session End
 | 항목 | 수량 | 설명 |
 |------|------|------|
 | **Rules** | 12 | ALWAYS 3개 + on-demand 9개 |
-| **Hooks** | 25 | 7-Stage 파이프라인 (SessionStart 3, PreToolUse 5, PostToolUse 10, PostToolUseFailure 1, PostCompact 1, Stop 4, UserPromptSubmit 1) |
+| **Hooks** | 29 | 11-Event 파이프라인 (SessionStart 3, UserPromptSubmit 1, PreToolUse 5, PostToolUse 10, PostToolUseFailure 1, PostCompact 1, MainAgentTokenDepletion 1, WorktreeCreate 1, SubagentStart 1, PermissionDenied 1, Stop 4) |
 | **Commands** | 32 | `/plan`, `/tdd`, `/verify`, `/tool-registry` 등 |
 | **Agents** | 24 | Core 7 + Quality 10 + Domain 4 + Meta 3 |
 | **Skills** | 37 | 기획, 개발, AI, 문서, 품질, QA |
@@ -121,7 +127,7 @@ Session End
 
 ---
 
-## 훅 파이프라인 (25개)
+## 훅 파이프라인 (29개)
 
 ### SessionStart (3)
 | 훅 | 역할 |
@@ -162,6 +168,26 @@ Session End
 | 훅 | 역할 |
 |----|------|
 | `compact-checkpoint.sh` | 압축 시 체크포인트 저장 |
+
+### MainAgentTokenDepletion (1)
+| 훅 | 역할 |
+|----|------|
+| `token-depletion.sh` | 토큰 고갈 임박 시 /compact·/clear 프롬프트 |
+
+### WorktreeCreate (1)
+| 훅 | 역할 |
+|----|------|
+| `worktree-setup.sh` | 격리 워크트리 환경 자동 설정 (Node/Python/Go/Rust) |
+
+### SubagentStart (1)
+| 훅 | 역할 |
+|----|------|
+| `subagent-context.sh` | 서브에이전트 스폰 카운터 추적 (async) |
+
+### PermissionDenied (1)
+| 훅 | 역할 |
+|----|------|
+| `permission-logger.sh` | 권한 거부 감사 JSONL 기록, 3회+ 에스컬레이션 (async) |
 
 ### Stop (4)
 | 훅 | 역할 |
