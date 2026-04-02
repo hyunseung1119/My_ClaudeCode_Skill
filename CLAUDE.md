@@ -37,7 +37,8 @@
 | 에이전트 디스패치 | `agents.md` — 24개 에이전트 (4 카테고리, Tool Strategy) |
 | Git/PR | `git-workflow.md` — Conventional Commits |
 | 세션/컨텍스트 | `context-management.md` — 세션 라이프사이클 |
-| 훅 설정 변경 | `hooks.md` — 25개 훅 스크립트 가이드 |
+| 훅 설정 변경 | `hooks.md` — 29개 훅 스크립트 가이드 |
+| MCP 서버 연동/설정 | `mcp-patterns.md` — MCP 서버 설정, 허용/차단, 감사 패턴 |
 | 고급 워크플로우 | `advanced-workflows.md` — Headless, Worktree, /loop, Auto Mode |
 | 프론트엔드/아키텍처 | 관련 스킬 참조 (`/react-component`, `/architecture-design` 등) |
 | 도구 찾기 | `/tool-registry` — 92개 도구 카테고리별 검색 |

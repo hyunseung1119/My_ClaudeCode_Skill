@@ -1,5 +1,7 @@
 # Harness Engineering (2026)
 
+globs: ['**/.claude/**', '**/hooks/**', '**/CLAUDE.md', '**/settings*.json']
+
 > 모델을 바꾸지 않고 하네스(모델을 감싸는 시스템)만 개선해 성능을 올리는 방법론.
 > LangChain: 동일 모델로 Terminal Bench 2.0에서 52.8% → 66.5% (+13.7점, Top 30 → Top 5).
 > 출처: https://blog.langchain.com/improving-deep-agents-with-harness-engineering/

@@ -45,7 +45,7 @@ THRESHOLD=4
 if [ "$COUNT" -ge "$THRESHOLD" ]; then
   jq -n --arg f "$BASENAME" --arg c "$COUNT" '{
     decision: "approve",
-    reason: ("[LOOP DETECTION] " + $f + " has been edited " + $c + " times this session. You may be in a doom loop.\n\nSTOP and reassess:\n1. Are you repeating the same fix?\n2. Is there a fundamentally different approach?\n3. Should you step back and re-read the error from scratch?\n\nIf stuck 2+ times on the same issue, use /clear and restart with a fresh approach.")
+    reason: ("[LOOP] " + $f + ": " + $c + " edits this session. Doom loop risk — reassess approach (workflow.md). If same error 2+x, use /clear.")
   }'
 fi
 

@@ -1,30 +1,62 @@
 # Hooks System
 
-## Hook Types
+globs: ['**/.claude/hooks/**', '**/settings*.json', '**/CLAUDE.md']
 
-- **SessionStart**: On session start (environment context, progress loading, regression gate)
-- **UserPromptSubmit**: On user message (environment context injection)
-- **PreToolUse**: Before tool execution (validation, parameter modification, blocking)
-- **PostToolUse**: After tool execution (auto-format, type checks, warnings, loop detection, tracing)
-- **PostToolUseFailure**: After tool failure (root cause analysis, failure tracking)
-- **PostCompact**: After context compression (checkpoint saving)
-- **Stop**: When session ends (DoD check, progress tracking, verification, learning)
+## Hook Types (전체 이벤트 목록)
+
+> Source: `src/types/hooks.ts` (agentSdkTypes.ts) — 2026년 기준 전체 이벤트
+
+| 이벤트 | 발생 시점 | 용도 |
+|--------|----------|------|
+| **SessionStart** | 세션 시작 시 | 환경 부트스트랩, 프로그레스 로드, 회귀 게이트 |
+| **UserPromptSubmit** | 사용자 메시지 처리 전 | 환경 컨텍스트 주입 (fallback) |
+| **PreToolUse** | 도구 실행 직전 | 검증, 파라미터 수정, 차단 |
+| **PostToolUse** | 도구 실행 완료 후 | 포맷, 타입체크, 경고, 루프 감지, 트레이싱 |
+| **PostToolUseFailure** | 도구 실행 실패 후 | 근본원인 분석, 실패 추적 |
+| **PostCompact** | 컨텍스트 압축 후 | 체크포인트 저장 |
+| **Stop** | 세션 종료 시 | DoD 검증, 프로그레스 추적, 학습 요약 |
+| **MainAgentTokenDepletion** | 토큰 부족 감지 시 | compact/clear 권장 알림 |
+| **WorktreeCreate** | git worktree 생성 시 | 환경 자동 설정 |
+| **SubagentStart** | 서브에이전트 spawn 시 | 호출 추적, 과다 경고 |
+| **PermissionDenied** | 권한 거부 시 | 감사 로그 기록 |
+| **PermissionRequest** | 권한 요청 시 | 권한 게이트 |
+| **FileChanged** | 파일 변경 감지 | 파일 변경 반응 |
+| **CwdChanged** | 작업 디렉토리 변경 | 컨텍스트 갱신 |
 
 ## Execution Model
 
-Hooks within the same event run **sequentially** in the order listed. Each hook receives the same input and can output JSON to influence Claude's behavior.
+같은 이벤트의 훅들은 **순서대로 실행** (sequential). 각 훅은 동일한 input을 받고 JSON으로 행동을 제어합니다.
 
 | Output Format | When Used | Effect |
 |---------------|-----------|--------|
-| `{"decision":"block","reason":"..."}` | PreToolUse, Stop | Blocks the action |
-| `{"decision":"approve","reason":"..."}` | Any event | Approves with context injected |
-| `{"hookSpecificOutput":{...}}` | UserPromptSubmit only | Injects context into conversation |
-| Plain text stdout | SessionStart only | Directly injected into context |
-| No output (exit 0) | Any event | Silent pass-through |
+| `{"decision":"block","reason":"..."}` | PreToolUse, Stop | 액션 차단 |
+| `{"decision":"approve","reason":"..."}` | Any event | 승인 + 컨텍스트 주입 |
+| `{"hookSpecificOutput":{...}}` | UserPromptSubmit only | 대화에 컨텍스트 주입 |
+| Plain text stdout | SessionStart only | 컨텍스트에 직접 주입 |
+| No output (exit 0) | Any event | 조용한 통과 |
 
-**Important:** If any hook in a chain outputs `"decision":"block"`, the action is blocked regardless of other hooks.
+**Important:** 같은 체인에서 하나라도 `"decision":"block"` 출력하면 다른 훅과 무관하게 차단됨.
 
-## Provided Hook Scripts (`hooks/` directory) — 21 total
+## Hook 고급 기능 (2026)
+
+| 필드 | 용도 | 예시 |
+|------|------|------|
+| `statusMessage` | 스피너에 표시할 커스텀 메시지 | `"statusMessage": "타입 검사 중..."` |
+| `async: true` | 비차단 백그라운드 실행 | trace-logger, session-learning |
+| `if` | 권한 룰 문법으로 조건 필터링 | `"if": "Bash(git *)"` |
+| `once` | 1회 실행 후 자동 제거 | 일회성 설정 훅 |
+| `timeout` | 훅별 타임아웃 (초) | `"timeout": 30` |
+
+## Hook Types (명령 종류)
+
+| 타입 | 용도 |
+|------|------|
+| `command` | 셸 커맨드 실행 (현재 사용) |
+| `prompt` | LLM 프롬프트로 검증 |
+| `http` | HTTP POST 웹훅 |
+| `agent` | 에이전트형 검증 |
+
+## Provided Hook Scripts — 29 total
 
 ### SessionStart (3)
 | Script | Purpose |
@@ -36,30 +68,35 @@ Hooks within the same event run **sequentially** in the order listed. Each hook 
 ### UserPromptSubmit (1)
 | Script | Matcher | Purpose |
 |--------|---------|---------|
-| `env-context-injector.sh` | (all) | 세션 시작 시 Git/프로젝트/런타임 환경 정보 자동 주입 (1회, session-specific lock) |
+| `env-context-injector.sh` | (all) | 세션 컨텍스트 재주입 fallback (SessionStart 미실행 시 보장) |
 
-### PreToolUse (4)
+### PreToolUse (5)
 | Script | Matcher | Purpose |
 |--------|---------|---------|
-| `dangerous-command-blocker.sh` | Bash | `rm -rf`, `git push --force`, `git reset --hard`, `git clean -f`, `DROP TABLE` 차단 |
+| `dangerous-command-blocker.sh` | Bash | `rm -rf`, `git push --force`, `git reset --hard`, `git clean -f`, `DROP TABLE` 차단 (2s) |
 | `pre-commit-security.sh` | Bash(git commit*) | 커밋 전 staged diff에서 시크릿/credential 검사 |
 | `code-quality-gate.sh` | Bash(git commit*) | 커밋 전 merge conflict marker, TODO/FIXME, 디버그 로그, 대용량 변경 검사 |
 | `test-coverage-gate.sh` | Bash(git commit*) | 커밋 전 테스트 커버리지 80% 미만 시 차단 (Python/Node/Go, 10분 캐시) |
-| `secret-detector.sh` | Edit, Write | 14개 provider 패턴 감지 (AWS, OpenAI, Anthropic, Slack, GitHub, GitLab, Google, Stripe, Shopify, SendGrid 등) |
+| `secret-detector.sh` | Edit\|Write | 14개 provider 패턴 감지 (AWS, OpenAI, Anthropic, Slack, GitHub 등) (2s) |
 
-### PostToolUse (8)
-| Script | Matcher | Purpose | Order |
-|--------|---------|---------|-------|
-| `dependency-audit.sh` | Bash | npm/pip/cargo/go 패키지 설치 시 URL 설치, 위험 플래그, typosquatting 검사 | 1st (Bash) |
-| `console-log-warning.sh` | Edit, Write | JS/TS console.log/debug/info/warn/error/trace 경고 | 1st |
-| `prettier-format.sh` | Edit, Write | JS/TS/CSS/JSON Prettier 자동 포맷 | 2nd |
-| `tsc-check.sh` | Edit, Write | TypeScript 증분 타입 체크 (head -10) | 3rd |
-| `ruff-format.sh` | Edit, Write | Python ruff check --fix + format (pyproject.toml 감지) | 4th |
-| `loop-detector.sh` | Edit, Write | 같은 파일 4회+ 편집 시 doom loop 경고 (session-specific) | 5th |
-| `trace-logger.sh` | (all) | 모든 도구 호출을 `~/.claude/traces/` JSONL로 기록 (7일 보관) | 6th |
-| `learning-indexer.sh` | Bash | `/learn` 실행 후 학습 패턴 자동 인덱싱 → 크로스세션 검색 지원 | 7th |
-| `verification-loop.sh` | Edit, Write | 코드 변경 후 관련 테스트 자동 실행 → 실패 시 피드백 주입 (Spotify Honk 패턴) | 8th |
-| `observability-metrics.sh` | Edit, Write | 도구 호출 메트릭 수집 → `~/.claude/traces/metrics.jsonl` (5MB 로테이션, 7일 보관) | 9th |
+### PostToolUse — Bash (3)
+| Script | Purpose | Async |
+|--------|---------|-------|
+| `dependency-audit.sh` | npm/pip/cargo/go 패키지 설치 시 URL 설치, 위험 플래그, typosquatting 검사 | sync |
+| `trace-logger.sh` | 모든 도구 호출 → `~/.claude/traces/` JSONL (daily cleanup lock) | **async** |
+| `learning-indexer.sh` | `/learn` 실행 후 학습 패턴 자동 인덱싱 → 크로스세션 검색 지원 | **async** |
+
+### PostToolUse — Edit\|Write (8)
+| Script | Purpose | Order | Async |
+|--------|---------|-------|-------|
+| `console-log-warning.sh` | JS/TS console.log/debug/warn/error/trace 경고 | 1st | sync (2s) |
+| `prettier-format.sh` | JS/TS/CSS/JSON Prettier 자동 포맷 | 2nd | sync |
+| `ruff-format.sh` | Python ruff check --fix + format | 3rd | sync |
+| `tsc-check.sh` | TypeScript 증분 타입 체크 | 4th | **async** |
+| `loop-detector.sh` | 같은 파일 4회+ 편집 시 doom loop 경고 | 5th | sync (2s) |
+| `trace-logger.sh` | 도구 호출 JSONL 기록 | 6th | **async** |
+| `verification-loop.sh` | 코드 변경 후 관련 테스트 자동 실행 → 실패 시 피드백 주입 (Spotify Honk 패턴) | 7th | sync |
+| `observability-metrics.sh` | 메트릭 수집 → `~/.claude/traces/metrics.jsonl` (5MB 로테이션) | 8th | **async** |
 
 ### PostToolUseFailure (1)
 | Script | Matcher | Purpose |
@@ -71,15 +108,35 @@ Hooks within the same event run **sequentially** in the order listed. Each hook 
 |--------|---------|
 | `compact-checkpoint.sh` | 컨텍스트 압축 시 progress 파일에 체크포인트 추가 |
 
-### Stop (4)
+### MainAgentTokenDepletion (1)
 | Script | Purpose |
 |--------|---------|
-| `dod-checker.sh` | 미커밋 변경, .env 추적 여부 등 완료 조건 검증 |
-| `progress-tracker.sh` | git 상태 + 언어별 요약 + DoD + 테스트 결과를 claude-progress.txt에 기록 |
-| `pre-completion-check.sh` | 코드 변경 감지 시 테스트 실행 여부 검증 (Python/JS/TS/Go) + regression-gate 연동 |
-| `session-learning.sh` | 세션 학습 요약 리마인더 |
+| `token-depletion.sh` | 토큰 부족 감지 시 /compact·/clear 권장 + JSONL 로그 기록 |
 
-## Harness Engineering Middleware Pipeline
+### WorktreeCreate (1)
+| Script | Purpose |
+|--------|---------|
+| `worktree-setup.sh` | worktree 생성 시 Node/Python/Go/Rust 프로젝트 자동 감지 + 환경 설정 |
+
+### SubagentStart (1)
+| Script | Purpose | Async |
+|--------|---------|-------|
+| `subagent-context.sh` | 서브에이전트 시작 횟수 추적, 10회+ 과다 경고 | **async** |
+
+### PermissionDenied (1)
+| Script | Purpose | Async |
+|--------|---------|-------|
+| `permission-logger.sh` | 권한 거부 감사 로그, 3회+ 반복 에스컬레이션 | **async** |
+
+### Stop (4)
+| Script | Purpose | Async |
+|--------|---------|-------|
+| `dod-checker.sh` | 미커밋 변경, .env 추적 여부 등 완료 조건 검증 | sync |
+| `progress-tracker.sh` | git + 언어별 요약 + DoD + 테스트 결과 → claude-progress.txt | **async** |
+| `pre-completion-check.sh` | 코드 변경 감지 시 테스트 실행 여부 검증 | sync |
+| `session-learning.sh` | 세션 학습 요약 리마인더 | **async** |
+
+## Harness Engineering 매핑 (2026)
 
 ```
 Session Start
@@ -88,33 +145,56 @@ Session Start
   → RegressionGate             (regression-gate.sh — SessionStart)
 
 Agent Request
-  → LocalContextMiddleware     (env-context-injector.sh — UserPromptSubmit)
-  → Safety Guard              (dangerous-command-blocker.sh + secret-detector.sh — PreToolUse)
-  → CommitGuard               (pre-commit-security.sh + code-quality-gate.sh — PreToolUse)
+  → LocalContextMiddleware     (env-context-injector.sh — UserPromptSubmit, fallback)
+  → Safety Guard              (dangerous-command-blocker.sh — PreToolUse/Bash)
+  → CommitGuard               (pre-commit-security + code-quality-gate + test-coverage-gate — PreToolUse/commit)
+  → SecretGuard               (secret-detector.sh — PreToolUse/Edit|Write)
   → [Tool Execution]
   → SupplyChainGuard          (dependency-audit.sh — PostToolUse/Bash)
-  → Quality Gate              (console-log, prettier, tsc, ruff — PostToolUse)
+  → Quality Gate              (console-log + prettier + ruff + tsc(async) — PostToolUse/Edit|Write)
   → LoopDetectionMiddleware    (loop-detector.sh — PostToolUse)
-  → ExecutionTracing           (trace-logger.sh — PostToolUse)
+  → ExecutionTracing           (trace-logger.sh — PostToolUse, ASYNC)
+  → VerificationLoop          (verification-loop.sh — PostToolUse/Edit|Write)
+  → ObservabilityMetrics      (observability-metrics.sh — PostToolUse, ASYNC)
+  → LearningIndexer           (learning-indexer.sh — PostToolUse/Bash, ASYNC)
   → FailureAnalysis           (failure-explainer.sh — PostToolUseFailure)
-
-Context Compression
-  → CompactionCheckpoint       (compact-checkpoint.sh — PostCompact)
-
-Session End
-  → DoD Verification          (dod-checker.sh — Stop)
-  → ProgressPersistence        (progress-tracker.sh — Stop)
+  → CompactCheckpoint         (compact-checkpoint.sh — PostCompact)
+  → TokenBudgetGuard          (token-depletion.sh — MainAgentTokenDepletion)
+  → WorktreeLifecycle         (worktree-setup.sh — WorktreeCreate)
+  → SubagentMonitor           (subagent-context.sh — SubagentStart, ASYNC)
+  → PermissionAudit           (permission-logger.sh — PermissionDenied, ASYNC)
+  → DoDChecker                (dod-checker.sh — Stop)
+  → ProgressTracker           (progress-tracker.sh — Stop, ASYNC)
   → PreCompletionChecklist     (pre-completion-check.sh — Stop)
-  → SessionLearning            (session-learning.sh — Stop)
+  → SessionLearning           (session-learning.sh — Stop, ASYNC)
+Agent Response
+```
+
+## Trace Logs 위치
+
+```
+~/.claude/traces/
+  YYYY-MM-DD.jsonl         # 일별 도구 호출 로그 (7일 보관, daily cleanup lock)
+  metrics.jsonl            # 성능 메트릭 (5MB 로테이션)
+  token-events.jsonl       # 토큰 부족 이벤트 로그
+  worktree-log.jsonl       # 워크트리 생성 로그
+  subagent-log.jsonl       # 서브에이전트 시작 로그
+  permission-denied.jsonl  # 권한 거부 감사 로그
 ```
 
 ## Session Isolation
 
-모든 lock 파일은 session-specific (`CLAUDE_SESSION_ID` 또는 `$$` 기반):
+모든 lock/counter 파일은 session-specific (`CLAUDE_SESSION_ID` 또는 `$$` 기반):
 - 멀티 세션 동시 실행 시 각 세션이 독립적으로 동작
 - `env-context-injector`: 세션당 1회만 주입
-- `loop-detector`: 세션별 편집 카운트 독립 추적
-- `pre-completion-check`, `session-learning`, `regression-gate`: 세션별 lock
+- `loop-detector`, `subagent-context`, `permission-logger`: 세션별 카운트 독립 추적
+- `pre-completion-check`, `session-learning`: 세션별 lock
+- `trace-logger` cleanup: 일별 1회 max (lock-based)
+
+## 설정 파일
+
+실제 훅 설정은 `~/.claude/settings.json` (활성) 및 `settings.local.json` (git 동기화)을 참조하세요.
+settings.json이 source of truth — 이 문서와 다를 경우 settings.json 우선.
 
 ## Auto-Accept Permissions
 

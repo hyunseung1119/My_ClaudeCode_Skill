@@ -49,7 +49,7 @@ fi
 
 jq -n --arg cmd "$COMMAND" --arg err "$ERROR" --arg guide "$GUIDANCE" --arg esc "$ESCALATION" --arg cnt "$FAIL_COUNT" '{
   decision: "approve",
-  reason: ("[FAILURE ANALYSIS] (attempt " + $cnt + ")\nCommand: " + $cmd + "\nError: " + $err + "\n" + $guide + "\n\nRequired protocol:\n1. Decompose the error message — explain each part\n2. Trace root cause: WHY? (surface) → WHY? (deeper) → WHY? (root)\n3. Get user approval before fixing\n4. After fix, provide 1-line prevention tip" + $esc)
+  reason: ("[FAIL #" + $cnt + "] " + $cmd + " → " + $err + (if $guide != "" then " | " + $guide else "" end) + "\nProtocol: WHY×3 → approve → fix → 1-line tip (workflow.md)" + $esc)
 }'
 
 exit 0

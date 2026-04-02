@@ -30,7 +30,12 @@ TOOL_RESULT=$(echo "$INPUT" | jq -r '.tool_output // "success"' | head -c 100)
 jq -n --arg ts "$TIMESTAMP" --arg sess "$SESSION_KEY" --arg tool "$TOOL_NAME" --arg target "$FILE_PATH" --arg result "$TOOL_RESULT" \
   '{timestamp: $ts, session: $sess, tool: $tool, target: $target, result: $result}' >> "$TRACE_FILE" 2>/dev/null
 
-# Cleanup: keep only last 7 days of traces
-find "$TRACE_DIR" -name "*.jsonl" -mtime +7 -delete 2>/dev/null
+# Cleanup: once per day max (lock-based to avoid running on every tool call)
+CLEANUP_LOCK="${TRACE_DIR}/.cleanup-$(date +%Y-%m-%d)"
+if [ ! -f "$CLEANUP_LOCK" ]; then
+  touch "$CLEANUP_LOCK"
+  find "$TRACE_DIR" -name "*.jsonl" -mtime +7 -delete 2>/dev/null
+  find "$TRACE_DIR" -name ".cleanup-*" -mtime +1 -delete 2>/dev/null
+fi
 
 exit 0
