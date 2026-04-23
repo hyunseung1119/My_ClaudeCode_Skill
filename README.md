@@ -1,5 +1,7 @@
 # My Claude Code Settings
 
+![Setup Score](https://img.shields.io/badge/setup_score-907%2F1000%20(A%2B)-brightgreen?style=flat-square)
+
 Claude Code CLI를 위한 종합 하네스 엔지니어링 저장소.
 **36개 스킬, 24개 에이전트, 31개 커맨드, 13개 규칙, 29개 훅 스크립트**를 포함합니다.
 
