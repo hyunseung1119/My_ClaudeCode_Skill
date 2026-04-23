@@ -10,8 +10,18 @@
 
 INPUT=$(cat)
 
-FILE_PATH=$(echo "$INPUT" | jq -r '.filePath // .file_path // empty' 2>/dev/null)
-CHANGE_TYPE=$(echo "$INPUT" | jq -r '.changeType // "modified"' 2>/dev/null)
+if command -v jq >/dev/null 2>&1; then
+  FILE_PATH=$(echo "$INPUT" | jq -r '.filePath // .file_path // empty' 2>/dev/null)
+  CHANGE_TYPE=$(echo "$INPUT" | jq -r '.changeType // "modified"' 2>/dev/null)
+else
+  read -r FILE_PATH CHANGE_TYPE < <(HOOK_INPUT="$INPUT" python -c '
+import json, os
+try:
+    d = json.loads(os.environ["HOOK_INPUT"])
+    print(d.get("filePath", d.get("file_path", "")), d.get("changeType", "modified"))
+except Exception: print("", "modified")
+' 2>/dev/null)
+fi
 
 if [ -z "$FILE_PATH" ]; then
   exit 0

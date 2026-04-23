@@ -10,7 +10,16 @@
 
 INPUT=$(cat)
 
-TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty')
+# jq가 있으면 사용, 없으면 python fallback (Windows 친화)
+if command -v jq >/dev/null 2>&1; then
+  TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty')
+else
+  TOOL_NAME=$(HOOK_INPUT="$INPUT" python -c '
+import json, os, sys
+try: print(json.loads(os.environ["HOOK_INPUT"]).get("tool_name", ""))
+except Exception: pass
+' 2>/dev/null)
+fi
 
 # 탐색 도구만 카운트
 case "$TOOL_NAME" in

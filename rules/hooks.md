@@ -2,26 +2,77 @@
 
 globs: ['**/.claude/hooks/**', '**/settings*.json', '**/CLAUDE.md']
 
-## Hook Types (전체 이벤트 목록)
+## Hook Types (전체 이벤트 목록 — 27개)
 
-> Source: `src/types/hooks.ts` (agentSdkTypes.ts) — 2026년 기준 전체 이벤트
+> Source: [공식 Hooks Reference](https://code.claude.com/docs/en/hooks) — 2026-04 시점 27개 이벤트 (이전 14개는 부분집합)
 
-| 이벤트 | 발생 시점 | 용도 |
-|--------|----------|------|
-| **SessionStart** | 세션 시작 시 | 환경 부트스트랩, 프로그레스 로드, 회귀 게이트 |
-| **UserPromptSubmit** | 사용자 메시지 처리 전 | 환경 컨텍스트 주입 (fallback) |
-| **PreToolUse** | 도구 실행 직전 | 검증, 파라미터 수정, 차단 |
-| **PostToolUse** | 도구 실행 완료 후 | 포맷, 타입체크, 경고, 루프 감지, 트레이싱 |
-| **PostToolUseFailure** | 도구 실행 실패 후 | 근본원인 분석, 실패 추적 |
-| **PostCompact** | 컨텍스트 압축 후 | 체크포인트 저장 |
-| **Stop** | 세션 종료 시 | DoD 검증, 프로그레스 추적, 학습 요약 |
-| **MainAgentTokenDepletion** | 토큰 부족 감지 시 | compact/clear 권장 알림 |
-| **WorktreeCreate** | git worktree 생성 시 | 환경 자동 설정 |
-| **SubagentStart** | 서브에이전트 spawn 시 | 호출 추적, 과다 경고 |
-| **PermissionDenied** | 권한 거부 시 | 감사 로그 기록 |
-| **PermissionRequest** | 권한 요청 시 | 권한 게이트 |
-| **FileChanged** | 파일 변경 감지 | 파일 변경 반응 |
-| **CwdChanged** | 작업 디렉토리 변경 | 컨텍스트 갱신 |
+### Session-Level (2)
+| 이벤트 | 발생 시점 | 내 셋업 |
+|--------|----------|--------|
+| SessionStart | 세션 시작 | ✅ 3 handlers |
+| SessionEnd | 세션 종료 (Stop과 별개) | ❌ 미등록 |
+
+### Per-Turn (4)
+| 이벤트 | 발생 시점 | 내 셋업 |
+|--------|----------|--------|
+| UserPromptSubmit | 사용자 메시지 처리 전 | ✅ 1 handler |
+| UserPromptExpansion | 슬래시 커맨드 확장 시 | ❌ |
+| Stop | Claude 응답 완료 | ✅ 5 handlers |
+| StopFailure | API 에러로 턴 종료 | ❌ |
+
+### Tool Execution (5)
+| 이벤트 | 발생 시점 | 내 셋업 |
+|--------|----------|--------|
+| PreToolUse | 도구 실행 직전 | ✅ 6 handlers |
+| PostToolUse | 도구 실행 성공 후 | ✅ 12 handlers |
+| PostToolUseFailure | 도구 실행 실패 후 | ✅ 2 handlers |
+| PermissionRequest | 권한 다이얼로그 표시 | ✅ 1 handler |
+| PermissionDenied | auto 모드 거부 | ✅ 1 handler |
+
+### Agent / Task (5)
+| 이벤트 | 발생 시점 | 내 셋업 |
+|--------|----------|--------|
+| SubagentStart | 서브에이전트 spawn | ✅ 1 handler |
+| SubagentStop | 서브에이전트 완료 | ❌ |
+| TaskCreated | 태스크 생성 | ❌ |
+| TaskCompleted | 태스크 완료 | ❌ |
+| TeammateIdle | agent team 멤버 idle 진입 | ❌ |
+
+### File & Environment (4)
+| 이벤트 | 발생 시점 | 내 셋업 |
+|--------|----------|--------|
+| FileChanged | 감시 파일 변경 감지 | ✅ 1 handler |
+| CwdChanged | 작업 디렉토리 변경 | ✅ 1 handler |
+| InstructionsLoaded | CLAUDE.md·rules 로드 | ❌ |
+| ConfigChange | 설정 파일 변경 | ❌ |
+
+### Context / Compaction (2)
+| 이벤트 | 발생 시점 | 내 셋업 |
+|--------|----------|--------|
+| PreCompact | 컨텍스트 압축 직전 | ❌ |
+| PostCompact | 컨텍스트 압축 완료 후 | ✅ 1 handler |
+
+### Worktree (2)
+| 이벤트 | 발생 시점 | 내 셋업 |
+|--------|----------|--------|
+| WorktreeCreate | 워크트리 생성 | ✅ 1 handler |
+| WorktreeRemove | 워크트리 제거 | ❌ |
+
+### MCP (2)
+| 이벤트 | 발생 시점 | 내 셋업 |
+|--------|----------|--------|
+| Elicitation | MCP 서버가 사용자 입력 요청 | ❌ |
+| ElicitationResult | 사용자 응답 후 | ❌ |
+
+### 기타 (1)
+| 이벤트 | 발생 시점 | 내 셋업 |
+|--------|----------|--------|
+| MainAgentTokenDepletion | 토큰 부족 | ✅ 1 handler |
+
+### 커버리지 요약
+- **등록된 events: 14/27 (52%)**
+- **handlers: 37개**
+- 미등록 13개 중 고가치 후보: `SessionEnd`(정리 훅), `SubagentStop`(트랙), `InstructionsLoaded`(환경 확인), `PreCompact`(백업), `Elicitation`(MCP 감사)
 
 ## Execution Model
 

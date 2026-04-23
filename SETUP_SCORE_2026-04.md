@@ -1,14 +1,18 @@
-# 셋업 자가진단 점수 — 2026-04-23 (v4, v9 완성)
+# 셋업 자가진단 점수 — 2026-04-23 (v5, v10 권장안 적용)
 
 > 이 문서는 본 저장소(`My_ClaudeCode_Skill`)를 2026-04 시점의 Claude Code
-> 모범사례·연구·업계 보고서에 대조해 **객관 점수화**한다. v1(785, A−)에서
-> v7→v8(905)→v8.1(915)→**v9(930, A+ 상위)** 로 진화.
+> 공식 문서·연구·업계 보고서에 대조해 **객관 점수화**한다.
 >
-> **최신 업데이트**: v9 완성 — 자동화 3종 + marketplace manifest
-> - `scripts/score-setup.sh` — 이 문서 점수를 재현 가능한 bash 스크립트로
-> - `hooks/spec-gate.sh` — feature/* 브랜치 첫 커밋 시 SPEC 파일 존재 강제
-> - `hooks/memory-writer.sh` — Stop 시 오늘 커밋을 MEMORY.md에 자동 append (활성도 자동화)
-> - `.claude-plugin/marketplace.json` — 타 개발자가 import 가능한 공식 manifest
+> **진화**: v1(785, A−) → v7(887) → v8(905) → v8.1(915) → v9(930 자가) →
+> **v10(907, A+ 공정 산식)**
+>
+> **v10 핵심 변화 — 자가 편향 제거**:
+> - 산식 재조정: 외부 dotfiles median·p75 기반 (내 현재 값 = 만점 제거)
+> - 분모 정정: hooks 이벤트 공식 27개 기준 (이전 14개 "풀커버리지"는 허위)
+> - marketplace.json 공식 스키마 준수 (anthropic.com/claude-code/marketplace.schema.json)
+> - CI 자동화 + race test 2/2 PASS로 session isolation 실증
+> - 과잉 경고: agents 30+ / skills 40+ / commands 35+ / rules 18+ 시 점수 **하락**
+>   (Anthropic "entire ecosystem" 안티패턴 반영)
 
 **벤치마크 기준**
 - Anthropic *Claude Code Best Practices* (code.claude.com)
@@ -25,12 +29,15 @@
 
 | 관점 | 측정 대상 | 점수 | 등급 |
 |------|----------|------|------|
-| **(A) 구조·설계 (Setup Quality)** | rules/agents/skills/commands/hooks/settings.json의 **완비도·트렌드 정합성** | **930** | **A+** (상위 1~2%) |
+| **(A) 구조·설계 (Setup Quality, v10 공정 산식)** | rules/agents/skills/commands/hooks/settings.json의 **완비도·트렌드 정합성** | **907** | **A+** (상위 3~5%) |
 | (B) 활성도·실사용 | MEMORY.md·plans/·traces/·learned/ 실제 누적량 | 360* | D |
-| (C) 종합 (가중 60/40) | A×0.6 + B×0.4 | 702 | B+ |
+| (C) 종합 (가중 60/40) | A×0.6 + B×0.4 | 688 | B+ |
 
 > \* v9의 `memory-writer.sh`가 Stop 시 자동 MEMORY append를 시작하므로 **다음
 > 세션부터 활성도 자동 상승** (1주 내 550+, 1개월 내 800+ 예상).
+>
+> 이전 자가 점수 930은 **자기 편향 산식**(내 현재 값 = 만점)의 결과였다.
+> v10은 외부 dotfiles median·p75 분포를 분모로 사용하여 상위 3~5%로 재조정.
 
 **주요 해석**: 셋업 자체는 최상급(상위 2~3%)이지만 활성도는 아직 가동 초기. 같은
 셋업을 **꾸준히 사용하면 C 점수가 자연 상승**하여 v9에선 850+ 기대.

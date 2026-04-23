@@ -72,44 +72,87 @@ print(len(hooks),
   ALLOW=${ALLOW:-0}; DENY=${DENY:-0}; PLUGINS=${PLUGINS:-0}
 fi
 
-# 점수 산출 함수 (각 차원: 측정 → 0~100)
-# 산식 근거: SETUP_SCORE_2026-04.md v3 표
+# ═══════════════════════════════════════════════════════════════════
+# 점수 산식 (v2, 2026-04 재조정)
+#
+# 기준: 외부 공개 dotfiles 샘플(awesome-claude-code-subagents, karanb192/hooks,
+#       공식 claude-plugins-official 등) 조사로 추정한 median·p75 분포.
+#       "나의 현재 값 = 만점" 편향 제거. 공식 기준(27 events 등) 사용.
+#
+# 분모 근거:
+#   - events:   27 공식 이벤트 (code.claude.com/docs/en/hooks)
+#   - agents:   median ~5, p75 ~12, p95 ~20  → 24+ 는 상위 5%
+#   - skills:   median ~3, p75 ~10, p95 ~25  → 38 = 상위 5%
+#   - commands: median ~5, p75 ~15, p95 ~28  → 33 = 상위 5%
+#   - rules:    median ~2, p75 ~6,  p95 ~12  → 16 = 상위 5%
+#
+# 산식: 해당 percentile = 해당 점수 (50, 70, 85, 95).
+#       그 이상은 overkill로 간주, 점수 안 올라감 (anti-pattern 경계).
+# ═══════════════════════════════════════════════════════════════════
+
 score_harness() {
-  # 14 events 풀커버리지 = 98점, 비례 (10/14 = 70점 등)
-  local base=$((EVENTS * 100 / 14))
-  # hook handlers 풍부도 보너스 (30+ = +5)
-  [ "$HANDLERS" -ge 30 ] && base=$((base + 5))
-  [ "$base" -gt 98 ] && base=98
+  # 공식 27 events 중 일반 개발자가 실제 운용 가능한 이벤트 약 20개.
+  # (Task/Teammate/Elicitation 등은 특수 — 분모에서 제외)
+  # 계단식 기준: median 5, p75 11, p95 18.
+  local base
+  if   [ "$EVENTS" -ge 20 ]; then base=92   # 거의 모든 활용 가능 이벤트 커버
+  elif [ "$EVENTS" -ge 14 ]; then base=82   # 고급 수준 (현재 위치)
+  elif [ "$EVENTS" -ge 10 ]; then base=70
+  elif [ "$EVENTS" -ge 5 ]; then  base=55
+  else base=$((EVENTS * 10))
+  fi
+  # handler 풍부도: median 12, p75 25
+  if [ "$HANDLERS" -ge 25 ]; then base=$((base + 6))
+  elif [ "$HANDLERS" -ge 12 ]; then base=$((base + 3))
+  fi
+  [ "$base" -gt 95 ] && base=95
   echo "$base"
 }
 score_subagent() {
-  # 24 agents 기준 95. 20 미만은 비례 감점.
-  if [ "$A" -ge 24 ]; then echo 95
-  elif [ "$A" -ge 20 ]; then echo 88
-  elif [ "$A" -ge 15 ]; then echo 75
-  elif [ "$A" -ge 10 ]; then echo 60
-  else echo $((A * 6))
+  # 외부 dotfiles median 5, p75 12. 20+ 는 이미 상위 5%. 25+ 는 과잉 경고.
+  if [ "$A" -ge 30 ]; then echo 88   # 과잉 — Anthropic "entire ecosystem" 경고
+  elif [ "$A" -ge 20 ]; then echo 92
+  elif [ "$A" -ge 12 ]; then echo 82
+  elif [ "$A" -ge 5 ]; then echo 65
+  else echo $((A * 10))
   fi
 }
 score_skills() {
-  # 38 skills = 96, 1 skill = 96/38
-  local s=$((SK * 96 / 38))
-  [ "$s" -gt 96 ] && s=96
-  echo "$s"
+  # 외부 median 3, p75 10, p95 25. 30+ 는 anti-pattern 경계.
+  if [ "$SK" -ge 40 ]; then echo 82   # 과잉 경고
+  elif [ "$SK" -ge 25 ]; then echo 92
+  elif [ "$SK" -ge 10 ]; then echo 78
+  elif [ "$SK" -ge 3 ]; then echo 55
+  else echo $((SK * 12))
+  fi
 }
 score_commands() {
-  # 33 commands = 94
-  local s=$((C * 94 / 33))
-  [ "$s" -gt 94 ] && s=94
-  echo "$s"
+  # 외부 median 5, p75 15, p95 28. 30+ = anti-pattern ("magic commands" 경고)
+  if [ "$C" -ge 35 ]; then echo 72   # 과잉 경고
+  elif [ "$C" -ge 25 ]; then echo 88
+  elif [ "$C" -ge 15 ]; then echo 80
+  elif [ "$C" -ge 5 ]; then echo 60
+  else echo $((C * 10))
+  fi
 }
 score_rules() {
-  # rules 16 = 95, CLAUDE.md 60줄 이하 보너스
-  local s=$((R * 95 / 16))
-  [ "$s" -gt 95 ] && s=95
-  if [ "$CMD_LINES" -le 60 ] && [ "$CMD_LINES" -gt 0 ]; then
-    s=$((s + 0))  # 이미 산식에 반영됨
+  # 외부 median 2, p75 6, p95 12.
+  # CLAUDE.md 줄 수 ≤ 50 = +보너스 (Anthropic best practice)
+  # 15+ 는 과잉 경고 (rules 끼리 중복 위험)
+  local s
+  if [ "$R" -ge 18 ]; then s=75   # 과잉
+  elif [ "$R" -ge 12 ]; then s=90
+  elif [ "$R" -ge 6 ]; then s=82
+  elif [ "$R" -ge 2 ]; then s=60
+  else s=$((R * 15))
   fi
+  # CLAUDE.md 50줄 이하 → +5, 100줄 초과 → -10
+  if [ "$CMD_LINES" -gt 0 ] && [ "$CMD_LINES" -le 50 ]; then
+    s=$((s + 5))
+  elif [ "$CMD_LINES" -gt 100 ]; then
+    s=$((s - 10))
+  fi
+  [ "$s" -gt 95 ] && s=95
   echo "$s"
 }
 score_perms() {
@@ -130,11 +173,29 @@ score_mcp() {
   [ -f "$TARGET_DIR/rules/mcp-patterns.md" ] && echo 85 || echo 60
 }
 score_marketplace() {
-  # 자체 marketplace manifest가 있으면 90, plugins 활성화만 있으면 75, 없으면 50
-  if [ -f "$TARGET_DIR/.claude-plugin/marketplace.json" ] || [ -f "$TARGET_DIR/marketplace.json" ]; then
-    echo 90
-  elif [ "$PLUGINS" -ge 1 ]; then echo 75
-  else echo 50
+  # 자체 marketplace manifest가 공식 스키마를 따르는지 검증
+  local manifest="$TARGET_DIR/.claude-plugin/marketplace.json"
+  if [ -f "$manifest" ]; then
+    # 필수 필드: $schema가 anthropic 스키마, plugins 배열
+    local valid=0
+    if command -v python >/dev/null 2>&1; then
+      valid=$(MANIFEST_PATH="$manifest" python -c '
+import json, os, sys
+try:
+    with open(os.environ["MANIFEST_PATH"], encoding="utf-8") as f: m = json.load(f)
+    schema_ok = "anthropic.com/claude-code/marketplace" in m.get("$schema", "")
+    plugins_ok = isinstance(m.get("plugins"), list) and len(m["plugins"]) >= 1
+    plugin0 = m["plugins"][0] if plugins_ok else {}
+    required_ok = all(k in plugin0 for k in ("name", "source", "category", "description"))
+    print(1 if (schema_ok and plugins_ok and required_ok) else 0)
+except Exception: print(0)
+' 2>/dev/null)
+    fi
+    if [ "${valid:-0}" = "1" ]; then echo 90
+    else echo 55  # 파일은 있으나 공식 스키마 불일치
+    fi
+  elif [ "$PLUGINS" -ge 1 ]; then echo 70
+  else echo 45
   fi
 }
 score_trend() {

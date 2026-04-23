@@ -10,8 +10,18 @@
 
 INPUT=$(cat)
 
-OLD_CWD=$(echo "$INPUT" | jq -r '.oldCwd // .old_cwd // empty' 2>/dev/null)
-NEW_CWD=$(echo "$INPUT" | jq -r '.newCwd // .new_cwd // empty' 2>/dev/null)
+if command -v jq >/dev/null 2>&1; then
+  OLD_CWD=$(echo "$INPUT" | jq -r '.oldCwd // .old_cwd // empty' 2>/dev/null)
+  NEW_CWD=$(echo "$INPUT" | jq -r '.newCwd // .new_cwd // empty' 2>/dev/null)
+else
+  read -r OLD_CWD NEW_CWD < <(HOOK_INPUT="$INPUT" python -c '
+import json, os
+try:
+    d = json.loads(os.environ["HOOK_INPUT"])
+    print(d.get("oldCwd", d.get("old_cwd", "")), d.get("newCwd", d.get("new_cwd", "")))
+except Exception: print("", "")
+' 2>/dev/null)
+fi
 
 if [ -z "$NEW_CWD" ]; then
   exit 0

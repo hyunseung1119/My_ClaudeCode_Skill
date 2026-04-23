@@ -11,8 +11,18 @@
 
 INPUT=$(cat)
 
-TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // .toolName // "unknown"' 2>/dev/null)
-PATTERN=$(echo "$INPUT" | jq -r '.pattern // .rule // empty' 2>/dev/null)
+if command -v jq >/dev/null 2>&1; then
+  TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // .toolName // "unknown"' 2>/dev/null)
+  PATTERN=$(echo "$INPUT" | jq -r '.pattern // .rule // empty' 2>/dev/null)
+else
+  read -r TOOL_NAME PATTERN < <(HOOK_INPUT="$INPUT" python -c '
+import json, os
+try:
+    d = json.loads(os.environ["HOOK_INPUT"])
+    print(d.get("tool_name", d.get("toolName", "unknown")), d.get("pattern", d.get("rule", "")))
+except Exception: print("unknown", "")
+' 2>/dev/null)
+fi
 
 LOG_DIR="${HOME}/.claude/traces"
 mkdir -p "$LOG_DIR"
