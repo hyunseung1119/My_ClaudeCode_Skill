@@ -208,6 +208,16 @@
             "async": true
           }
         ]
+      },
+      {
+        "matcher": "Read|Glob|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/context-guard.sh",
+            "timeout": 2
+          }
+        ]
       }
     ],
     "PostToolUseFailure": [
@@ -306,6 +316,41 @@
             "type": "command",
             "command": "bash ~/.claude/hooks/session-learning.sh",
             "timeout": 5,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "FileChanged": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/file-changed-monitor.sh",
+            "timeout": 3,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "CwdChanged": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/cwd-changed-context.sh",
+            "timeout": 3
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/permission-request-logger.sh",
+            "timeout": 3,
             "async": true
           }
         ]

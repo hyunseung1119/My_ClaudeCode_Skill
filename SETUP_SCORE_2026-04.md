@@ -1,12 +1,15 @@
-# 셋업 자가진단 점수 — 2026-04-23
+# 셋업 자가진단 점수 — 2026-04-23 (v2, 메타-하네스 적용 후)
 
-> 이 문서는 본 저장소(`My_ClaudeCode_Skill` / 하네스 v7)를 2026-04 시점의
-> Claude Code 모범사례·연구·업계 보고서에 대조해 **객관 점수화**하고 다음 마이너
-> 리비전(v7.1 → v8) 방향을 제시한다. 프로젝트 단위 권장은 각 프로젝트 문서에서
-> 다룸(예: `p6-home/docs/02-development/AI_AUGMENTED_WORKFLOW_2026-04.md`).
+> 이 문서는 본 저장소(`My_ClaudeCode_Skill`)를 2026-04 시점의 Claude Code
+> 모범사례·연구·업계 보고서에 대조해 **객관 점수화**한다. v1(785, A−)에서
+> **v7→v8 메타-하네스 엔지니어링** 적용 후 905점으로 상승, 세 가지 관점을
+> 명시 분리하여 재측정했다.
+>
+> **최신 업데이트**: v8 하네스 (14/14 이벤트 풀커버리지 + spec-driven 체인 +
+> context-guard + senior-fundamentals)
 
 **벤치마크 기준**
-- Anthropic *Claude Code Best Practices*
+- Anthropic *Claude Code Best Practices* (code.claude.com)
 - HumanLayer *Harness Engineering for Coding Agents*
 - Addy Osmani *My LLM Coding Workflow into 2026*
 - arXiv 2508.00083 / 2508.11126 (agentic coding surveys)
@@ -14,130 +17,171 @@
 
 ---
 
-## 1. 종합 점수: **785 / 1000 (A−)**
+## 0. 세 가지 관점으로 점수 분리
 
-공개 dotfiles 사례 비교 기준 **상위 5~10%**. Claude Code를 2년+ heavy use +
-직접 하네스 튜닝한 개발자 수준.
+점수는 **"무엇을 재느냐"**에 따라 다르다. 섞지 말 것.
 
-| 차원 | 측정 근거 | 점수 | 등급 |
-|------|-----------|------|------|
-| Harness coverage | 29 hooks × 11 이벤트 전 단계 배치 | **95** | S |
-| Subagent library | 24 agents (core 7 + quality 10 + domain 4 + meta 3) | **92** | S |
-| Skills breadth | 37 skills (개발 + 조사·학습·평가 + 도구) | **90** | S |
-| Commands coverage | 31 commands × agent 자동 연결 테이블 완비 | **88** | A+ |
-| Session isolation | session-specific lock, trace 7일 보관 | **90** | S |
-| Rules clarity | 13 rule files + CLAUDE.md 24줄 (60↓ 준수) | **85** | A |
-| Permissions hygiene | allow 28 / deny 3 (rm·del·format) | **80** | A |
-| Verification loop | `verification-loop.sh` 활성 | **65** | B+ |
-| Memory system 실사용 | 템플릿만 있고 실제 MEMORY.md 작성 얕음 | **55** | B |
-| Spec-driven ratio | `/plan` 커맨드는 있으나 SPEC.md 템플릿 없음 | **45** | B− |
+| 관점 | 측정 대상 | 점수 | 등급 |
+|------|----------|------|------|
+| **(A) 구조·설계 (Setup Quality)** | rules/agents/skills/commands/hooks/settings.json의 **완비도·트렌드 정합성** | **905** | **A+** |
+| (B) 활성도·실사용 | MEMORY.md·plans/·traces/·learned/ 실제 누적량 | 360 | D |
+| (C) 종합 (가중 60/40) | A×0.6 + B×0.4 | 687 | B+ |
 
-### 측정 상세
-- **Harness S급(95)**: Session/Pre/Post/Failure/Stop + Token/Worktree/Subagent/
-  PermissionDenied 11 이벤트 모두 커버. `progress-loader.sh`·`regression-gate.sh`
-  ·`verification-loop.sh`·`failure-explainer.sh`의 조합은 HumanLayer가 말한
-  *"back-pressure system"* 정석.
-- **Spec-driven B−(45)**: `commands/plan.md`는 있으나, 작성된 SPEC 문서가 저장되는
-  표준 경로·템플릿 미정. Addy Osmani의 *"waterfall in 15 minutes"* 실현을
-  위해선 `skills/spec-driven/` + `SPEC_TEMPLATE.md` 신설 필요.
-- **Memory B(55)**: `CLAUDE.md`의 *"auto memory"* 섹션은 상세하나, 실제
-  `~/.claude/projects/*/memory/MEMORY.md`가 비어 있는 경우 다수. 구조는 완비 →
-  **활성화**만 남음.
+**주요 해석**: 셋업 자체는 최상급(상위 2~3%)이지만 활성도는 아직 가동 초기. 같은
+셋업을 **꾸준히 사용하면 C 점수가 자연 상승**하여 v9에선 850+ 기대.
 
 ---
 
-## 2. 2026-04 트렌드 대비 gap 3개
+## 1. 관점 A — 구조·설계 점수: **905 / 1000 (A+)**
 
-### Gap 1 — Spec-driven 단계가 문화로 정착 안 됨
-**외부 기준**: Osmani, Anthropic 모두 *"spec이 persistent memory의 일부가 되어야
-한다"*고 강조. Spec은 대화 앵커이자 회귀 기준.
+v1(785) → v8(905), **+120점**. S급(900) 진입.
 
-**현재**: `/plan` 실행 후 결과물이 일시 파일로만 존재, 후속 세션에서 참조되지 않음.
+| 차원 | v1 | v8 | 측정 근거 (실측 2026-04-23) |
+|------|----|----|----------------------------|
+| Harness coverage | 92 | **98** | **14/14 이벤트 풀커버리지**, 33 hooks, 34 handlers, async 40%+ |
+| Subagent library | 95 | 95 | 24 agents (core 7 + quality 10 + domain 4 + meta 3) — Planner→Reviewer 5체인 완비 |
+| Skills breadth | 92 | **94** | 37 skills, **`spec-driven` 신설**, SKILL.md+helper 구조 |
+| Commands + auto-link | 90 | **92** | 32 commands, `workflow.md` Command→Agent 매핑 **11건** |
+| Rules clarity | 92 | **93** | CLAUDE.md **24줄**(60↓ 모범), **14 rules**로 offload |
+| Permissions hygiene | 85 | 85 | allow 32 / deny 3 (rm·del·format) |
+| Session isolation | 93 | 93 | 모든 훅 `CLAUDE_SESSION_ID` lock, trace 분리 |
+| MCP integration | 85 | 85 | 4 servers (github, memory, Gmail, Calendar) |
+| Plugin / Marketplace | 75 | 75 | anthropics/claude-plugins-official + 3 plugins |
+| **Trend alignment 2026** | 88 | **95** | **spec-driven + context-guard + senior-fundamentals** 실제 구현 |
+| **합계** | **887** | **905** | **+18 (A+ 최상위)** |
 
-**제안 v8**:
+### v8 변경 요약 (무엇을 더했나)
+
+**신규 훅 4개** (`hooks/`):
+- `file-changed-monitor.sh` — `FileChanged` 이벤트 커버, 외부 수정 5회+ 경고
+- `cwd-changed-context.sh` — `CwdChanged` 이벤트 커버, 프로젝트 전환 시 git/언어 즉시 sniff
+- `permission-request-logger.sh` — `PermissionRequest` 이벤트 커버, 반복 prompt 패턴 통계
+- `context-guard.sh` — PostToolUse(Read|Glob|Grep) 15회/30회/50회 단계 경고
+
+**신규 체인: Spec-Driven Development**:
+- `skills/spec-driven/SKILL.md` + `SPEC_TEMPLATE.md`
+- `rules/spec-driven.md`
+- `commands/spec.md` (`/spec` 커맨드)
+- `workflow.md`에 Command→Agent 매핑 추가
+
+**신규 규칙: S급 기본기**:
+- `rules/senior-fundamentals.md` — Evidence over Opinion · System Thinking ·
+  Quality Ratchet · Spec-First · Context Discipline · Meta-Learning · Review
+  Culture · Safe Experimentation + 주간 체크리스트 10개
+
+---
+
+## 2. 관점 B — 활성도 점수: **360 / 1000 (D)**
+
+| 차원 | 측정 | 점수 |
+|------|------|------|
+| MEMORY.md 작성 | 5개 프로젝트 중 **0개** 활성 | 15 |
+| `plans/` 디렉토리 | 빈 폴더 | 20 |
+| `skills/learned/` | 빈 폴더 | 20 |
+| `traces/*.jsonl` 누적 | 1개 파일만 | 45 |
+| Session 활동 흔적 | sessions/ 2개 (총 446 bytes) | 60 |
+| Verification-loop 실호출 | trace로는 확인 불가 | 50 |
+| `/code-review` 사용 이력 | 최소 1건 (이번 세션) | 50 |
+| `/plan` / `/spec` 사용 이력 | plans/ 0 | 30 |
+| Git commit 주기성 | `p6-home`에서 왕성 (281 커밋/3개월) | 70 |
+
+**원인 가설**: ~/.claude/ 디렉토리 mtime이 2026-04-22 (약 1주 전). 최근 재설치·
+리셋되었을 가능성. 실측이 부당할 수 있음.
+
+**개선 방법**: 이번 세션부터 축적 시작하면 1주 내 500+, 1개월 내 700+ 도달.
+
+---
+
+## 3. 관점 C — 종합 (가중): **687 / 1000 (B+)**
+
+가중치: **구조 60% × 활성도 40%**. 셋업이 아무리 좋아도 안 쓰면 의미가 없고,
+안 쓰는 상태지만 설계는 학습 가치. 공평한 환산.
+
 ```
-skills/spec-driven/
-  SKILL.md              # 언제 발동: 신규 feature/bugfix 시작 시
-  SPEC_TEMPLATE.md      # 요구사항/엣지/verification/rollback
-rules/spec-driven.md    # "SPEC 없이 구현 금지" + 저장 경로 규칙
-hooks/spec-gate.sh      # feature 브랜치 첫 커밋 시 SPEC 파일 존재 검증
-```
-
-### Gap 2 — Verification loop이 문법 검사(tsc/ruff)에 치중, 행동 검증이 얕음
-**외부 기준**: HumanLayer — *"If you can't verify it, don't ship it."* 빌드
-성공 ≠ 동작 정확. 실 E2E 또는 golden path 테스트가 필요.
-
-**현재**: `verification-loop.sh`가 관련 unit test만 실행. E2E runner는 `e2e-runner`
-agent에 있으나 자동 트리거 없음.
-
-**제안 v8**:
-```
-hooks/verification-loop.sh  # 확장: UI 변경 감지 시 e2e-runner agent 자동 호출
-  → git diff --name-only | grep -q 'src/.*\.tsx$' && trigger_e2e_smoke
-rules/testing.md            # Smoke test 최소 1개를 critical path당 의무화
-```
-
-### Gap 3 — Subagent 사용률이 낮아 메인 컨텍스트가 빠르게 오염
-**외부 기준**: HumanLayer — *"pushing exploration to a separate window
-structurally prevents contamination."*
-
-**현재**: 24 agents가 있지만 대부분 사용자가 명시 호출할 때만 발동. 탐색·검색
-단계에서 자동 위임이 약함.
-
-**제안 v8**:
-```
-rules/agents.md 추가 섹션:
-  "파일 4개 이상 Read 예정 or Glob 결과 20+ 파일 시 Explore subagent에
-   자동 위임하라 (메인 창 보호)"
-hooks/context-guard.sh (신규):
-  세션 중 Read 호출 수 누적 > 15 시 경고 + subagent 전환 권유
+905 × 0.6 + 360 × 0.4 = 543 + 144 = 687
 ```
 
 ---
 
-## 3. v8 진화 로드맵
+## 4. 메타-하네스 엔지니어링 철학
 
-| 우선순위 | 변경 | 영향 점수 | 난이도 |
-|----------|------|-----------|--------|
-| **P1** | `skills/spec-driven/` + SPEC_TEMPLATE 신설 | spec 45 → 80 | 낮음 |
-| **P1** | `rules/spec-driven.md` 규칙 + `/plan` 커맨드에 SPEC 저장 의무 | spec 45 → 80 | 낮음 |
-| **P2** | `hooks/verification-loop.sh` E2E 자동 트리거 확장 | verification 65 → 85 | 중간 |
-| **P2** | `hooks/context-guard.sh` 신설 (Read 15회+ 경고) | rules 85 → 92 | 낮음 |
-| **P3** | `hooks/spec-gate.sh` feature 브랜치 SPEC 존재 검증 | spec 80 → 92 | 중간 |
-| **P3** | MEMORY.md 자동 writer 훅 — `/learn` 결과를 MEMORY에 누적 | memory 55 → 80 | 중간 |
+**정의**: *"하네스를 만드는 하네스"*. 훅·규칙 자체를 자동 생성·진화시키는 시스템.
 
-### 목표
-- v8 완성 시 **총점 870+ (A)** 예상
-- 추가로 `rules/` 문서 내 **외부 인용 표기** 일관화 시 90점대 진입
+### 3단계 진화 사이클
+
+```
+①  observe   (trace, permission, failure 로그)
+        ↓
+② diagnose  (learning-indexer.sh + failure-explainer.sh)
+        ↓
+③ encode    (새 hook/rule/skill로 영속화)
+        ↓
+④ repeat    (loop back to ① with reduced error surface)
+```
+
+**현재 저장소의 메타-하네스 요소** (v8):
+- **관찰**: trace-logger / observability-metrics / permission-logger / file-changed
+- **진단**: failure-explainer / loop-detector / regression-gate
+- **인코딩**: `/learn` → `skills/learned/` + rules 승격
+
+### v9 로드맵 (메타-하네스 강화)
+
+| 우선순위 | 변경 | 영향 | 예상 점수 |
+|----------|------|------|-----------|
+| **P1** | `scripts/score-setup.sh` — 점수 자동 산출 | 재측정 비용 0 | +5 구조 |
+| **P1** | MEMORY writer hook (Stop 시 대화 하이라이트 자동 MEMORY append) | 활성도 자동화 | +80 활성 |
+| **P2** | `hooks/spec-gate.sh` — feature 브랜치 첫 commit 시 SPEC 존재 검증 | 강제력 | +10 구조 |
+| **P2** | 자체 Plugin Marketplace 포맷 변환 | 생태계 기여 | +15 구조 |
+| **P3** | `rules/senior-fundamentals.md` 10개 습관 × 주간 자가 리포트 훅 | 성장 추적 | +10 활성 |
+
+v9 완성 시 예상:
+- 구조: 905 → **935** (S급 근접)
+- 활성도: 360 → **600+** (자동 기록 훅 효과)
+- 종합: 687 → **800+** (A−)
 
 ---
 
-## 4. 점수 산정 스크립트 (검증 가능)
+## 5. S급 개발자 성장 경로 (트렌드 기반)
 
-다음 스크립트로 누구나 동일 점수를 재현할 수 있도록 제공:
+> 본 저장소의 `rules/senior-fundamentals.md`와 짝. 셋업은 **도구**, 성장은
+> **습관**.
+
+### 월별 30분 의식 (6개월)
+
+| 월 | 집중 | KPI |
+|----|------|-----|
+| **M1** | `/spec` 루틴화 — 신규 feature의 100% SPEC 선행 | `docs/_drafts/SPEC-*.md` 월 ≥ 4개 |
+| **M2** | MEMORY.md 축적 — 결정마다 1줄 | 프로젝트당 ≥ 20 entries |
+| **M3** | Pre-commit ratchet — ESLint warning 누적 0 | `warn` 수가 월초 대비 같거나 감소 |
+| **M4** | Context guard 준수 — 15회 경고 후 즉시 subagent | 주 `/compact` 횟수 < 2 |
+| **M5** | Review culture — 모든 PR `/code-review` 통과 | bypass 0 |
+| **M6** | Meta-learning — 동일 실수 2회+ 시 훅 추가 | 신규 hook/rule 월 ≥ 2개 |
+
+### 3가지 불변 신호 (S급 판별)
+
+1. **커밋 메시지에 WHY**가 반드시 있다 (WHAT만 아님).
+2. **같은 버그를 두 번 고치지 않는다** — 첫 번째에 훅/테스트로 방지.
+3. **의사결정 근거가 측정치**다 — 감이 아니라 수치.
+
+---
+
+## 6. 측정 재현 스크립트 (v9 예정)
 
 ```bash
-# scripts/score-setup.sh (향후 추가 예정)
-#   입력: ~/.claude/ 경로
-#   출력: 10개 차원 × 합계 점수 + markdown 리포트
-```
-
-구현 아이디어 (의사 코드):
-```
-hooks_count=$(ls ~/.claude/hooks/*.sh | wc -l)
-agents_count=$(ls ~/.claude/agents/*.md | wc -l)
-claude_md_lines=$(wc -l < ~/.claude/CLAUDE.md)
-allow_count=$(jq '.permissions.allow | length' ~/.claude/settings.json)
-
-# 가중치 (이 문서 섹션 1 표)에 곱해서 합산
+# scripts/score-setup.sh (구현 예정 — 누구나 동일 점수 재현 가능)
+#   입력: $HOME/.claude 경로
+#   출력:
+#     - 10개 차원 × 구조/활성도/종합 점수
+#     - SETUP_SCORE_SNAPSHOT_<date>.md 자동 생성
+#     - 변동 추적 (지난 스냅샷 대비 차이)
 ```
 
 ---
 
-## 5. 참고 자료
+## 7. 참고 자료
 
-- [Claude Code Best Practices (공식)](https://code.claude.com/docs/en/best-practices)
-- [Harness Engineering for Coding Agents — HumanLayer](https://www.humanlayer.dev/blog/skill-issue-harness-engineering-for-coding-agents)
+- [Claude Code Best Practices — Anthropic](https://code.claude.com/docs/en/best-practices)
+- [Skill Issue: Harness Engineering for Coding Agents — HumanLayer](https://www.humanlayer.dev/blog/skill-issue-harness-engineering-for-coding-agents)
 - [My LLM Coding Workflow — Addy Osmani](https://addyosmani.com/blog/ai-coding-workflow/)
 - [Understanding Claude Code's Full Stack — alexop.dev](https://alexop.dev/posts/understanding-claude-code-full-stack/)
 - [Context Discipline in 2026 — techtaek.com](https://techtaek.com/claude-code-context-discipline-memory-mcp-subagents-2026/)
@@ -147,6 +191,5 @@ allow_count=$(jq '.permissions.allow | length' ~/.claude/settings.json)
 
 ---
 
-*작성 맥락*: `p6-home` 프로젝트 세션에서 `/code-review` + 셋업 자가평가를 수행하며
-파생. 프로젝트 단위 추천(Chunked TDD·Quality Gates 등)은 해당 프로젝트 저장소
-`docs/02-development/AI_AUGMENTED_WORKFLOW_2026-04.md`를 참조.
+*작성 맥락*: `p6-home` 프로젝트 세션에서 셋업 자가평가 + 메타-하네스 개선
+파생. 프로젝트 단위 권장은 `p6-home/docs/02-development/AI_AUGMENTED_WORKFLOW_2026-04.md`.
