@@ -133,6 +133,16 @@
             "timeout": 2
           }
         ]
+      },
+      {
+        "matcher": "Bash(git commit*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/spec-gate.sh",
+            "timeout": 3
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -324,6 +334,16 @@
           {
             "type": "command",
             "command": "bash ~/.claude/hooks/session-learning.sh",
+            "timeout": 5,
+            "async": true
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/memory-writer.sh",
             "timeout": 5,
             "async": true
           }

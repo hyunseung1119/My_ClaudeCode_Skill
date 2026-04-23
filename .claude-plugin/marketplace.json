@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "hyunseung1119/claude-setup-harness",
+  "version": "8.2.0",
+  "description": "2026 SOTA Claude Code harness setup — 34 hooks × 14 events + 24 agents + 38 skills + 33 commands + 16 rules. Spec-driven, error-recovery, senior-fundamentals 포함.",
+  "owner": {
+    "name": "hyunseung1119",
+    "email": "dnclgk9@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hyunseung1119/My_ClaudeCode_Skill.git"
+  },
+  "components": {
+    "hooks": "hooks/",
+    "agents": "agents/",
+    "skills": "skills/",
+    "commands": "commands/",
+    "rules": "rules/"
+  },
+  "install": {
+    "method": "copy",
+    "script_windows": "install_copy.ps1",
+    "script_unix": "setup.sh",
+    "target": "$HOME/.claude/",
+    "files_copied": [
+      "hooks/*.sh",
+      "agents/*.md",
+      "skills/**/*",
+      "commands/*.md",
+      "rules/*.md",
+      "CLAUDE.md",
+      "settings.local.json"
+    ]
+  },
+  "highlights": [
+    "14/14 event coverage (SessionStart ~ PermissionRequest)",
+    "back-pressure system (verification-loop + failure-explainer + regression-gate)",
+    "Spec-driven workflow (/spec + SPEC_TEMPLATE)",
+    "Junior×AI debugging coach (/debug + error-recovery skill)",
+    "Senior fundamentals (10-item weekly checklist)",
+    "Context guard (Read/Glob/Grep 15+ warning)",
+    "Automated MEMORY writer (session-end append)",
+    "Self-scoring script (scripts/score-setup.sh)"
+  ],
+  "requires": {
+    "claude-code": ">=1.0.0",
+    "shell": "bash (git-bash on Windows)",
+    "optional": {
+      "jq": "권장 (없으면 python fallback)",
+      "python": ">=3.9 (score-setup.sh python fallback 용)"
+    }
+  },
+  "references": [
+    {
+      "title": "Claude Code Best Practices",
+      "url": "https://code.claude.com/docs/en/best-practices"
+    },
+    {
+      "title": "Harness Engineering for Coding Agents — HumanLayer",
+      "url": "https://www.humanlayer.dev/blog/skill-issue-harness-engineering-for-coding-agents"
+    },
+    {
+      "title": "2026 Agentic Coding Trends Report — Anthropic",
+      "url": "https://resources.anthropic.com/hubfs/2026%20Agentic%20Coding%20Trends%20Report.pdf"
+    }
+  ],
+  "changelog": {
+    "8.2.0": "v9 완성 — score-setup.sh + spec-gate.sh + memory-writer.sh + marketplace manifest",
+    "8.1.0": "에러-디버깅 동행 체인 (error-recovery skill + /debug + error-context-collector)",
+    "8.0.0": "14/14 event 풀커버리지 + spec-driven + context-guard + senior-fundamentals",
+    "7.x": "2026 SOTA 반영 시작"
+  }
+}

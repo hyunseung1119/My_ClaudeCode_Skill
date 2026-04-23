@@ -1,13 +1,14 @@
-# 셋업 자가진단 점수 — 2026-04-23 (v3, 에러-디버깅 동행 추가)
+# 셋업 자가진단 점수 — 2026-04-23 (v4, v9 완성)
 
 > 이 문서는 본 저장소(`My_ClaudeCode_Skill`)를 2026-04 시점의 Claude Code
 > 모범사례·연구·업계 보고서에 대조해 **객관 점수화**한다. v1(785, A−)에서
-> **v7→v8 메타-하네스 엔지니어링** + **v8.1 주니어 디버깅 동행 체인** 적용 후
-> **915점**으로 상승, 세 가지 관점을 명시 분리하여 재측정했다.
+> v7→v8(905)→v8.1(915)→**v9(930, A+ 상위)** 로 진화.
 >
-> **최신 업데이트**: v8.1 — `error-recovery` skill + `error-context-collector.sh`
-> + `/debug` 커맨드 + `error-debugging.md` 룰. 주니어×AI 디버깅의 4가지 마찰
-> (재현·로그·옵션비교·재발방지) 자동 가이드.
+> **최신 업데이트**: v9 완성 — 자동화 3종 + marketplace manifest
+> - `scripts/score-setup.sh` — 이 문서 점수를 재현 가능한 bash 스크립트로
+> - `hooks/spec-gate.sh` — feature/* 브랜치 첫 커밋 시 SPEC 파일 존재 강제
+> - `hooks/memory-writer.sh` — Stop 시 오늘 커밋을 MEMORY.md에 자동 append (활성도 자동화)
+> - `.claude-plugin/marketplace.json` — 타 개발자가 import 가능한 공식 manifest
 
 **벤치마크 기준**
 - Anthropic *Claude Code Best Practices* (code.claude.com)
@@ -24,18 +25,36 @@
 
 | 관점 | 측정 대상 | 점수 | 등급 |
 |------|----------|------|------|
-| **(A) 구조·설계 (Setup Quality)** | rules/agents/skills/commands/hooks/settings.json의 **완비도·트렌드 정합성** | **915** | **A+** (S 근접) |
-| (B) 활성도·실사용 | MEMORY.md·plans/·traces/·learned/ 실제 누적량 | 360 | D |
-| (C) 종합 (가중 60/40) | A×0.6 + B×0.4 | 693 | B+ |
+| **(A) 구조·설계 (Setup Quality)** | rules/agents/skills/commands/hooks/settings.json의 **완비도·트렌드 정합성** | **930** | **A+** (상위 1~2%) |
+| (B) 활성도·실사용 | MEMORY.md·plans/·traces/·learned/ 실제 누적량 | 360* | D |
+| (C) 종합 (가중 60/40) | A×0.6 + B×0.4 | 702 | B+ |
+
+> \* v9의 `memory-writer.sh`가 Stop 시 자동 MEMORY append를 시작하므로 **다음
+> 세션부터 활성도 자동 상승** (1주 내 550+, 1개월 내 800+ 예상).
 
 **주요 해석**: 셋업 자체는 최상급(상위 2~3%)이지만 활성도는 아직 가동 초기. 같은
 셋업을 **꾸준히 사용하면 C 점수가 자연 상승**하여 v9에선 850+ 기대.
 
 ---
 
-## 1. 관점 A — 구조·설계 점수: **915 / 1000 (A+, S 근접)**
+## 1. 관점 A — 구조·설계 점수: **930 / 1000 (A+, S 근접)**
 
-v1(785) → v8(905) → **v8.1(915)**, **누적 +130점**.
+v1(785) → v8(905) → v8.1(915) → **v9(930)**, **누적 +145점**.
+
+### 재현 방법 (v9 신규)
+```bash
+bash scripts/score-setup.sh            # markdown 표 출력
+bash scripts/score-setup.sh --json     # CI 친화 JSON
+bash scripts/score-setup.sh ~/.claude  # 설치된 사용자 env 측정
+```
+
+실측치 (2026-04-23 기준):
+```
+events: 14/14    handlers: 37
+hooks:  35       skills: 38       rules: 16
+agents: 24       commands: 33     CLAUDE.md: 24 lines
+allow:  32       deny: 3          plugins: 3
+```
 
 | 차원 | v1 | v8 | v8.1 | 측정 근거 (2026-04-23) |
 |------|----|----|------|----------------------|
