@@ -96,7 +96,7 @@ jobs:
             });
 
       - name: Update README badge (main only)
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         env:
           TOTAL: ${{ steps.score.outputs.total }}
           GRADE: ${{ steps.score.outputs.grade }}
