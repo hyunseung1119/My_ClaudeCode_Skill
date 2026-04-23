@@ -13,9 +13,14 @@ on:
       - 'settings.local.json'
       - '.claude-plugin/**'
       - 'scripts/score-setup.sh'
+      - '!README.md'  # 배지 auto-commit 재귀 트리거 방지
   pull_request:
     branches: [main]
   workflow_dispatch:
+
+permissions:
+  contents: write       # README.md 배지 자동 커밋/푸시 용도
+  pull-requests: write  # PR 코멘트 작성 용도
 
 jobs:
   score:
