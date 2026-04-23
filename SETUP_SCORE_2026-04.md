@@ -1,12 +1,13 @@
-# 셋업 자가진단 점수 — 2026-04-23 (v2, 메타-하네스 적용 후)
+# 셋업 자가진단 점수 — 2026-04-23 (v3, 에러-디버깅 동행 추가)
 
 > 이 문서는 본 저장소(`My_ClaudeCode_Skill`)를 2026-04 시점의 Claude Code
 > 모범사례·연구·업계 보고서에 대조해 **객관 점수화**한다. v1(785, A−)에서
-> **v7→v8 메타-하네스 엔지니어링** 적용 후 905점으로 상승, 세 가지 관점을
-> 명시 분리하여 재측정했다.
+> **v7→v8 메타-하네스 엔지니어링** + **v8.1 주니어 디버깅 동행 체인** 적용 후
+> **915점**으로 상승, 세 가지 관점을 명시 분리하여 재측정했다.
 >
-> **최신 업데이트**: v8 하네스 (14/14 이벤트 풀커버리지 + spec-driven 체인 +
-> context-guard + senior-fundamentals)
+> **최신 업데이트**: v8.1 — `error-recovery` skill + `error-context-collector.sh`
+> + `/debug` 커맨드 + `error-debugging.md` 룰. 주니어×AI 디버깅의 4가지 마찰
+> (재현·로그·옵션비교·재발방지) 자동 가이드.
 
 **벤치마크 기준**
 - Anthropic *Claude Code Best Practices* (code.claude.com)
@@ -23,32 +24,48 @@
 
 | 관점 | 측정 대상 | 점수 | 등급 |
 |------|----------|------|------|
-| **(A) 구조·설계 (Setup Quality)** | rules/agents/skills/commands/hooks/settings.json의 **완비도·트렌드 정합성** | **905** | **A+** |
+| **(A) 구조·설계 (Setup Quality)** | rules/agents/skills/commands/hooks/settings.json의 **완비도·트렌드 정합성** | **915** | **A+** (S 근접) |
 | (B) 활성도·실사용 | MEMORY.md·plans/·traces/·learned/ 실제 누적량 | 360 | D |
-| (C) 종합 (가중 60/40) | A×0.6 + B×0.4 | 687 | B+ |
+| (C) 종합 (가중 60/40) | A×0.6 + B×0.4 | 693 | B+ |
 
 **주요 해석**: 셋업 자체는 최상급(상위 2~3%)이지만 활성도는 아직 가동 초기. 같은
 셋업을 **꾸준히 사용하면 C 점수가 자연 상승**하여 v9에선 850+ 기대.
 
 ---
 
-## 1. 관점 A — 구조·설계 점수: **905 / 1000 (A+)**
+## 1. 관점 A — 구조·설계 점수: **915 / 1000 (A+, S 근접)**
 
-v1(785) → v8(905), **+120점**. S급(900) 진입.
+v1(785) → v8(905) → **v8.1(915)**, **누적 +130점**.
 
-| 차원 | v1 | v8 | 측정 근거 (실측 2026-04-23) |
-|------|----|----|----------------------------|
-| Harness coverage | 92 | **98** | **14/14 이벤트 풀커버리지**, 33 hooks, 34 handlers, async 40%+ |
-| Subagent library | 95 | 95 | 24 agents (core 7 + quality 10 + domain 4 + meta 3) — Planner→Reviewer 5체인 완비 |
-| Skills breadth | 92 | **94** | 37 skills, **`spec-driven` 신설**, SKILL.md+helper 구조 |
-| Commands + auto-link | 90 | **92** | 32 commands, `workflow.md` Command→Agent 매핑 **11건** |
-| Rules clarity | 92 | **93** | CLAUDE.md **24줄**(60↓ 모범), **14 rules**로 offload |
-| Permissions hygiene | 85 | 85 | allow 32 / deny 3 (rm·del·format) |
-| Session isolation | 93 | 93 | 모든 훅 `CLAUDE_SESSION_ID` lock, trace 분리 |
-| MCP integration | 85 | 85 | 4 servers (github, memory, Gmail, Calendar) |
-| Plugin / Marketplace | 75 | 75 | anthropics/claude-plugins-official + 3 plugins |
-| **Trend alignment 2026** | 88 | **95** | **spec-driven + context-guard + senior-fundamentals** 실제 구현 |
-| **합계** | **887** | **905** | **+18 (A+ 최상위)** |
+| 차원 | v1 | v8 | v8.1 | 측정 근거 (2026-04-23) |
+|------|----|----|------|----------------------|
+| Harness coverage | 92 | **98** | **98** | 14/14 이벤트 풀커버리지, **34 hooks, 35 handlers** |
+| Subagent library | 95 | 95 | 95 | 24 agents — Planner→Reviewer 5체인 완비 |
+| Skills breadth | 92 | **94** | **96** | **38 skills** (`spec-driven` + `error-recovery` 신설) |
+| Commands + auto-link | 90 | **92** | **94** | **33 commands** (`/spec`+`/debug` 추가), 매핑 13건 |
+| Rules clarity | 92 | **93** | **95** | CLAUDE.md 24줄, **16 rules** (spec-driven, senior-fundamentals, error-debugging) |
+| Permissions hygiene | 85 | 85 | 85 | allow 32 / deny 3 |
+| Session isolation | 93 | 93 | 93 | `CLAUDE_SESSION_ID` lock 일관 |
+| MCP integration | 85 | 85 | 85 | 4 servers |
+| Plugin / Marketplace | 75 | 75 | 75 | official + 3 plugins |
+| **Trend alignment 2026** | 88 | **95** | **99** | spec-driven + context-guard + senior-fundamentals + **에러-디버깅 동행** |
+| **합계** | **887** | **905** | **915** | **+10 vs v8 (S 근접)** |
+
+### v8.1 변경 요약 (주니어×AI 디버깅 동행)
+
+**문제 정의**: 주니어가 AI에 에러를 던질 때 흔한 4가지 마찰 자동 해소.
+
+**신규 자원 4개**:
+- `skills/error-recovery/SKILL.md` — REPRODUCE → DIAGNOSE → OPTIONS → DECIDE → PREVENT 5단 표준
+- `hooks/error-context-collector.sh` — PostToolUseFailure (비-Bash 도구) 시 자동 컨텍스트 수집 (cwd, git HEAD, 최근 30분 변경 파일, 5단 분해 prompt)
+- `rules/error-debugging.md` — 안티패턴 + Trade-off 의사결정 표 + PREVENT 5단계
+- `commands/debug.md` — `/debug <에러>` 명시 발동
+
+**자동 발동 조건**:
+- 사용자 메시지에 "에러", "안 돼", "Error", "Exception", "Traceback"
+- 스택 트레이스 형태
+- PostToolUseFailure 누적 3+
+- 빌드/테스트 실패 출력
 
 ### v8 변경 요약 (무엇을 더했나)
 

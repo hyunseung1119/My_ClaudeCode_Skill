@@ -54,6 +54,7 @@
 | Command | Agent | 실행 방식 |
 |---------|-------|----------|
 | `/spec` | spec-driven skill | 비trivial 변경 전에 SPEC 문서로 요구사항·엣지·검증 정리 (→ 이후 /plan) |
+| `/debug` | error-recovery skill (+debugger) | 에러 5단 분해 + 3가지 fix trade-off + 재발 방지 |
 | `/plan` | planner | 커맨드가 planner 에이전트를 직접 호출 |
 | `/code-review` | code-reviewer | 커맨드가 code-reviewer 에이전트를 직접 호출 |
 | `/tdd` | tdd-guide | 커맨드가 tdd-guide 에이전트를 직접 호출 |
